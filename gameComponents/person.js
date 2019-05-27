@@ -1,16 +1,17 @@
 class Person extends GameComponent {
   constructor(ctx, ropeStartX, ropeStartY) {
     super();
-    this.x = ropeStartX;
-    this.y = ropeStartY + 150;
+    this.setComponentValues(
+      ropeStartX,
+      ropeStartY + 150,
+      20,
+      20,
+      "images/person.png"
+    );
     this.ropeStartX = ropeStartX;
     this.ropeStartY = ropeStartY;
-    this.width = 20;
-    this.height = 20;
     this.speedX = 0;
     this.speedY = 0;
-    this.sprite = new Image();
-    this.sprite.src = "images/person.png";
 
     this.show(ctx);
   }

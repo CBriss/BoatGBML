@@ -1,5 +1,5 @@
 class LearningHud {
-  constructor(ctx) {
+  constructor() {
     this.generationCountX = 50;
     this.generationCountY = 25;
     this.generationCount = 1;
@@ -11,8 +11,6 @@ class LearningHud {
     this.bestScoreGenerationX = 50;
     this.bestScoreGenerationY = 75;
     this.bestScoreGeneration = 0;
-
-    this.show(ctx);
   }
 
   show(ctx) {
@@ -38,7 +36,7 @@ class LearningHud {
     );
   }
 
-  update(ctx, highScore) {
+  update(highScore) {
     this.generationCount += 1;
     if (this.highestScore < highScore) {
       this.highestScore = highScore;

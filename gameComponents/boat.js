@@ -1,22 +1,21 @@
 class Boat extends GameComponent {
   constructor(ctx, playerFlag) {
     super();
-    // this.x = Math.random() * ctx.canvas.width;
-    this.x = 100;
-    //this.y = Math.random() * ctx.canvas.height;
-    this.y = ctx.canvas.height - 150;
-    this.width = 25;
-    this.height = 100;
-
-    this.sprite = new Image();
-    this.sprite.src = "images/boat.png";
+    this.setComponentValues(
+      100,
+      ctx.canvas.height - 150,
+      25,
+      100,
+      "images/boat.png"
+    );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(3, 8, 2);
+    this.brain = new NeuralNetwork(6, 25, 2);
 
     this.score = 0;
     this.distanceTraveled = 0;
-    if (playerFlag) this.hud = new PlayerHud();
+
+    this.player = playerFlag;
 
     this.show(ctx);
   }
@@ -30,18 +29,46 @@ class Boat extends GameComponent {
   think(ctx, obstacles) {
     // | Inputs |
     let buffer = 10;
-    let nearest_obstacle = this.find_nearest_obstacle(obstacles);
-    let obstacle_startX = nearest_obstacle ? nearest_obstacle.x + buffer : 0;
-    let nearest_obstacle_endX = nearest_obstacle
-      ? nearest_obstacle.x + nearest_obstacle.width - buffer
-      : 0;
+    let nearestObstacles = this.find_nearest_obstacles(obstacles);
+    if (nearestObstacles.length > 1) {
+      let nearestObstacle1 = nearestObstacles[0];
+      let nearestObstacle2 = nearestObstacles[1];
+
+      var obstacle1StartX = nearestObstacle1 ? nearestObstacle1.x + buffer : 0;
+      var nearestObstacle1EndX = nearestObstacle1
+        ? nearestObstacle1.endX - buffer
+        : 0;
+
+      var obstacle2StartX = nearestObstacle2 ? nearestObstacle2.x + buffer : 0;
+      var nearestObstacle2EndX = nearestObstacle2
+        ? nearestObstacle2.endX - buffer
+        : 0;
+    } else if (nearestObstacles.length > 0) {
+      let nearestObstacle1 = nearestObstacles[0];
+
+      var obstacle1StartX = nearestObstacle1 ? nearestObstacle1.x + buffer : 0;
+      var nearestObstacle1EndX = nearestObstacle1
+        ? nearestObstacle1.endX - buffer
+        : 0;
+
+      var obstacle2StartX = 0;
+      var nearestObstacle2EndX = 0;
+    } else {
+      var obstacle1StartX = 0;
+      var nearestObstacle1EndX = 0;
+
+      var obstacle2StartX = 0;
+      var nearestObstacle2EndX = 0;
+    }
+
     var input = [
       this.x / ctx.canvas.width,
-      obstacle_startX / ctx.canvas.width,
-      nearest_obstacle_endX / ctx.canvas.width
+      this.endX / ctx.canvas.width,
+      obstacle1StartX / ctx.canvas.width,
+      nearestObstacle1EndX / ctx.canvas.width,
+      obstacle2StartX / ctx.canvas.width,
+      nearestObstacle2EndX / ctx.canvas.width
     ];
-
-    // console.log(input);
 
     let result = this.brain.predict(input);
     let left = result[0];
@@ -59,47 +86,36 @@ class Boat extends GameComponent {
     return keys;
   }
 
-  update(
-    ctx,
-    keys,
-    obstacles,
-    playerFlag,
-    newDistanceTraveled,
-    timeLeft,
-    boatSpeed
-  ) {
-    this.updateScore(ctx.canvas.height, newDistanceTraveled);
-    if (!playerFlag) keys = this.think(ctx, obstacles);
-    this.horizontalMove(keys, ctx);
-    this.verticalMove(keys, ctx);
+  update(ctx, keys, obstacles, newDistanceTraveled, timeLeft, boatSpeed) {
+    if (!this.player) keys = this.think(ctx, obstacles);
+    let newX = this.moveToNewX(keys, ctx);
+    let newY = this.moveToNewY(keys, ctx);
+    super.update(newX, newY);
     this.person.update(ctx, this.x + this.width / 2, this.y + this.height);
+    this.updateScore(ctx.canvas.height, newDistanceTraveled);
     this.show(ctx);
-    if (playerFlag)
-      this.hud.update(
-        ctx,
-        timeLeft,
-        newDistanceTraveled,
-        this.score,
-        boatSpeed
-      );
   }
 
-  horizontalMove(keys, ctx) {
+  moveToNewX(keys, ctx) {
+    let newX = this.x;
     if (keys && keys[37]) {
-      if (this.x > 5) this.x -= 5;
+      if (this.x > 5) newX -= 5;
     }
     if (keys && keys[39]) {
-      if (this.x + this.width + 5 < ctx.canvas.width) this.x += 5;
+      if (this.x + this.width + 5 < ctx.canvas.width) newX += 5;
     }
+    return newX;
   }
 
-  verticalMove(keys, ctx) {
+  moveToNewY(keys, ctx) {
+    let newY = this.y;
     if (keys && keys[38]) {
-      if (this.y > 5) this.y -= 5;
+      if (this.y > 5) newY -= 5;
     }
     if (keys && keys[40]) {
-      if (this.y + this.height + 5 < ctx.canvas.height) this.y += 5;
+      if (this.y + this.height + 5 < ctx.canvas.height) newY += 5;
     }
+    return newY;
   }
 
   updateScore(canvas_height, newDistanceTraveled) {
@@ -110,16 +126,21 @@ class Boat extends GameComponent {
     this.distanceTraveled = newDistanceTraveled;
   }
 
-  find_nearest_obstacle(obstacles) {
-    if (obstacles.length <= 0) return null;
-    let nearest_obstacle;
+  find_nearest_obstacles(obstacles) {
+    if (obstacles.length <= 0) return [];
+    let nearestObstacle1;
+    let nearestObstacle2;
     let nearestDistance = 10000000;
-    obstacles.forEach(obstacle => {
+    for (let i = 0; i < obstacles.length; i++) {
+      let obstacle = obstacles[i];
       let distance = this.y - obstacle.y;
-      if (distance > -80 && distance < nearestDistance)
-        nearest_obstacle = obstacle;
-    });
-    return nearest_obstacle;
+      if (distance > -80 && distance < nearestDistance) {
+        nearestObstacle1 = obstacle;
+        nearestObstacle2 = obstacles[i + 1];
+        i++;
+      }
+    }
+    return [nearestObstacle1, nearestObstacle2];
   }
 
   mutate() {
@@ -141,5 +162,19 @@ class Boat extends GameComponent {
     let ho_shape = this.brain.output_weights.shape;
     this.brain.output_weights.dispose();
     this.brain.output_weights = tf.tensor(ho, ho_shape);
+  }
+
+  updateSpeed() {
+    if (this.keys && this.keys[38]) {
+      this.boatSpeed += 2;
+      if (this.boatSpeed > 200) {
+        this.boatSpeed = 200;
+      }
+    } else if (this.keys && this.keys[40]) {
+      this.boatSpeed -= 2;
+      if (this.boatSpeed < 0) {
+        this.boatSpeed = 0;
+      }
+    }
   }
 }

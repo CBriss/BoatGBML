@@ -9,5 +9,5 @@ function showMenu() {
 function startGame(playerFlag) {
   var menu = document.getElementById("menu-container");
   menu.style.display = "none";
-  new GameArea(playerFlag);
+  new BoatGame(playerFlag);
 }

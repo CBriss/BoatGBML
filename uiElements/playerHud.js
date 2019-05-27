@@ -44,12 +44,11 @@ class PlayerHud {
     );
   }
 
-  update(ctx, timeLeft, distanceTraveled, score, boatSpeed) {
+  update(timeLeft, distanceTraveled, score, boatSpeed) {
     this.lastDistanceValue = this.distanceValue;
     this.distanceValue = distanceTraveled;
     this.boatSpeedValue = boatSpeed;
     this.timeLeft = timeLeft;
     this.scoreValue = score;
-    this.show(ctx);
   }
 }
