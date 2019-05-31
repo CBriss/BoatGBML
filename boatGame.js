@@ -68,6 +68,7 @@ class BoatGame {
   }
 
   update() {
+    console.log("new frame");
     this.updateSpeedMode();
     for (let i = 0; i < this.speedMode; i++) {
       this.insertObstacles();
@@ -85,43 +86,13 @@ class BoatGame {
         else {
           this.obstacles = [];
           this.geneticAlgorithm.newGeneration(this.boats, this.context);
-          this.hud.update(this.highScore);
+          this.distanceTraveled = 0;
+          this.hud.update(this.geneticAlgorithm.highScore);
         }
       }
       this.updateGameState();
     }
     this.drawGameState();
-  }
-
-  newLearningGeneration() {
-    let highScoreBoat = find_high_score();
-    // Note: we do not get rid of past bestBoat brains!!
-    // Small memeroy leak!
-    if (highScoreBoat) {
-      this.geneticAlgorithm.highScore = highScoreBoat.score;
-      if (this.bestBoat && this.bestBoat !== highScoreBoat) {
-        this.bestBoat.brain.dispose();
-        this.bestBoat.dispose();
-        this.bestBoat = highScoreBoat;
-      }
-      this.currentGenerationDead = this.currentGenerationDead.splice(
-        this.currentGenerationDead.indexOf(this.bestBoat, 1)[0]
-      );
-    }
-    this.boats = newGeneration(
-      this.boatCount,
-      this.boats,
-      this.currentGenerationDead,
-      this.context,
-      this.bestBoat
-    );
-    this.learningHud.update(this.context, this.highScore);
-
-    _.forEach(this.currentGenerationDead, deadBoat => {
-      deadBoat.brain.dispose();
-    });
-    this.currentGenerationDead = [];
-    this.obstacles = [];
   }
 
   updateGameState() {

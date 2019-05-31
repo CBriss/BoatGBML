@@ -2,6 +2,7 @@ class GeneticAlgorithm {
   constructor(populationSize) {
     this.highScore = 0;
     this.bestBoat;
+    this.bestBoatAge = 0;
     this.currentGenerationDead = [];
     this.populationSize = populationSize;
   }
@@ -12,7 +13,8 @@ class GeneticAlgorithm {
         boats.push(new Boat(context, this.populationSize == 1));
       }
     } else {
-      let parents = this.findSuitableParents(this.currentGenerationDead);
+      this.check_for_new_high_score();
+      let parents = this.findSuitableParents();
       for (var i = 0; i < this.populationSize; i++) {
         let child = this.combineParentGenes(
           parents[0],
@@ -23,6 +25,10 @@ class GeneticAlgorithm {
         boats.push(child);
       }
     }
+    // _.forEach(this.currentGenerationDead, deadBoat => {
+    //   deadBoat.brain.dispose();
+    // });
+    this.currentGenerationDead = [];
     return boats;
   }
 
@@ -30,11 +36,28 @@ class GeneticAlgorithm {
     this.find_high_score();
   }
 
+  check_for_new_high_score() {
+    let highScoreBoat = this.find_high_score();
+    // Note: we do not get rid of past bestBoat brains!!
+    // Small memeroy leak!
+    if (highScoreBoat.score > this.highScore || this.bestBoatAge >= 3) {
+      if (this.bestBoat) {
+        // this.bestBoat.brain.dispose();
+      }
+      this.bestBoat = highScoreBoat;
+      this.highScore = this.bestBoat.score;
+      this.bestBoatAge = 0;
+      this.currentGenerationDead = this.currentGenerationDead.splice(
+        this.currentGenerationDead.indexOf(this.bestBoat, 1)[0]
+      );
+    } else this.bestBoatAge += 1;
+  }
+
   find_high_score() {
-    let winnerBoat;
+    let winnerBoat = this.currentGenerationDead[0];
     for (var i = 0, len = this.currentGenerationDead.length; i < len; i++) {
       let boat = this.currentGenerationDead[i];
-      if (boat.score >= oldHighScore) {
+      if (boat.score >= winnerBoat.score) {
         winnerBoat = boat;
       }
     }
@@ -52,21 +75,20 @@ class GeneticAlgorithm {
         this.currentGenerationDead.length
       )
     );
-
     return [generationBest1, generationBest2];
   }
 
   findBestIndividual(cluster) {
-    let highScore = 0;
-    var generationBest = cluster[0];
+    var clusterBest = cluster[0];
+    let clusterHighScore = clusterBest.score;
     for (var i = 1, len = cluster.length; i < len; i++) {
       let boat = cluster[i];
-      if (boat.score >= highScore) {
-        generationBest = boat;
-        highScore = boat.score;
+      if (boat.score >= clusterHighScore) {
+        clusterBest = boat;
+        clusterHighScore = boat.score;
       }
     }
-    return generationBest;
+    return clusterBest;
   }
 
   sumGenerationFitness() {
@@ -82,14 +104,17 @@ class GeneticAlgorithm {
     let parentB_input_layer = parentB.brain.input_weights.dataSync();
     let parentB_output_layer = parentB.brain.output_weights.dataSync();
 
-    let middle_point = Math.floor(Math.random() * parentA_input_layer.length);
+    let crossoverPoint = Math.floor(
+      Math.random() * parentA_input_layer.length -
+        parentA_input_layer.length / 2
+    );
     let child_in_dna = [
-      ...parentA_input_layer.slice(0, middle_point),
-      ...parentB_input_layer.slice(middle_point, parentB_input_layer.length)
+      ...parentA_input_layer.slice(0, crossoverPoint),
+      ...parentB_input_layer.slice(crossoverPoint, parentB_input_layer.length)
     ];
     let child_out_dna = [
-      ...parentA_output_layer.slice(0, middle_point),
-      ...parentB_output_layer.slice(middle_point, parentB_output_layer.length)
+      ...parentA_output_layer.slice(0, crossoverPoint),
+      ...parentB_output_layer.slice(crossoverPoint, parentB_output_layer.length)
     ];
 
     let input_shape = child.brain.input_weights.shape;

@@ -40,7 +40,8 @@ class GameComponent {
 
     if (
       (this.y >= top && this.y <= bottom) ||
-      (this.endY >= top && this.endY <= bottom)
+      (this.endY >= top && this.endY <= bottom) ||
+      (this.y <= top && this.endY >= bottom)
     ) {
       if (
         (this.x >= left && this.x <= right) ||

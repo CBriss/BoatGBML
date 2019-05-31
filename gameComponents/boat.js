@@ -10,7 +10,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(6, 25, 2);
+    this.brain = new NeuralNetwork(4, 25, 2);
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -61,13 +61,20 @@ class Boat extends GameComponent {
       var nearestObstacle2EndX = 0;
     }
 
+    // var input = [
+    //   this.x / ctx.canvas.width,
+    //   this.endX / ctx.canvas.width,
+    //   obstacle1StartX / ctx.canvas.width,
+    //   nearestObstacle1EndX / ctx.canvas.width,
+    //   obstacle2StartX / ctx.canvas.width,
+    //   nearestObstacle2EndX / ctx.canvas.width
+    // ];
+
     var input = [
       this.x / ctx.canvas.width,
       this.endX / ctx.canvas.width,
-      obstacle1StartX / ctx.canvas.width,
       nearestObstacle1EndX / ctx.canvas.width,
-      obstacle2StartX / ctx.canvas.width,
-      nearestObstacle2EndX / ctx.canvas.width
+      obstacle2StartX / ctx.canvas.width
     ];
 
     let result = this.brain.predict(input);
