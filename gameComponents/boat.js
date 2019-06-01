@@ -1,12 +1,16 @@
 class Boat extends GameComponent {
   constructor(ctx, playerFlag) {
     super();
+
+    let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
+    let randomColor =
+      possibleColors[Math.floor(Math.random() * possibleColors.length)];
     this.setComponentValues(
       100,
       ctx.canvas.height - 150,
       25,
       100,
-      "images/boat.png"
+      "images/boat" + randomColor + ".png"
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);

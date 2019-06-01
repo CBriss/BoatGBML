@@ -23,6 +23,15 @@ class BoatGame {
     this.boats = this.geneticAlgorithm.newGeneration([], this.context);
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.obstacles = [];
+
+    this.interval = setInterval(this.checkForBestBirdOutput.bind(this), 100);
+  }
+
+  checkForBestBirdOutput() {
+    if (this.keys && this.keys[80]) {
+      let jsonData = JSON.stringify(this.geneticAlgorithm.bestBoat.brain);
+      download(jsonData, "json.txt", "text/plain");
+    }
   }
 
   clear() {
@@ -86,7 +95,6 @@ class BoatGame {
         else {
           this.obstacles = [];
           this.geneticAlgorithm.newGeneration(this.boats, this.context);
-          console.log("NEW GENEENENERATION");
           this.distanceTraveled = 0;
           this.hud.update(this.geneticAlgorithm.bestBoat);
         }
@@ -94,6 +102,7 @@ class BoatGame {
       this.updateGameState();
     }
     this.drawGameState();
+    this.checkForBestBirdOutput();
   }
 
   updateGameState() {
