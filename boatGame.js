@@ -24,7 +24,7 @@ class BoatGame {
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.obstacles = [];
 
-    this.interval = setInterval(this.checkForBestBirdOutput.bind(this), 100);
+    this.interval = setInterval(this.checkForBestBirdOutput.bind(this), 500);
   }
 
   checkForBestBirdOutput() {
