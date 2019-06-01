@@ -29,7 +29,12 @@ class BoatGame {
 
   checkForBestBirdOutput() {
     if (this.keys && this.keys[80]) {
-      let jsonData = JSON.stringify(this.geneticAlgorithm.bestBoat.brain);
+      let inputWeights = this.geneticAlgorithm.bestBoat.brain.input_weights;
+      let outputWeights = this.geneticAlgorithm.bestBoat.brain.output_weights;
+      let jsonData = JSON.stringify({
+        inputWeights: inputWeights.toString(),
+        outputWeights: outputWeights.toString()
+      });
       download(jsonData, "json.txt", "text/plain");
     }
   }

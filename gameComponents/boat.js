@@ -155,24 +155,22 @@ class Boat extends GameComponent {
   }
 
   mutate() {
-    function fn(x) {
+    function mutateWeight(weight) {
       if (Math.random(1) < 0.05) {
-        let offset = randn_bm() * 0.5;
-        let newx = x + offset;
-        return newx;
+        return weight + randn_bm() * 0.5;
       }
-      return x;
+      return weight;
     }
 
-    let ih = this.brain.input_weights.dataSync().map(fn);
-    let ih_shape = this.brain.input_weights.shape;
+    let input_weights = this.brain.input_weights.dataSync().map(mutateWeight);
+    let input_shape = this.brain.input_weights.shape;
     this.brain.input_weights.dispose();
-    this.brain.input_weights = tf.tensor(ih, ih_shape);
+    this.brain.input_weights = tf.tensor(input_weights, input_shape);
 
-    let ho = this.brain.output_weights.dataSync().map(fn);
-    let ho_shape = this.brain.output_weights.shape;
+    let output_weights = this.brain.output_weights.dataSync().map(mutateWeight);
+    let output_shape = this.brain.output_weights.shape;
     this.brain.output_weights.dispose();
-    this.brain.output_weights = tf.tensor(ho, ho_shape);
+    this.brain.output_weights = tf.tensor(output_weights, output_shape);
   }
 
   updateSpeed() {
