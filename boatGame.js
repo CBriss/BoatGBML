@@ -86,8 +86,9 @@ class BoatGame {
         else {
           this.obstacles = [];
           this.geneticAlgorithm.newGeneration(this.boats, this.context);
+          console.log("NEW GENEENENERATION");
           this.distanceTraveled = 0;
-          this.hud.update(this.geneticAlgorithm.highScore);
+          this.hud.update(this.geneticAlgorithm.bestBoat);
         }
       }
       this.updateGameState();

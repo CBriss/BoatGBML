@@ -1,6 +1,5 @@
 class GeneticAlgorithm {
   constructor(populationSize) {
-    this.highScore = 0;
     this.bestBoat;
     this.bestBoatAge = 0;
     this.currentGenerationDead = [];
@@ -13,21 +12,21 @@ class GeneticAlgorithm {
         boats.push(new Boat(context, this.populationSize == 1));
       }
     } else {
-      this.check_for_new_high_score();
+      this.updateBestBoat();
       let parents = this.findSuitableParents();
       for (var i = 0; i < this.populationSize; i++) {
         let child = this.combineParentGenes(
-          parents[0],
-          this.bestBoat || parents[1],
+          this.bestBoat || parents[0],
+          parents[1],
           new Boat(context, this.populationSize == 1)
         );
         child.mutate();
         boats.push(child);
       }
     }
-    // _.forEach(this.currentGenerationDead, deadBoat => {
-    //   deadBoat.brain.dispose();
-    // });
+    _.forEach(this.currentGenerationDead, deadBoat => {
+      deadBoat.brain.dispose();
+    });
     this.currentGenerationDead = [];
     return boats;
   }
@@ -36,24 +35,34 @@ class GeneticAlgorithm {
     this.find_high_score();
   }
 
-  check_for_new_high_score() {
-    let highScoreBoat = this.find_high_score();
-    // Note: we do not get rid of past bestBoat brains!!
-    // Small memeroy leak!
-    if (highScoreBoat.score > this.highScore || this.bestBoatAge >= 3) {
-      if (this.bestBoat) {
-        // this.bestBoat.brain.dispose();
+  updateBestBoat() {
+    let currentGenBest = this.currentGenerationBestBoat();
+    if (this.bestBoat) {
+      if (
+        currentGenBest.score > this.bestBoat.highScore ||
+        this.bestBoatAge >= 3
+      ) {
+        this.bestBoat.brain.dispose();
+        this.bestBoat = currentGenBest;
+        this.bestBoatAge = 0;
+        this.currentGenerationDead.splice(
+          this.currentGenerationDead.indexOf(this.bestBoat),
+          1
+        );
+      } else {
+        this.bestBoatAge += 1;
       }
-      this.bestBoat = highScoreBoat;
-      this.highScore = this.bestBoat.score;
+    } else {
+      this.bestBoat = currentGenBest;
       this.bestBoatAge = 0;
-      this.currentGenerationDead = this.currentGenerationDead.splice(
-        this.currentGenerationDead.indexOf(this.bestBoat, 1)[0]
+      this.currentGenerationDead.splice(
+        this.currentGenerationDead.indexOf(this.bestBoat),
+        1
       );
-    } else this.bestBoatAge += 1;
+    }
   }
 
-  find_high_score() {
+  currentGenerationBestBoat() {
     let winnerBoat = this.currentGenerationDead[0];
     for (var i = 0, len = this.currentGenerationDead.length; i < len; i++) {
       let boat = this.currentGenerationDead[i];

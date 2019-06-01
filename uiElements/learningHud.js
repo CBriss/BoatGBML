@@ -6,10 +6,14 @@ class LearningHud {
 
     this.highestScoreX = 50;
     this.highestScoreY = 50;
-    this.highestScore = 0;
+    this.bestBoat;
 
     this.bestScoreGenerationX = 50;
     this.bestScoreGenerationY = 75;
+    this.bestScoreGeneration = 0;
+
+    this.boatAgeX = 300;
+    this.boatAgeY = 75;
     this.bestScoreGeneration = 0;
   }
 
@@ -21,9 +25,10 @@ class LearningHud {
       this.generationCountY
     );
 
+    let bestBoatScore = this.bestBoat ? this.bestBoat.score : 0;
     ctx.font = "20px Arial";
     ctx.fillText(
-      "All time high score: " + this.highestScore,
+      "Current Best Boat: " + bestBoatScore,
       this.highestScoreX,
       this.highestScoreY
     );
@@ -34,13 +39,21 @@ class LearningHud {
       this.bestScoreGenerationX,
       this.bestScoreGenerationY
     );
+
+    ctx.font = "20px Arial";
+    ctx.fillText(
+      "Best Boat Age " +
+        Math.min(this.generationCount + 1 - this.bestScoreGeneration, 1),
+      this.boatAgeX,
+      this.boatAgeY
+    );
   }
 
-  update(highScore) {
+  update(bestBoat) {
     this.generationCount += 1;
-    if (this.highestScore < highScore) {
-      this.highestScore = highScore;
+    if (this.bestBoat != bestBoat) {
       this.bestScoreGeneration = this.generationCount;
+      this.bestBoat = bestBoat;
     }
   }
 }

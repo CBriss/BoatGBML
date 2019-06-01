@@ -10,7 +10,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(4, 25, 2);
+    this.brain = new NeuralNetwork(4, 5, 2);
 
     this.score = 0;
     this.distanceTraveled = 0;
