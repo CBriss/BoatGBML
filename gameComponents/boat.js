@@ -144,8 +144,8 @@ class Boat extends GameComponent {
     let nearestDistance = 10000000;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      let distance = this.y - obstacle.y;
-      if (distance > -100 && distance < nearestDistance) {
+      let distance = this.endY - obstacle.y;
+      if (distance >= 0 && distance < nearestDistance) {
         nearestObstacle1 = obstacle;
         nearestObstacle2 = obstacles[i + 1];
         i++;
