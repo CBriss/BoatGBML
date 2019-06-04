@@ -146,8 +146,8 @@ class Boat extends GameComponent {
       let obstacle = obstacles[i];
       let distance = this.endY - obstacle.y;
       if (distance >= 0 && distance < nearestDistance) {
+        nearestObstacle2 = nearestObstacle1 || obstacles[i + 1];
         nearestObstacle1 = obstacle;
-        nearestObstacle2 = obstacles[i + 1];
         i++;
       }
     }
