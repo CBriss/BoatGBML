@@ -14,7 +14,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(4, 20, 2);
+    this.brain = new NeuralNetwork(6, 50, 4);
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -32,67 +32,69 @@ class Boat extends GameComponent {
 
   think(ctx, obstacles) {
     // | Inputs |
-    let buffer = 10;
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     if (nearestObstacles.length > 1) {
-      let nearestObstacle1 = nearestObstacles[0];
-      let nearestObstacle2 = nearestObstacles[1];
-
-      var obstacle1StartX = nearestObstacle1 ? nearestObstacle1.x + buffer : 0;
-      var nearestObstacle1EndX = nearestObstacle1
-        ? nearestObstacle1.endX - buffer
-        : 0;
-
-      var obstacle2StartX = nearestObstacle2 ? nearestObstacle2.x + buffer : 0;
-      var nearestObstacle2EndX = nearestObstacle2
-        ? nearestObstacle2.endX - buffer
-        : 0;
+      if (nearestObstacles[0].x < nearestObstacles[1].x) {
+        var nearestObstacle1 = nearestObstacles[0];
+        var nearestObstacle2 = nearestObstacles[1];
+      } else {
+        var nearestObstacle2 = nearestObstacles[0];
+        var nearestObstacle1 = nearestObstacles[1];
+      }
+      var gapLeft = nearestObstacle1.endX;
+      var gapRight = nearestObstacle2.x;
+      var gapYPos = nearestObstacle1.endY;
     } else if (nearestObstacles.length > 0) {
       let nearestObstacle1 = nearestObstacles[0];
-
-      var obstacle1StartX = nearestObstacle1 ? nearestObstacle1.x + buffer : 0;
-      var nearestObstacle1EndX = nearestObstacle1
-        ? nearestObstacle1.endX - buffer
-        : 0;
-
-      var obstacle2StartX = 0;
-      var nearestObstacle2EndX = 0;
+      var gapLeft = nearestObstacle1.endX;
+      var gapRight = 0;
+      var gapYPos = nearestObstacle1.endY;
     } else {
-      var obstacle1StartX = 0;
-      var nearestObstacle1EndX = 0;
-
-      var obstacle2StartX = 0;
-      var nearestObstacle2EndX = 0;
+      var gapLeft = 0;
+      var gapRight = 0;
+      var gapYPos = 0;
     }
-
-    // var input = [
-    //   this.x / ctx.canvas.width,
-    //   this.endX / ctx.canvas.width,
-    //   obstacle1StartX / ctx.canvas.width,
-    //   nearestObstacle1EndX / ctx.canvas.width,
-    //   obstacle2StartX / ctx.canvas.width,
-    //   nearestObstacle2EndX / ctx.canvas.width
-    // ];
 
     var input = [
       this.x / ctx.canvas.width,
       this.endX / ctx.canvas.width,
-      nearestObstacle1EndX / ctx.canvas.width,
-      obstacle2StartX / ctx.canvas.width
+      gapLeft / ctx.canvas.width,
+      gapRight / ctx.canvas.width,
+      this.y / ctx.canvas.height,
+      gapYPos / ctx.canvas.height
     ];
 
     let result = this.brain.predict(input);
     let left = result[0];
     let right = result[1];
-    // let up = result[2];
-    // let down = result[3];
+    let up = result[2];
+    let down = result[3];
 
     var keys = [];
-    if (left > 0.5) keys[37] = true;
-    if (right > 0.5) keys[39] = true;
 
-    // if (up > 0.5) keys[38] = true;
-    // if (down > 0.5) keys[40] = true;
+    // let highestResult = Math.max.apply(null, result);
+    // switch (highestResult) {
+    //   case left:
+    //     keys[37] = true;
+    //     break;
+    //   case right:
+    //     keys[39] = true;
+    //     break;
+    //   case up:
+    //     keys[38] = true;
+    //     break;
+    //   case down:
+    //     keys[40] = true;
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    if (left > right) keys[37] = true;
+    else keys[39] = true;
+
+    if (up > down) keys[38] = true;
+    else keys[40] = true;
 
     return keys;
   }
@@ -139,8 +141,8 @@ class Boat extends GameComponent {
 
   find_nearest_obstacles(obstacles) {
     if (obstacles.length <= 0) return [];
-    let nearestObstacle1;
-    let nearestObstacle2;
+    let nearestObstacle1 = null;
+    let nearestObstacle2 = null;
     let nearestDistance = 10000000;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
@@ -151,7 +153,9 @@ class Boat extends GameComponent {
         i++;
       }
     }
-    return [nearestObstacle1, nearestObstacle2];
+    if (nearestObstacle2) return [nearestObstacle1, nearestObstacle2];
+    else if (nearestObstacle1) return [nearestObstacle1];
+    else return [];
   }
 
   mutate() {
