@@ -58,9 +58,9 @@ class Boat extends GameComponent {
     var input = [
       this.x / ctx.canvas.width,
       this.endX / ctx.canvas.width,
+      this.y / ctx.canvas.height,
       gapLeft / ctx.canvas.width,
       gapRight / ctx.canvas.width,
-      this.y / ctx.canvas.height,
       gapYPos / ctx.canvas.height
     ];
 
@@ -72,29 +72,29 @@ class Boat extends GameComponent {
 
     var keys = [];
 
-    // let highestResult = Math.max.apply(null, result);
-    // switch (highestResult) {
-    //   case left:
-    //     keys[37] = true;
-    //     break;
-    //   case right:
-    //     keys[39] = true;
-    //     break;
-    //   case up:
-    //     keys[38] = true;
-    //     break;
-    //   case down:
-    //     keys[40] = true;
-    //     break;
-    //   default:
-    //     break;
-    // }
+    let highestResult = Math.max.apply(null, result);
+    switch (highestResult) {
+      case left:
+        keys[37] = true;
+        break;
+      case right:
+        keys[39] = true;
+        break;
+      case up:
+        keys[38] = true;
+        break;
+      case down:
+        keys[40] = true;
+        break;
+      default:
+        break;
+    }
 
-    if (left > right) keys[37] = true;
-    else keys[39] = true;
+    // if (left > right) keys[37] = true;
+    // else keys[39] = true;
 
-    if (up > down) keys[38] = true;
-    else keys[40] = true;
+    // if (up > down) keys[38] = true;
+    // else keys[40] = true;
 
     return keys;
   }
