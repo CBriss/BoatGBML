@@ -115,7 +115,7 @@ class GeneticAlgorithm {
 
     let crossoverPoint = Math.floor(
       Math.random() * parentA_input_layer.length -
-        parentA_input_layer.length / 3
+        parentA_input_layer.length / 2
     );
     let child_in_dna = [
       ...parentA_input_layer.slice(0, crossoverPoint),
