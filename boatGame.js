@@ -23,20 +23,6 @@ class BoatGame {
     this.boats = this.geneticAlgorithm.newGeneration([], this.context);
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.obstacles = [];
-
-    this.interval = setInterval(this.checkForBestBirdOutput.bind(this), 500);
-  }
-
-  checkForBestBirdOutput() {
-    if (this.keys && this.keys[80]) {
-      let inputWeights = this.geneticAlgorithm.bestBoat.brain.input_weights;
-      let outputWeights = this.geneticAlgorithm.bestBoat.brain.output_weights;
-      let jsonData = JSON.stringify({
-        inputWeights: inputWeights.toString(),
-        outputWeights: outputWeights.toString()
-      });
-      download(jsonData, "json.txt", "text/plain");
-    }
   }
 
   clear() {
@@ -88,26 +74,9 @@ class BoatGame {
       this.insertObstacles();
       this.updateObstacles();
       this.updateBoats();
-      if (this.hud.valueOf().timeLeft)
-        this.hud.update(
-          this.timeLeft,
-          this.distanceTraveled,
-          this.boats[0] ? this.boats[0].score : 0,
-          this.gameSpeed
-        );
-      if (this.boats.length <= 0) {
-        if (this.playerFlag) this.stop();
-        else {
-          this.obstacles = [];
-          this.geneticAlgorithm.newGeneration(this.boats, this.context);
-          this.distanceTraveled = 0;
-          this.hud.update(this.geneticAlgorithm.bestBoat);
-        }
-      }
       this.updateGameState();
     }
     this.drawGameState();
-    this.checkForBestBirdOutput();
   }
 
   updateGameState() {
@@ -115,6 +84,22 @@ class BoatGame {
     this.frameCount += 1;
     this.timeLeft = 1500 - this.frameCount;
     this.distanceTraveled += Math.ceil(this.gameSpeed / 10);
+    if (this.hud.valueOf().timeLeft)
+      this.hud.update(
+        this.timeLeft,
+        this.distanceTraveled,
+        this.boats[0] ? this.boats[0].score : 0,
+        this.gameSpeed
+      );
+    if (this.boats.length <= 0) {
+      if (this.playerFlag) this.stop();
+      else {
+        this.obstacles = [];
+        this.geneticAlgorithm.newGeneration(this.boats, this.context);
+        this.distanceTraveled = 0;
+        this.hud.update(this.geneticAlgorithm.bestBoat);
+      }
+    }
   }
 
   updateBoats() {
