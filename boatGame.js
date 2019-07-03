@@ -18,7 +18,7 @@ class BoatGame {
     this.gameSpeed = 50;
 
     // Game Pieces
-    this.boatCount = this.playerFlag ? 1 : 30;
+    this.boatCount = this.playerFlag ? 1 : 25;
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount);
     this.boats = this.geneticAlgorithm.newGeneration([], this.context);
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
@@ -69,7 +69,7 @@ class BoatGame {
 
   update() {
     console.log("new frame");
-    this.updateSpeedMode();
+    // this.updateSpeedMode();
     for (let i = 0; i < this.speedMode; i++) {
       this.insertObstacles();
       this.updateObstacles();

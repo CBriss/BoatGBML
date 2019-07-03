@@ -18,6 +18,7 @@ class NeuralNetwork {
       let input_layer = tf.tensor(user_input, [1, this.input_nodes]);
       let hidden_layer = input_layer.matMul(this.input_weights).logSigmoid();
       let output_layer = hidden_layer.matMul(this.output_weights).logSigmoid();
+      // output = output_layer.softmax().dataSync();
       output = output_layer.softmax().dataSync();
     });
     return output;

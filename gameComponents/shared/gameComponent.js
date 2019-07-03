@@ -72,7 +72,7 @@ class GameComponent {
       while (
         i >= 0 &&
         sortedArray[i].endY >= canvasMidPoint &&
-        sortedArray[i].endY <= this.endY
+        sortedArray[i].y <= this.endY
       ) {
         if (this.hasCollsion(sortedArray[i])) return sortedArray[i];
         i--;

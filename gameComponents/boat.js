@@ -14,7 +14,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(6, 50, 4);
+    this.brain = new NeuralNetwork(6, 25, 4);
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -73,6 +73,7 @@ class Boat extends GameComponent {
     var keys = [];
 
     let highestResult = Math.max.apply(null, result);
+
     switch (highestResult) {
       case left:
         keys[37] = true;
