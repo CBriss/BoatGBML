@@ -14,7 +14,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(6, 25, 4);
+    this.brain = new NeuralNetwork(5, 50, 4);
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -58,10 +58,9 @@ class Boat extends GameComponent {
     var input = [
       this.x / ctx.canvas.width,
       this.endX / ctx.canvas.width,
-      this.y / ctx.canvas.height,
       gapLeft / ctx.canvas.width,
       gapRight / ctx.canvas.width,
-      gapYPos / ctx.canvas.height
+      (gapYPos - this.y)/ctx.canvas.height
     ];
 
     let result = this.brain.predict(input);
