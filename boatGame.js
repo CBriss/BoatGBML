@@ -1,5 +1,5 @@
 class BoatGame {
-  constructor(playerFlag) {
+  constructor(playerFlag, mode) {
     // Game Setup
     this.context = drawCanvas();
     this.canvas = this.context.canvas;
@@ -16,10 +16,11 @@ class BoatGame {
     this.frameCount = 0;
     this.distanceTraveled = 0;
     this.gameSpeed = 50;
+    this.mode = mode
 
     // Game Pieces
     this.boatCount = this.playerFlag ? 1 : 25;
-    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount);
+    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
     this.boats = this.geneticAlgorithm.newGeneration([], this.context);
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.obstacles = [];
@@ -56,6 +57,7 @@ class BoatGame {
     window.addEventListener("keydown", e => {
       this.keys = this.keys || [];
       this.keys[e.keyCode] = true;
+      if(this.keys[80]) this.handlePausing();
     });
     window.addEventListener("keyup", e => {
       this.keys[e.keyCode] = false;
@@ -105,12 +107,13 @@ class BoatGame {
   updateBoats() {
     for (var i = 0; i < this.boats.length; i++) {
       let boat = this.boats[i];
+      let yAxisMovement = (this.mode == 'hard')
       boat.update(
         this.context,
         this.keys,
         this.obstacles,
         this.distanceTraveled,
-        this.timeLeft
+        yAxisMovement
       );
 
       if (boat.hasCollsionStortedArray(this.obstacles, this.canvasMidPoint)) {
@@ -144,6 +147,16 @@ class BoatGame {
       if (this.speedMode < 1) {
         this.speedMode = 1;
       }
+    }
+  }
+
+  handlePausing() {
+    if(this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    else {
+      this.interval = setInterval(this.update.bind(this), 16);
     }
   }
 }

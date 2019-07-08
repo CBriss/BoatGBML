@@ -1,15 +1,21 @@
 class NeuralNetwork {
-  constructor(input_nodes, hidden_nodes, output_nodes) {
+  constructor(input_nodes, hidden_nodes, output_nodes, preset_weights) {
     this.input_nodes = input_nodes;
     this.hidden_nodes = hidden_nodes;
     this.output_nodes = output_nodes;
 
     //Initialize Random Weights
-    this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
-    this.output_weights = tf.randomNormal([
-      this.hidden_nodes,
-      this.output_nodes
+    if(preset_weights){
+      this.input_weights = preset_weights[0]
+      this.input_weights = preset_weights[1]
+    }
+    else{
+      this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
+      this.output_weights = tf.randomNormal([
+        this.hidden_nodes,
+        this.output_nodes
     ]);
+    }
   }
 
   predict(user_input) {

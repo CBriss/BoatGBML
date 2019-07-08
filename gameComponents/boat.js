@@ -1,6 +1,7 @@
 class Boat extends GameComponent {
-  constructor(ctx, playerFlag) {
+  constructor(ctx, playerFlag, yAxisMovement) {
     super();
+    console.log(yAxisMovement);
 
     let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
     let randomColor =
@@ -14,7 +15,7 @@ class Boat extends GameComponent {
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork(5, 50, 4);
+    this.brain = new NeuralNetwork((yAxisMovement ? 5 : 4), 50, (yAxisMovement ? 4 : 2));
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -30,49 +31,27 @@ class Boat extends GameComponent {
     if (this.hud) this.hud.show(ctx);
   }
 
-  think(ctx, obstacles) {
-    // | Inputs |
+  think(ctx, obstacles, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
-    if (nearestObstacles.length > 1) {
-      if (nearestObstacles[0].x < nearestObstacles[1].x) {
-        var nearestObstacle1 = nearestObstacles[0];
-        var nearestObstacle2 = nearestObstacles[1];
-      } else {
-        var nearestObstacle2 = nearestObstacles[0];
-        var nearestObstacle1 = nearestObstacles[1];
-      }
-      var gapLeft = nearestObstacle1.endX;
-      var gapRight = nearestObstacle2.x;
-      var gapYPos = nearestObstacle1.endY;
-    } else if (nearestObstacles.length > 0) {
-      let nearestObstacle1 = nearestObstacles[0];
-      var gapLeft = nearestObstacle1.endX;
-      var gapRight = 0;
-      var gapYPos = nearestObstacle1.endY;
-    } else {
-      var gapLeft = 0;
-      var gapRight = 0;
-      var gapYPos = 0;
-    }
-
+    let {gapLeft, gapRight, gapYPos} = findObstacleGap(nearestObstacles)
     var input = [
       this.x / ctx.canvas.width,
       this.endX / ctx.canvas.width,
       gapLeft / ctx.canvas.width,
-      gapRight / ctx.canvas.width,
-      (gapYPos - this.y)/ctx.canvas.height
+      gapRight / ctx.canvas.width
     ];
-
+    if(yAxisMovement) {
+      input.push((gapYPos - this.y)/ctx.canvas.height);
+    }
     let result = this.brain.predict(input);
     let left = result[0];
     let right = result[1];
-    let up = result[2];
-    let down = result[3];
-
+    if(yAxisMovement) {
+      var up = result[2];
+      var down = result[3];
+    }
     var keys = [];
-
     let highestResult = Math.max.apply(null, result);
-
     switch (highestResult) {
       case left:
         keys[37] = true;
@@ -90,17 +69,11 @@ class Boat extends GameComponent {
         break;
     }
 
-    // if (left > right) keys[37] = true;
-    // else keys[39] = true;
-
-    // if (up > down) keys[38] = true;
-    // else keys[40] = true;
-
     return keys;
   }
 
-  update(ctx, keys, obstacles, newDistanceTraveled, timeLeft, boatSpeed) {
-    if (!this.player) keys = this.think(ctx, obstacles);
+  update(ctx, keys, obstacles, newDistanceTraveled, yAxisMovement) {
+    if (!this.player) keys = this.think(ctx, obstacles, yAxisMovement);
     let newX = this.moveToNewX(keys, ctx);
     let newY = this.moveToNewY(keys, ctx);
     super.update(newX, newY);
