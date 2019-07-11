@@ -14,7 +14,7 @@ class LearningHud {
 
     this.boatAgeX = 300;
     this.boatAgeY = 75;
-    this.bestScoreGeneration = 0;
+    this.bestScoreGeneration = 1;
   }
 
   show(ctx) {
@@ -43,7 +43,7 @@ class LearningHud {
     ctx.font = "20px Arial";
     ctx.fillText(
       "Best Boat Age " +
-        Math.min(this.generationCount + 1 - this.bestScoreGeneration, 1),
+        (this.generationCount - this.bestScoreGeneration),
       this.boatAgeX,
       this.boatAgeY
     );
@@ -52,7 +52,7 @@ class LearningHud {
   update(bestBoat) {
     this.generationCount += 1;
     if (this.bestBoat != bestBoat) {
-      this.bestScoreGeneration = this.generationCount;
+      this.bestScoreGeneration = this.generationCount -1;
       this.bestBoat = bestBoat;
     }
   }

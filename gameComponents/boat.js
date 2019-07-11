@@ -1,21 +1,23 @@
 class Boat extends GameComponent {
-  constructor(ctx, playerFlag, yAxisMovement) {
+  constructor(ctx, playerFlag, yAxisMovement, seed_weights=null) {
     super();
-    console.log(yAxisMovement);
 
     let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
     let randomColor =
       possibleColors[Math.floor(Math.random() * possibleColors.length)];
     this.setComponentValues(
-      100,
-      ctx.canvas.height - 150,
+      Math.random() * (ctx.canvas.width - 25),
+      Math.random() * (ctx.canvas.height - 125),
       25,
       100,
       "images/boat" + randomColor + ".png"
     );
 
     this.person = new Person(ctx, this.x + this.width / 2, this.y);
-    this.brain = new NeuralNetwork((yAxisMovement ? 5 : 4), 50, (yAxisMovement ? 4 : 2));
+    if(yAxisMovement)
+      this.brain = new NeuralNetwork(5, 50, 4, seed_weights);
+    else 
+      this.brain = new NeuralNetwork(4, 5, 2, seed_weights);
 
     this.score = 0;
     this.distanceTraveled = 0;
@@ -41,7 +43,7 @@ class Boat extends GameComponent {
       gapRight / ctx.canvas.width
     ];
     if(yAxisMovement) {
-      input.push((gapYPos - this.y)/ctx.canvas.height);
+      input.push((this.y - gapYPos)/ctx.canvas.height);
     }
     let result = this.brain.predict(input);
     let left = result[0];
@@ -131,9 +133,14 @@ class Boat extends GameComponent {
     else return [];
   }
 
-  mutate() {
+  mutate(goalPercentage) {
     function mutateWeight(weight) {
-      if (Math.random(1) < 0.05) {
+      // if (Math.random(1) < 0.05) {
+      //   console.log("mutate");
+      //   return weight + randn_bm() * 0.5;
+      // }
+      // return weight;
+      if (Math.random(1) < (0.10 * (1-goalPercentage))) {
         return weight + randn_bm() * 0.5;
       }
       return weight;

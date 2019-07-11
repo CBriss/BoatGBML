@@ -5,12 +5,13 @@ class GeneticAlgorithm {
     this.currentGenerationDead = [];
     this.populationSize = populationSize;
     this.mode = mode;
+    this.goalScore = 5000;
   }
 
-  newGeneration(boats, context) {
+  newGeneration(boats, context, seed_weights=null) {
     if (this.currentGenerationDead.length == 0) {
       for (var i = 0; i < this.populationSize; i++) {
-        boats.push(new Boat(context, this.populationSize == 1, this.mode == 'hard'));
+        boats.push(new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights));
       }
     } else {
       this.updateBestBoat();
@@ -19,9 +20,9 @@ class GeneticAlgorithm {
         let child = this.combineParentGenes(
           this.bestBoat || parents[0],
           parents[1],
-          new Boat(context, this.populationSize == 1, this.mode == 'hard')
+          new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights)
         );
-        child.mutate();
+        child.mutate(this.bestBoat.score * 0.0/this.goalScore);
         boats.push(child);
       }
     }

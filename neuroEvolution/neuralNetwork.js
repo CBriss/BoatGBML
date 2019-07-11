@@ -6,8 +6,8 @@ class NeuralNetwork {
 
     //Initialize Random Weights
     if(preset_weights){
-      this.input_weights = preset_weights[0]
-      this.input_weights = preset_weights[1]
+      this.input_weights = tf.tensor(preset_weights[0]);
+      this.output_weights = tf.tensor(preset_weights[1]);
     }
     else{
       this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);

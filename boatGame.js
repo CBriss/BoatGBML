@@ -1,5 +1,5 @@
 class BoatGame {
-  constructor(playerFlag, mode) {
+  constructor(playerFlag, mode, seed_weights=null) {
     // Game Setup
     this.context = drawCanvas();
     this.canvas = this.context.canvas;
@@ -21,7 +21,7 @@ class BoatGame {
     // Game Pieces
     this.boatCount = this.playerFlag ? 1 : 25;
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
-    this.boats = this.geneticAlgorithm.newGeneration([], this.context);
+    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_weights);
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.obstacles = [];
   }
@@ -86,7 +86,7 @@ class BoatGame {
     this.frameCount += 1;
     this.timeLeft = 1500 - this.frameCount;
     this.distanceTraveled += Math.ceil(this.gameSpeed / 10);
-    if (this.hud.valueOf().timeLeft)
+    if (this.playerFlag)
       this.hud.update(
         this.timeLeft,
         this.distanceTraveled,
