@@ -1,7 +1,6 @@
 class Person extends GameComponent {
   constructor(ctx, ropeStartX, ropeStartY) {
-    super();
-    this.setComponentValues(
+    super(
       ropeStartX,
       ropeStartY + 150,
       20,

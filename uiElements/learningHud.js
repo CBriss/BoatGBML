@@ -18,29 +18,27 @@ class LearningHud {
   }
 
   show(ctx) {
+    let bestBoatScore = this.bestBoat ? this.bestBoat.score : 0;
     ctx.font = "20px Arial";
+    
     ctx.fillText(
       "Generation " + this.generationCount,
       this.generationCountX,
       this.generationCountY
     );
 
-    let bestBoatScore = this.bestBoat ? this.bestBoat.score : 0;
-    ctx.font = "20px Arial";
     ctx.fillText(
       "Current Best Boat: " + bestBoatScore,
       this.highestScoreX,
       this.highestScoreY
     );
 
-    ctx.font = "20px Arial";
     ctx.fillText(
       "From Generation " + this.bestScoreGeneration,
       this.bestScoreGenerationX,
       this.bestScoreGenerationY
     );
 
-    ctx.font = "20px Arial";
     ctx.fillText(
       "Best Boat Age " +
         (this.generationCount - this.bestScoreGeneration),

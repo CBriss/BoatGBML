@@ -1,5 +1,6 @@
 class BoatGame {
-  constructor(playerFlag, mode, boatCount = 1, seed_weights=null) {
+  constructor(playerFlag, mode, seed_weights=null) {
+    
     /* Setup Variables */
     
     // Canvas Rendering
@@ -12,7 +13,7 @@ class BoatGame {
     this.backgroundSprite.src = "images/background.png";
 
     // Game Pieces
-    this.boatCount = boatCount;
+    this.boatCount = playerFlag ? 1 : 25;
     this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_weights);
     this.obstacles = [];
 
@@ -30,11 +31,7 @@ class BoatGame {
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
   }
 
-   /* Base Functions */
-
-  clear() {
-    this.context.clearRect(0, 0, canvas.width, canvas.height);
-  }
+  /* Base Functions */
 
   stop() {
     clearInterval(this.interval);
@@ -44,10 +41,8 @@ class BoatGame {
   update() {
     for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
     this.drawGameState();
-
-    if(this.keys[80])
-      this.handlePausing();
   }
+
 
    /* Frame Processing */
 
@@ -66,18 +61,6 @@ class BoatGame {
       this.obstacles.push(
         new Obstacle(this.canvas.width, "Right", leftObstacle.endX, gap)
       );
-    }
-  }
-
-  updateObstacles() {
-    for (var i = 0; i < this.obstacles.length; i++) {
-      var obstacle = this.obstacles[i];
-      obstacle.update(this.gameSpeed);
-      if (obstacle.y > this.canvas.height) {
-        this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
-        i--;
-      }
-      this.obstacles.sort((a, b) => parseFloat(a.y) - parseFloat(b.y));
     }
   }
 
@@ -116,7 +99,7 @@ class BoatGame {
         yAxisMovement
       );
 
-      if (boat.hasCollsionStortedArray(this.obstacles, this.canvasMidPoint)) {
+      if (boat.hasCollsionWith(this.obstacles, this.canvasMidPoint)) {
         let index = this.boats.indexOf(boat);
         this.boats.splice(index, 1)[0];
         this.geneticAlgorithm.currentGenerationDead.push(boat);
@@ -124,19 +107,43 @@ class BoatGame {
     }
   }
 
+  updateObstacles() {
+    // Note: Cannot do a foreach here
+    // Since I am splicing the array in the loop
+    for (var i = 0; i < this.obstacles.length; i++) {
+      let obstacle = this.obstacles[i];
+      obstacle.update(this.gameSpeed);
+      if (obstacle.y > this.canvas.height) {
+        this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
+        i--;
+      }
+    }
+    this.obstacles.sort((a, b) => parseFloat(a.y) - parseFloat(b.y));
+  }
+
+
   /* Drawing */
+
+  clear() {
+    this.context.clearRect(0, 0, canvas.width, canvas.height);
+  }
 
   drawGameState() {
     this.clear();
-    this.context.drawImage(this.backgroundSprite, 0, 0, 540, 1800);
-    this.hud.show(this.context);
-    _.forEach(this.boats, boat => {
-      boat.show(this.context);
-    });
-    _.forEach(this.obstacles, obstacle => {
-      obstacle.show(this.context);
-    });
+    this.context.drawImage(this.backgroundSprite, 0, 0, canvasWidth, canvasHeight);
+    this.hud.show(this.context)
+    this.drawBoats();
+    this.drawObstacles();
   }
+
+  drawBoats() {
+    _.forEach(this.boats, boat => { boat.show(this.context); });
+  }
+
+  drawObstacles() {
+    _.forEach(this.obstacles, obstacle => { obstacle.show(this.context); });
+  }
+
 
   /* Game Input */
 
@@ -147,20 +154,9 @@ class BoatGame {
     window.addEventListener("keyup", e => {
       this.keys[e.keyCode] = false;
     });
-  }
 
-  updateSpeedMode() {
-    if (this.keys && this.keys[187]) {
-      this.speedMode += 2;
-      if (this.speedMode > 200) {
-        this.speedMode = 200;
-      }
-    } else if (this.keys && this.keys[189]) {
-      this.speedMode -= 2;
-      if (this.speedMode < 1) {
-        this.speedMode = 1;
-      }
-    }
+    // Pause needs to be tracked outside of game loop
+    if(this.keys[80]) this.handlePausing();
   }
 
   handlePausing() {

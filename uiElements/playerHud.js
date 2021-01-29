@@ -22,21 +22,18 @@ class PlayerHud {
     ctx.font = "20px Arial";
     ctx.fillText("Score: " + this.scoreValue, this.scoreX, this.scoreY);
 
-    ctx.font = "20px Arial";
     ctx.fillText(
       "Distance Traveled: " + this.distanceValue,
       this.distanceX,
       this.distanceY
     );
 
-    ctx.font = "20px Arial";
     ctx.fillText(
       "Boat Speed: " + this.boatSpeedValue,
       this.boatSpeedX,
       this.boatSpeedY
     );
 
-    ctx.font = "20px Arial";
     ctx.fillText(
       "Time Left: " + Math.ceil(this.timeLeft / 60),
       this.timeLeftX,
