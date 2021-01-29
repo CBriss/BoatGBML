@@ -1,6 +1,8 @@
 class BoatGame {
-  constructor(playerFlag, mode, seed_weights=null) {
-    // Game Setup
+  constructor(playerFlag, mode, boatCount = 1, seed_weights=null) {
+    /* Setup Variables */
+    
+    // Canvas Rendering
     this.context = drawCanvas();
     this.canvas = this.context.canvas;
     this.canvasHeight = this.canvas.height;
@@ -8,38 +10,52 @@ class BoatGame {
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
     this.backgroundSprite.src = "images/background.png";
-    this.keys = [];
-    this.setUpKeyTracking();
+
+    // Game Pieces
+    this.boatCount = boatCount;
+    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_weights);
+    this.obstacles = [];
+
+    // Gameplay
     this.timeLeft = 1500;
-    this.playerFlag = playerFlag;
     this.speedMode = 1;
     this.frameCount = 0;
     this.distanceTraveled = 0;
     this.gameSpeed = 50;
+    this.playerFlag = playerFlag;
     this.mode = mode
-
-    // Game Pieces
-    this.boatCount = this.playerFlag ? 1 : 25;
-    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
-    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_weights);
+    this.keys = [];
+    this.setUpKeyTracking();
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
-    this.obstacles = [];
+    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
   }
+
+   /* Base Functions */
 
   clear() {
     this.context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  drawGameState() {
-    this.clear();
-    this.context.drawImage(this.backgroundSprite, 0, 0, 540, 1800);
-    this.hud.show(this.context);
-    _.forEach(this.boats, boat => {
-      boat.show(this.context);
-    });
-    _.forEach(this.obstacles, obstacle => {
-      obstacle.show(this.context);
-    });
+  stop() {
+    clearInterval(this.interval);
+    showMenu();
+  }
+
+  update() {
+    for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
+    this.drawGameState();
+
+    if(this.keys[80])
+      this.handlePausing();
+  }
+
+   /* Frame Processing */
+
+  processFrame() {
+    this.insertObstacles();
+    this.updateObstacles();
+    this.updateBoats();
+    this.updateGameState();
   }
 
   insertObstacles() {
@@ -53,32 +69,16 @@ class BoatGame {
     }
   }
 
-  setUpKeyTracking() {
-    window.addEventListener("keydown", e => {
-      this.keys = this.keys || [];
-      this.keys[e.keyCode] = true;
-      if(this.keys[80]) this.handlePausing();
-    });
-    window.addEventListener("keyup", e => {
-      this.keys[e.keyCode] = false;
-    });
-  }
-
-  stop() {
-    clearInterval(this.interval);
-    showMenu();
-  }
-
-  update() {
-    console.log("new frame");
-    // this.updateSpeedMode();
-    for (let i = 0; i < this.speedMode; i++) {
-      this.insertObstacles();
-      this.updateObstacles();
-      this.updateBoats();
-      this.updateGameState();
+  updateObstacles() {
+    for (var i = 0; i < this.obstacles.length; i++) {
+      var obstacle = this.obstacles[i];
+      obstacle.update(this.gameSpeed);
+      if (obstacle.y > this.canvas.height) {
+        this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
+        i--;
+      }
+      this.obstacles.sort((a, b) => parseFloat(a.y) - parseFloat(b.y));
     }
-    this.drawGameState();
   }
 
   updateGameState() {
@@ -124,16 +124,29 @@ class BoatGame {
     }
   }
 
-  updateObstacles() {
-    for (var i = 0; i < this.obstacles.length; i++) {
-      var obstacle = this.obstacles[i];
-      obstacle.update(this.gameSpeed);
-      if (obstacle.y > this.canvas.height) {
-        this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
-        i--;
-      }
-      this.obstacles.sort((a, b) => parseFloat(a.y) - parseFloat(b.y));
-    }
+  /* Drawing */
+
+  drawGameState() {
+    this.clear();
+    this.context.drawImage(this.backgroundSprite, 0, 0, 540, 1800);
+    this.hud.show(this.context);
+    _.forEach(this.boats, boat => {
+      boat.show(this.context);
+    });
+    _.forEach(this.obstacles, obstacle => {
+      obstacle.show(this.context);
+    });
+  }
+
+  /* Game Input */
+
+  setUpKeyTracking() {
+    window.addEventListener("keydown", e => {
+      this.keys[e.keyCode] = true;
+    });
+    window.addEventListener("keyup", e => {
+      this.keys[e.keyCode] = false;
+    });
   }
 
   updateSpeedMode() {
