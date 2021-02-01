@@ -1,34 +1,35 @@
 class GameComponent {
   constructor(init_x, init_y, width, height, imageUrl, canvas_width) {
-    this.width = width ? width : this.randomWidth(canvas_width);
+    this.width = width ? width : randomWidth(canvas_width);
     this.height = height;
-    this.position = new Position(init_x >= 0 ? x : this.randomXValue(canvas_width), init_y);
-    this.endPosition = new Position(this.position.x + this.width, this.y + this.position.height);
+    this.position = new Position(
+      init_x >= 0 ? init_x : randomXValue(canvas_width),
+      init_y,
+      width,
+      height
+      );
     this.sprite = new Image();
     this.sprite.src = imageUrl;
   }
 
   update(x, y) {
-    this.position.x = x;
-    this.position.y = y;
-    this.endPosition.y = this.position.y + this.height;
-    this.endPosition.x = this.position.x + this.width;
+    this.position.update(x,y);
   }
 
   collidesWith(otherobj) {
     let left = otherobj.position.x;
-    let right = otherobj.endPosition.x;
+    let right = otherobj.position.endX;
     let top = otherobj.position.y;
-    let bottom = otherobj.endPosition.y;
+    let bottom = otherobj.position.endY;
 
     if (
       (this.position.y >= top && this.position.y <= bottom) ||
-      (this.endPosition.y >= top && this.endPosition.y <= bottom) ||
-      (this.position.y <= top && this.endPosition.y >= bottom)
+      (this.position.endY >= top && this.position.endY <= bottom) ||
+      (this.position.y <= top && this.position.endY >= bottom)
     ) {
       if (
         (this.position.x >= left && this.position.x <= right) ||
-        (this.endPosition.x >= left && this.endPosition.x <= right)
+        (this.position.endX >= left && this.position.endX <= right)
       ) {
         return true;
       }

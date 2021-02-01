@@ -1,22 +1,8 @@
 class BoatGame {
-  constructor(playerFlag, mode, seed_weights=null) {
+  constructor(playerFlag, mode, seed_input_weights=null, seed_output_weights=null) {
     
     /* Setup Variables */
     
-    // Canvas Rendering
-    this.context = drawCanvas();
-    this.canvas = this.context.canvas;
-    this.canvasHeight = this.canvas.height;
-    this.canvasMidPoint = this.canvasHeight / 2;
-    this.interval = setInterval(this.update.bind(this), 16);
-    this.backgroundSprite = new Image();
-    this.backgroundSprite.src = "images/background.png";
-
-    // Game Pieces
-    this.boatCount = playerFlag ? 1 : 25;
-    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_weights);
-    this.obstacles = [];
-
     // Gameplay
     this.timeLeft = 1500;
     this.speedMode = 1;
@@ -29,6 +15,20 @@ class BoatGame {
     this.setUpKeyTracking();
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
+
+    // Canvas Rendering
+    this.context = drawCanvas();
+    this.canvas = this.context.canvas;
+    this.canvasHeight = this.canvas.height;
+    this.canvasMidPoint = this.canvasHeight / 2;
+    this.interval = setInterval(this.update.bind(this), 16);
+    this.backgroundSprite = new Image();
+    this.backgroundSprite.src = "images/background.png";
+
+    // Game Pieces
+    this.boatCount = playerFlag ? 1 : 25;
+    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_input_weights);
+    this.obstacles = [];
   }
 
   /* Base Functions */
@@ -125,12 +125,12 @@ class BoatGame {
   /* Drawing */
 
   clear() {
-    this.context.clearRect(0, 0, canvas.width, canvas.height);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   drawGameState() {
     this.clear();
-    this.context.drawImage(this.backgroundSprite, 0, 0, canvasWidth, canvasHeight);
+    this.context.drawImage(this.backgroundSprite, 0, 0, this.canvas.width, this.canvas.height);
     this.hud.show(this.context)
     this.drawBoats();
     this.drawObstacles();

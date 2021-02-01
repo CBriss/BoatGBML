@@ -25,47 +25,47 @@ class Person extends GameComponent {
 
   show(ctx) {
     ctx.fillStyle = "green";
-    ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.sprite, this.position.x, this.position.y, this.width, this.height);
 
     ctx.beginPath();
     ctx.moveTo(this.ropeStartX, this.ropeStartY);
-    ctx.lineTo(this.x + this.width / 2, this.y);
+    ctx.lineTo(this.position.x + this.width / 2, this.position.y);
     ctx.stroke();
   }
 
   changePos(ropeStartX, ropeStartY) {
     if (this.ropeLength(ropeStartX, ropeStartY) > 70)
       this.adjustVertical(ropeStartX);
-    this.x += this.speedX;
+    this.position.x += this.speedX;
     if (this.ropeLength(ropeStartX, ropeStartY) > 70)
       this.adjustHorizontal(ropeStartY);
-    this.y += this.speedY;
+    this.position.y += this.speedY;
   }
 
   adjustHorizontal(ropeStartY) {
-    if (this.y < ropeStartY) {
+    if (this.position.y < ropeStartY) {
       if (this.speedY != 0) {
         this.speedY *= -1;
-        this.y += 5;
+        this.position.y += 5;
       } else this.speedY += 2;
-    } else if (this.y > ropeStartY) {
+    } else if (this.position.y > ropeStartY) {
       if (this.speedY != 0) {
         this.speedY *= -1;
-        this.y -= 5;
+        this.position.y -= 5;
       } else this.speedY -= 2;
     }
   }
 
   adjustVertical(ropeStartX) {
-    if (this.x < ropeStartX) {
+    if (this.position.x < ropeStartX) {
       if (this.speedX != 0) {
         this.speedX *= -1;
-        this.x += 5;
+        this.position.x += 5;
       } else this.speedX += 2;
     } else if (this.x > ropeStartX) {
       if (this.speedX != 0) {
         this.speedX *= -1;
-        this.x -= 5;
+        this.position.x -= 5;
       } else this.speedX -= 2;
     }
   }
