@@ -1,17 +1,19 @@
 class Boat extends GameComponent {
   constructor(ctx, playerFlag, yAxisMovement, seed_weights=null) {
     let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
-    let randomColor =
-      possibleColors[Math.floor(Math.random() * possibleColors.length)];
-    super((
-      Math.random() * (ctx.canvas.width - 25),
-      Math.random() * (ctx.canvas.height - 125),
+    let randomColor = possibleColors[Math.floor(Math.random() * possibleColors.length)];
+
+    super(
+      new Position(
+        Math.random() * (ctx.canvas.width - 25),
+        Math.random() * (ctx.canvas.height - 125)
+      ),
       25,
       100,
       "images/boat" + randomColor + ".png"
-    ));
+    );
 
-    this.person = new Person(ctx, this.position.x + this.width / 2, this.position.y);
+    this.person = new Person(ctx, this.body.position.x + this.body.width / 2, this.body.position.y);
     if(yAxisMovement)
       this.brain = new NeuralNetwork(5, 50, 4, seed_weights);
     else 
@@ -23,10 +25,11 @@ class Boat extends GameComponent {
     this.player = playerFlag;
 
     this.show(ctx);
+
   }
 
   show(ctx) {
-    ctx.drawImage(this.sprite, this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
     this.person.show(ctx);
     if (this.hud) this.hud.show(ctx);
   }
@@ -35,13 +38,13 @@ class Boat extends GameComponent {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     let {gapLeft, gapRight, gapYPos} = findObstacleGap(nearestObstacles)
     var input = [
-      this.position.x / ctx.canvas.width,
-      this.position.endX / ctx.canvas.width,
+      this.body.position.x / ctx.canvas.width,
+      this.body.position.endX / ctx.canvas.width,
       gapLeft / ctx.canvas.width,
       gapRight / ctx.canvas.width
     ];
     if(yAxisMovement) {
-      input.push((this.position.y - gapYPos)/ctx.canvas.height);
+      input.push((this.body.position.y - gapYPos)/ctx.canvas.height);
     }
     let result = this.brain.predict(input);
     let left = result[0];
@@ -77,18 +80,18 @@ class Boat extends GameComponent {
     let newX = this.moveToNewX(keys, ctx);
     let newY = this.moveToNewY(keys, ctx);
     super.update(newX, newY);
-    this.person.update(ctx, this.position.x + this.width / 2, this.position.y + this.height);
+    this.person.update(ctx, this.body.position.x + this.body.width / 2, this.body.position.y + this.height);
     this.updateScore(ctx.canvas.height, newDistanceTraveled);
     this.show(ctx);
   }
 
   moveToNewX(keys, ctx) {
-    let newX = this.position.x;
+    let newX = this.body.position.x;
     if (keys && keys[37]) {
-      if (this.position.x > 5) newX -= 5;
+      if (this.body.position.x > 5) newX -= 5;
     }
     if (keys && keys[39]) {
-      if (this.position.x + this.width + 5 < ctx.canvas.width) newX += 5;
+      if (this.body.position.x + this.body.width + 5 < ctx.canvas.width) newX += 5;
     }
     return newX;
   }
@@ -96,10 +99,10 @@ class Boat extends GameComponent {
   moveToNewY(keys, ctx) {
     let newY = this.y;
     if (keys && keys[38]) {
-      if (this.position.y > 5) newY -= 5;
+      if (this.body.position.y > 5) newY -= 5;
     }
     if (keys && keys[40]) {
-      if (this.position.y + this.height + 5 < ctx.canvas.height) newY += 5;
+      if (this.body.position.y + this.height + 5 < ctx.canvas.height) newY += 5;
     }
     return newY;
   }
@@ -119,7 +122,7 @@ class Boat extends GameComponent {
     let nearestDistance = 10000000;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      let distance = this.position.endY - obstacle.position.y;
+      let distance = this.body.position.endY - obstacle.position.y;
       if (distance >= 0 && distance < nearestDistance) {
         nearestObstacle2 = nearestObstacle1 || obstacles[i + 1];
         nearestObstacle1 = obstacle;

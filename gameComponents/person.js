@@ -1,8 +1,7 @@
 class Person extends GameComponent {
   constructor(ctx, ropeStartX, ropeStartY) {
     super(
-      ropeStartX,
-      ropeStartY + 150,
+      new Position(ropeStartX, ropeStartY + 150),
       20,
       20,
       "images/person.png"
@@ -25,47 +24,47 @@ class Person extends GameComponent {
 
   show(ctx) {
     ctx.fillStyle = "green";
-    ctx.drawImage(this.sprite, this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
 
     ctx.beginPath();
     ctx.moveTo(this.ropeStartX, this.ropeStartY);
-    ctx.lineTo(this.position.x + this.width / 2, this.position.y);
+    ctx.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
     ctx.stroke();
   }
 
   changePos(ropeStartX, ropeStartY) {
     if (this.ropeLength(ropeStartX, ropeStartY) > 70)
       this.adjustVertical(ropeStartX);
-    this.position.x += this.speedX;
+    this.body.position.x += this.speedX;
     if (this.ropeLength(ropeStartX, ropeStartY) > 70)
       this.adjustHorizontal(ropeStartY);
-    this.position.y += this.speedY;
+    this.body.position.y += this.speedY;
   }
 
   adjustHorizontal(ropeStartY) {
-    if (this.position.y < ropeStartY) {
+    if (this.body.position.y < ropeStartY) {
       if (this.speedY != 0) {
         this.speedY *= -1;
-        this.position.y += 5;
+        this.body.position.y += 5;
       } else this.speedY += 2;
-    } else if (this.position.y > ropeStartY) {
+    } else if (this.body.position.y > ropeStartY) {
       if (this.speedY != 0) {
         this.speedY *= -1;
-        this.position.y -= 5;
+        this.body.position.y -= 5;
       } else this.speedY -= 2;
     }
   }
 
   adjustVertical(ropeStartX) {
-    if (this.position.x < ropeStartX) {
+    if (this.body.position.x < ropeStartX) {
       if (this.speedX != 0) {
         this.speedX *= -1;
-        this.position.x += 5;
+        this.body.position.x += 5;
       } else this.speedX += 2;
     } else if (this.x > ropeStartX) {
       if (this.speedX != 0) {
         this.speedX *= -1;
-        this.position.x -= 5;
+        this.body.position.x -= 5;
       } else this.speedX -= 2;
     }
   }

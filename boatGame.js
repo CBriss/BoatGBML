@@ -13,8 +13,7 @@ class BoatGame {
     this.mode = mode
     this.keys = [];
     this.setUpKeyTracking();
-    this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
-    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
+    this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();    
 
     // Canvas Rendering
     this.context = drawCanvas();
@@ -27,6 +26,7 @@ class BoatGame {
 
     // Game Pieces
     this.boatCount = playerFlag ? 1 : 25;
+    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
     this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_input_weights);
     this.obstacles = [];
   }

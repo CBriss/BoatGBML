@@ -1,19 +1,12 @@
 class GameComponent {
-  constructor(init_x, init_y, width, height, imageUrl, canvas_width) {
-    this.width = width ? width : randomWidth(canvas_width);
-    this.height = height;
-    this.position = new Position(
-      init_x >= 0 ? init_x : randomXValue(canvas_width),
-      init_y,
-      width,
-      height
-      );
+  constructor(position, width, height, imageUrl) {
+    this.body = new Body(position, width, height);
     this.sprite = new Image();
     this.sprite.src = imageUrl;
   }
 
   update(x, y) {
-    this.position.update(x,y);
+    this.body.update_position(x,y);
   }
 
   collidesWith(otherobj) {
