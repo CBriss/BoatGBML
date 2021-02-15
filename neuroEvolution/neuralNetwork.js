@@ -46,4 +46,5 @@ class NeuralNetwork {
     this.input_weights.dispose();
     this.output_weights.dispose();
   }
+  
 }

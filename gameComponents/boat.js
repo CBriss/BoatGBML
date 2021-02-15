@@ -1,32 +1,41 @@
 class Boat extends GameComponent {
   constructor(ctx, playerFlag, yAxisMovement, seed_weights=null) {
-    let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
-    let randomColor = possibleColors[Math.floor(Math.random() * possibleColors.length)];
-
-    super(
-      new Position(
-        Math.random() * (ctx.canvas.width - 25),
-        Math.random() * (ctx.canvas.height - 125)
-      ),
-      25,
-      100,
-      "images/boat" + randomColor + ".png"
-    );
-
-    this.person = new Person(ctx, this.body.position.x + this.body.width / 2, this.body.position.y);
-    if(yAxisMovement)
-      this.brain = new NeuralNetwork(5, 50, 4, seed_weights);
-    else 
-      this.brain = new NeuralNetwork(4, 5, 2, seed_weights);
-
+    super(Boat.randomStartPosition(ctx), ...Boat.defaultBodyDimensions(), Boat.randomImage());
     this.score = 0;
     this.distanceTraveled = 0;
-
+    this.person = new Person(ctx, this.body.position.x + this.body.width / 2, this.body.position.y);
+    this.brain = Boat.newBrain(yAxisMovement, seed_weights);
     this.player = playerFlag;
-
     this.show(ctx);
-
   }
+
+  ////
+  // Static Methods
+
+  static randomStartPosition(ctx){
+    return new Position(
+      Math.random() * (ctx.canvas.width - 25),
+      Math.random() * (ctx.canvas.height - 125)
+    );
+  }
+
+  static defaultBodyDimensions(){
+    return [25, 100]
+  }
+
+  static randomImage() {
+    let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
+    return "images/boats/boat" + possibleColors[Math.floor(Math.random() * possibleColors.length)] + ".png"
+  }
+  
+  static newBrain(yAxisMovement, seed_weights) {
+    let brain_dimensions = yAxisMovement ? [5, 50, 4] : [4, 5, 2];
+    return new NeuralNetwork(...brain_dimensions, seed_weights);
+  }
+
+
+  ////
+  // Instance Methods
 
   show(ctx) {
     ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
@@ -71,40 +80,15 @@ class Boat extends GameComponent {
       default:
         break;
     }
-
     return keys;
   }
 
   update(ctx, keys, obstacles, newDistanceTraveled, yAxisMovement) {
     if (!this.player) keys = this.think(ctx, obstacles, yAxisMovement);
-    let newX = this.moveToNewX(keys, ctx);
-    let newY = this.moveToNewY(keys, ctx);
-    super.update(newX, newY);
+    this.body.move(keys, ctx);
     this.person.update(ctx, this.body.position.x + this.body.width / 2, this.body.position.y + this.height);
     this.updateScore(ctx.canvas.height, newDistanceTraveled);
     this.show(ctx);
-  }
-
-  moveToNewX(keys, ctx) {
-    let newX = this.body.position.x;
-    if (keys && keys[37]) {
-      if (this.body.position.x > 5) newX -= 5;
-    }
-    if (keys && keys[39]) {
-      if (this.body.position.x + this.body.width + 5 < ctx.canvas.width) newX += 5;
-    }
-    return newX;
-  }
-
-  moveToNewY(keys, ctx) {
-    let newY = this.y;
-    if (keys && keys[38]) {
-      if (this.body.position.y > 5) newY -= 5;
-    }
-    if (keys && keys[40]) {
-      if (this.body.position.y + this.height + 5 < ctx.canvas.height) newY += 5;
-    }
-    return newY;
   }
 
   updateScore(canvas_height, newDistanceTraveled) {

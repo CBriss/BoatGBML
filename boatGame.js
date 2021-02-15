@@ -39,8 +39,8 @@ class BoatGame {
   }
 
   update() {
-    for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
-    this.drawGameState();
+    // for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
+    // this.drawGameState();
   }
 
 
