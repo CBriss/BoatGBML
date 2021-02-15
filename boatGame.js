@@ -11,9 +11,8 @@ class BoatGame {
     this.gameSpeed = 50;
     this.playerFlag = playerFlag;
     this.mode = mode
-    this.keys = [];
-    this.setUpKeyTracking();
-    this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();    
+    this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
+    this.input = new Input();
 
     // Canvas Rendering
     this.context = drawCanvas();
@@ -65,7 +64,7 @@ class BoatGame {
   }
 
   updateGameState() {
-    if ((this.playerFlag && this.timeLeft <= 0) || this.keys[27]) this.stop();
+    if ((this.playerFlag && this.timeLeft <= 0) || this.input.isPressed("exit")) this.stop();
     this.frameCount += 1;
     this.timeLeft = 1500 - this.frameCount;
     this.distanceTraveled += Math.ceil(this.gameSpeed / 10);
@@ -93,7 +92,7 @@ class BoatGame {
       let yAxisMovement = (this.mode == 'hard')
       boat.update(
         this.context,
-        this.keys,
+        this.input,
         this.obstacles,
         this.distanceTraveled,
         yAxisMovement
@@ -147,17 +146,7 @@ class BoatGame {
 
   /* Game Input */
 
-  setUpKeyTracking() {
-    window.addEventListener("keydown", e => {
-      this.keys[e.keyCode] = true;
-    });
-    window.addEventListener("keyup", e => {
-      this.keys[e.keyCode] = false;
-    });
-
-    // Pause needs to be tracked outside of game loop
-    if(this.keys[80]) this.handlePausing();
-  }
+  
 
   handlePausing() {
     if(this.interval) {

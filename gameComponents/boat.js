@@ -83,9 +83,9 @@ class Boat extends GameComponent {
     return keys;
   }
 
-  update(ctx, keys, obstacles, newDistanceTraveled, yAxisMovement) {
-    if (!this.player) keys = this.think(ctx, obstacles, yAxisMovement);
-    this.body.move(keys, ctx);
+  update(ctx, input, obstacles, newDistanceTraveled, yAxisMovement) {
+    if (!this.player) input.keys = this.think(ctx, obstacles, yAxisMovement);
+    this.body.move(input, ctx);
     this.person.update(ctx, this.body.position.x + this.body.width / 2, this.body.position.y + this.height);
     this.updateScore(ctx.canvas.height, newDistanceTraveled);
     this.show(ctx);
