@@ -1,12 +1,12 @@
 class GameComponent {
-  constructor(position, width, height, imageUrl) {
-    this.body = new Body(position, width, height);
+  constructor(x, y, width, height, imageUrl) {
+    this.body = new Body(x, y, width, height);
     this.sprite = new Image();
     this.sprite.src = imageUrl;
   }
 
-  update(x, y) {
-    this.body.update_position(x,y);
+  moveTo(x, y, ctx) {
+    this.body.update_position(x, y, ctx);
   }
 
   collidesWith(otherobj) {

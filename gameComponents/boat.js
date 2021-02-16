@@ -20,7 +20,7 @@ class Boat extends GameComponent {
   }
 
   static defaultBodyDimensions(){
-    return [25, 100]
+    return [25, 100];
   }
 
   static randomImage() {
@@ -28,7 +28,7 @@ class Boat extends GameComponent {
     return "images/boats/boat" + possibleColors[Math.floor(Math.random() * possibleColors.length)] + ".png"
   }
   
-  static newBrain(yAxisMovement, seed_weights) {
+  static newBrain(yAxisMovement, seed_weights = null) {
     let brain_dimensions = yAxisMovement ? [5, 50, 4] : [4, 5, 2];
     return new NeuralNetwork(...brain_dimensions, seed_weights);
   }
@@ -91,6 +91,7 @@ class Boat extends GameComponent {
     this.show(ctx);
   }
 
+  // This should probably be the game, not the boat
   updateScore(canvas_height, newDistanceTraveled) {
     let heightOnScreen = 1 - this.y / canvas_height;
     this.score += Math.ceil(
