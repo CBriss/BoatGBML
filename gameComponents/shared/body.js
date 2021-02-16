@@ -1,4 +1,5 @@
-class Body {    
+class Body {
+
   constructor(position, width, height, clamp_to_screen = true) {
     this.position = position;
     this.width = width;
@@ -37,4 +38,21 @@ class Body {
       ctx
     );
   }
+
+  top(){
+    return this.position.y;
+  }
+
+  bottom(){
+    return this.endPosition.y;
+  }
+
+  left(){
+    return this.position.x;
+  }
+
+  right(){
+    return this.endPosition.x;
+  }
+
 }

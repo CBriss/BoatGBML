@@ -10,19 +10,15 @@ class GameComponent {
   }
 
   collidesWith(otherobj) {
-    let left = otherobj.position.x;
-    let right = otherobj.position.endX;
-    let top = otherobj.position.y;
-    let bottom = otherobj.position.endY;
-
+    let otherBody = otherobj.body;
     if (
-      (this.position.y >= top && this.position.y <= bottom) ||
-      (this.position.endY >= top && this.position.endY <= bottom) ||
-      (this.position.y <= top && this.position.endY >= bottom)
+      (this.body.top() >= otherBody.top() && this.body.top() <= otherBody.bottom()) ||
+      (this.body.bottom() >= otherBody.top() && this.body.bottom() <= otherBody.bottom()) ||
+      (this.body.top() <= otherBody.top() && this.body.bottom() >= otherBody.bottom())
     ) {
       if (
-        (this.position.x >= left && this.position.x <= right) ||
-        (this.position.endX >= left && this.position.endX <= right)
+        (this.body.left() >= otherBody.left() && this.body.left() <= otherBody.right()) ||
+        (this.body.right() >= otherBody.left() && this.body.right() <= otherBody.right())
       ) {
         return true;
       }
