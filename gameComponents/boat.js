@@ -38,9 +38,9 @@ class Boat extends GameComponent {
   // Instance Methods
 
   show(ctx) {
-    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
-    this.person.show(ctx);
-    if (this.hud) this.hud.show(ctx);
+    // ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
+    // this.person.show(ctx);
+    // if (this.hud) this.hud.show(ctx);
   }
 
   think(ctx, obstacles, yAxisMovement) {
@@ -102,20 +102,18 @@ class Boat extends GameComponent {
 
   find_nearest_obstacles(obstacles) {
     if (obstacles.length <= 0) return [];
-    let nearestObstacle1 = null;
-    let nearestObstacle2 = null;
-    let nearestDistance = 10000000;
+    let nearestObstacles = new Array(2);
+    let nearestDistance = null;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      let distance = this.body.position.endY - obstacle.position.y;
-      if (distance >= 0 && distance < nearestDistance) {
-        nearestObstacle2 = nearestObstacle1 || obstacles[i + 1];
-        nearestObstacle1 = obstacle;
-        i++;
+      let distance = this.body.endPosition.y - obstacle.body.position.y;
+      if (distance >= 0 && distance < (nearestDistance || distance + 1)) {
+        nearestObstacles[1] = nearestObstacles[0] || obstacles[i + 1];
+        nearestObstacles[0] = obstacle;
       }
     }
-    if (nearestObstacle2) return [nearestObstacle1, nearestObstacle2];
-    else if (nearestObstacle1) return [nearestObstacle1];
+    if (nearestObstacles[1]) return [nearestObstacles[0], nearestObstacles[1]];
+    else if (nearestObstacles[0]) return [nearestObstacles[0]];
     else return [];
   }
 
@@ -143,6 +141,8 @@ class Boat extends GameComponent {
     this.brain.output_weights = tf.tensor(output_weights, output_shape);
   }
 
+  // This doesn't belong here?
+  // this.keys doesn't exist in the current scope.
   updateSpeed() {
     if (this.keys && this.keys[38]) {
       this.boatSpeed += 2;

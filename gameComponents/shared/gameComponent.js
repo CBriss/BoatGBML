@@ -1,6 +1,6 @@
 class GameComponent {
-  constructor(x, y, width, height, imageUrl) {
-    this.body = new Body(x, y, width, height);
+  constructor(position, width, height, imageUrl) {
+    this.body = new Body(position, width, height);
     this.sprite = new Image();
     this.sprite.src = imageUrl;
   }

@@ -1,12 +1,12 @@
 class Body {
 
-  constructor(x, y, width, height, clamp_to_screen = true) {
-    this.position =  new Position(x, y);
+  constructor(position, width, height, clamp_to_screen = true) {
+    this.position = new Position(position.x, position.y);
     this.width = width;
     this.height = height;
     this.clamp_to_screen = clamp_to_screen;
     this.speed = 5;
-    this.endPosition = new Position(x + width, y + height); 
+    this.endPosition = new Position(position.x + width, position.y + height); 
   }
 
   update_position(new_x, new_y, ctx) {

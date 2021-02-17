@@ -23,13 +23,13 @@ class Person extends GameComponent {
   }
 
   show(ctx) {
-    ctx.fillStyle = "green";
-    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
+    // ctx.fillStyle = "green";
+    // ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
 
-    ctx.beginPath();
-    ctx.moveTo(this.ropeStartX, this.ropeStartY);
-    ctx.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.moveTo(this.ropeStartX, this.ropeStartY);
+    // ctx.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
+    // ctx.stroke();
   }
 
   changePos(ropeStartX, ropeStartY) {
