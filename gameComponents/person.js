@@ -70,8 +70,8 @@ class Person extends GameComponent {
   }
 
   ropeLength(ropeStartX, ropeStartY) {
-    var a = Math.abs(ropeStartX - this.x);
-    var b = Math.abs(ropeStartY - this.y);
+    var a = Math.abs(ropeStartX - this.body.position.x);
+    var b = Math.abs(ropeStartY - this.body.position.y);
     return Math.sqrt(a * a + b * b);
   }
 }

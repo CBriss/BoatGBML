@@ -53,6 +53,19 @@ class BoatGame {
   }
 
   insertObstacles() {
+    // if (side == "Left")
+    //   super(new Position(0, -50), this.width, this.height, "images/log.png");
+    // else {
+    //   let startX = leftObstacleEndX + gap;
+    //   super(
+    //     new Position(startX, -50),
+    //     canvas_width - startX,
+    //     this.height,
+    //     "images/log.png",
+    //   );
+    // }
+    
+    
     if (this.frameCount % 100 == 0) {
       let gap = Math.max(Math.random() * 250, 125);
       let leftObstacle = new Obstacle(this.canvas.width, "Left");

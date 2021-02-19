@@ -45,7 +45,7 @@ class Boat extends GameComponent {
 
   think(ctx, obstacles, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
-    let {gapLeft, gapRight, gapYPos} = findObstacleGap(nearestObstacles)
+    let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
     var input = [
       this.body.position.x / ctx.canvas.width,
       this.body.position.endX / ctx.canvas.width,
@@ -93,7 +93,7 @@ class Boat extends GameComponent {
 
   // This should probably be the game, not the boat
   updateScore(canvas_height, newDistanceTraveled) {
-    let heightOnScreen = 1 - this.y / canvas_height;
+    let heightOnScreen = 1 - this.body.position.y / canvas_height;
     this.score += Math.ceil(
       (newDistanceTraveled - this.distanceTraveled) * (heightOnScreen * 1.5)
     );
@@ -117,43 +117,50 @@ class Boat extends GameComponent {
     else return [];
   }
 
-  mutate(goalPercentage) {
-    function mutateWeight(weight) {
-      // if (Math.random(1) < 0.05) {
-      //   console.log("mutate");
-      //   return weight + randn_bm() * 0.5;
-      // }
-      // return weight;
-      if (Math.random(1) < (0.10 * (1-goalPercentage))) {
-        return weight + randn_bm() * 0.5;
+  findObstacleGap(nearestObstacles) {
+    if (nearestObstacles.length > 1) {
+      if (nearestObstacles[0].x < nearestObstacles[1].x) {
+        var nearestObstacle1 = nearestObstacles[0];
+        var nearestObstacle2 = nearestObstacles[1];
+      } else {
+        var nearestObstacle2 = nearestObstacles[0];
+        var nearestObstacle1 = nearestObstacles[1];
       }
-      return weight;
+      var gapLeft = nearestObstacle1.endX;
+      var gapRight = nearestObstacle2.x;
+      var gapYPos = nearestObstacle1.endY;
+    } else if (nearestObstacles.length > 0) {
+      let nearestObstacle1 = nearestObstacles[0];
+      var gapLeft = nearestObstacle1.endX;
+      var gapRight = 0;
+      var gapYPos = nearestObstacle1.endY;
+    } else {
+      var gapLeft = 0;
+      var gapRight = 0;
+      var gapYPos = 0;
     }
-
-    let input_weights = this.brain.input_weights.dataSync().map(mutateWeight);
-    let input_shape = this.brain.input_weights.shape;
-    this.brain.input_weights.dispose();
-    this.brain.input_weights = tf.tensor(input_weights, input_shape);
-
-    let output_weights = this.brain.output_weights.dataSync().map(mutateWeight);
-    let output_shape = this.brain.output_weights.shape;
-    this.brain.output_weights.dispose();
-    this.brain.output_weights = tf.tensor(output_weights, output_shape);
+  
+    return {
+      gapLeft,
+      gapRight,
+      gapYPos
+    }
   }
+  
 
   // This doesn't belong here?
   // this.keys doesn't exist in the current scope.
-  updateSpeed() {
-    if (this.keys && this.keys[38]) {
-      this.boatSpeed += 2;
-      if (this.boatSpeed > 200) {
-        this.boatSpeed = 200;
-      }
-    } else if (this.keys && this.keys[40]) {
-      this.boatSpeed -= 2;
-      if (this.boatSpeed < 0) {
-        this.boatSpeed = 0;
-      }
-    }
-  }
+  // updateSpeed() {
+  //   if (this.keys && this.keys[38]) {
+  //     this.boatSpeed += 2;
+  //     if (this.boatSpeed > 200) {
+  //       this.boatSpeed = 200;
+  //     }
+  //   } else if (this.keys && this.keys[40]) {
+  //     this.boatSpeed -= 2;
+  //     if (this.boatSpeed < 0) {
+  //       this.boatSpeed = 0;
+  //     }
+  //   }
+  // }
 }

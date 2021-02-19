@@ -46,4 +46,28 @@ class NeuralNetwork {
     this.input_weights.dispose();
     this.output_weights.dispose();
   }
+
+  mutate(goalPercentage) {
+    function mutateWeight(weight) {
+      // if (Math.random(1) < 0.05) {
+      //   console.log("mutate");
+      //   return weight + randn_bm() * 0.5;
+      // }
+      // return weight;
+      if (Math.random(1) < (0.10 * (1-goalPercentage))) {
+        return weight + randn_bm() * 0.5;
+      }
+      return weight;
+    }
+
+    let input_weights = this.input_weights.dataSync().map(mutateWeight);
+    let input_shape = this.input_weights.shape;
+    this.input_weights.dispose();
+    this.input_weights = tf.tensor(input_weights, input_shape);
+
+    let output_weights = this.output_weights.dataSync().map(mutateWeight);
+    let output_shape = this.output_weights.shape;
+    this.output_weights.dispose();
+    this.output_weights = tf.tensor(output_weights, output_shape);
+  }
 }

@@ -1,19 +1,6 @@
 class Obstacle extends GameComponent {
-  constructor(canvas_width, side, leftObstacleEndX, gap) {
-    this.width = 100;
-    this.height = 50;
-
-    if (side == "Left")
-      super(new Position(0, -50), this.width, this.height, "images/log.png");
-    else {
-      let startX = leftObstacleEndX + gap;
-      super(
-        new Position(startX, -50),
-        canvas_width - startX,
-        this.height,
-        "images/log.png",
-      );
-    }
+  constructor(x, y, width) {
+    super(new Position(x, y), width, 100, "images/log.png");
   }
 
   update(gameSpeed) {
@@ -26,7 +13,10 @@ class Obstacle extends GameComponent {
     ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
   }
 
-  static newPairOfObstacles(){
-
+  static newPairOfObstacles(gapSize, y, canvas_width) {
+    var obstacle1 = new Obstacle(-10, y, parseInt(Math.random() * canvas_width/2));
+    var obstacle2Pos = obstacle1.body.endPosition.x + gapSize;
+    var obstacle2 = new Obstacle(obstacle2Pos, y, canvas_width - obstacle2Pos);
+    return [obstacle1, obstacle2];
   }
 }

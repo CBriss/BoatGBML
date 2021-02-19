@@ -1,13 +1,13 @@
-describe("Position Class", function() {
+describe("Position", () => {
     
-    it("Defaults to 0,0", function() {
+    it("Defaults to 0,0", () => {
         var position = new Position();
 
         expect(position.x).toBe(0);
         expect(position.y).toBe(0);
     });
 
-    it("Updates x and y values correctly", function() {
+    it("Updates x and y values correctly", () => {
         var position = new Position(100,100);
         position.update(50,50);
     
@@ -15,5 +15,4 @@ describe("Position Class", function() {
         expect(position.y).toBe(50);
     });
     
-
 });
