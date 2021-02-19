@@ -2,7 +2,12 @@ describe("Boat", () => {
 
 	beforeEach(function() {
         ctx = {canvas: {width: 1000, height: 1000 }};
-        boat = new Boat(ctx, true, true);
+		ctx.drawImage = () => 1;
+		ctx.beginPath = () => 1;
+		ctx.moveTo = () => 1;
+		ctx.lineTo = () => 1;
+		ctx.stroke = () => 1;
+		boat = new Boat(ctx, true, true);
     });
 
 	describe("Static Methods", () => {

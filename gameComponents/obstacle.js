@@ -1,11 +1,14 @@
 class Obstacle extends GameComponent {
   constructor(x, y, width) {
-    super(new Position(x, y), width, 100, "images/log.png");
+    super(new Position(x, y), width, 50, "images/log.png", false);
   }
 
-  update(gameSpeed) {
-    let newY = (this.body.position.y += gameSpeed / 10);
-    super.update(this.body.position.x, newY);
+  update(gameSpeed, ctx) {
+    super.moveTo(
+      this.body.position.x,
+      this.body.position.y += gameSpeed / 10,
+      ctx
+    );
   }
 
   show(ctx) {

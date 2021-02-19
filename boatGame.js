@@ -14,19 +14,16 @@ class BoatGame {
     this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
     this.input = new Input();
 
-    // Canvas Rendering
-    this.context = drawCanvas();
-    this.canvas = this.context.canvas;
-    this.canvasHeight = this.canvas.height;
-    this.canvasMidPoint = this.canvasHeight / 2;
+    // Rendering
+    this.screen = new GameScreen();
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
-    this.backgroundSprite.src = "images/background.png";
+    this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
     this.boatCount = playerFlag ? 1 : 25;
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
-    this.boats = this.geneticAlgorithm.newGeneration([], this.context, seed_input_weights);
+    this.boats = this.geneticAlgorithm.newGeneration([], this.screen.context, seed_input_weights);
     this.obstacles = [];
   }
 
@@ -38,8 +35,8 @@ class BoatGame {
   }
 
   update() {
-    // for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
-    // this.drawGameState();
+    for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
+    this.drawGameState();
   }
 
 
@@ -53,26 +50,9 @@ class BoatGame {
   }
 
   insertObstacles() {
-    // if (side == "Left")
-    //   super(new Position(0, -50), this.width, this.height, "images/log.png");
-    // else {
-    //   let startX = leftObstacleEndX + gap;
-    //   super(
-    //     new Position(startX, -50),
-    //     canvas_width - startX,
-    //     this.height,
-    //     "images/log.png",
-    //   );
-    // }
-    
-    
-    if (this.frameCount % 100 == 0) {
+    if (this.frameCount % 500 == 0) {
       let gap = Math.max(Math.random() * 250, 125);
-      let leftObstacle = new Obstacle(this.canvas.width, "Left");
-      this.obstacles.push(leftObstacle);
-      this.obstacles.push(
-        new Obstacle(this.canvas.width, "Right", leftObstacle.endX, gap)
-      );
+      this.obstacles.push(...Obstacle.newPairOfObstacles(gap, -10, this.screen.canvas.width));
     }
   }
 
@@ -92,7 +72,7 @@ class BoatGame {
       if (this.playerFlag) this.stop();
       else {
         this.obstacles = [];
-        this.geneticAlgorithm.newGeneration(this.boats, this.context);
+        this.geneticAlgorithm.newGeneration(this.boats, this.screen.context);
         this.distanceTraveled = 0;
         this.hud.update(this.geneticAlgorithm.bestBoat);
       }
@@ -104,14 +84,14 @@ class BoatGame {
       let boat = this.boats[i];
       let yAxisMovement = (this.mode == 'hard')
       boat.update(
-        this.context,
+        this.screen.context,
         this.input,
         this.obstacles,
         this.distanceTraveled,
         yAxisMovement
       );
 
-      if (boat.hasCollsionWith(this.obstacles, this.canvasMidPoint)) {
+      if (boat.hasCollsionWith(this.obstacles, this.screen.canvasMidPoint)) {
         let index = this.boats.indexOf(boat);
         this.boats.splice(index, 1)[0];
         this.geneticAlgorithm.currentGenerationDead.push(boat);
@@ -124,8 +104,8 @@ class BoatGame {
     // Since I am splicing the array in the loop
     for (var i = 0; i < this.obstacles.length; i++) {
       let obstacle = this.obstacles[i];
-      obstacle.update(this.gameSpeed);
-      if (obstacle.y > this.canvas.height) {
+      obstacle.update(this.gameSpeed, this.screen.context);
+      if (obstacle.y > this.screen.canvas.height) {
         this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
         i--;
       }
@@ -136,30 +116,24 @@ class BoatGame {
 
   /* Drawing */
 
-  clear() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-
   drawGameState() {
-    this.clear();
-    this.context.drawImage(this.backgroundSprite, 0, 0, this.canvas.width, this.canvas.height);
-    this.hud.show(this.context)
+    this.screen.clear();
+    this.screen.context.drawImage(this.backgroundSprite, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
+    this.hud.show(this.screen.context)
     this.drawBoats();
     this.drawObstacles();
   }
 
   drawBoats() {
-    _.forEach(this.boats, boat => { boat.show(this.context); });
+    _.forEach(this.boats, boat => { boat.show(this.screen.context); });
   }
 
   drawObstacles() {
-    _.forEach(this.obstacles, obstacle => { obstacle.show(this.context); });
+    _.forEach(this.obstacles, obstacle => { obstacle.show(this.screen.context); });
   }
 
 
   /* Game Input */
-
-  
 
   handlePausing() {
     if(this.interval) {

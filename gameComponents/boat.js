@@ -38,9 +38,9 @@ class Boat extends GameComponent {
   // Instance Methods
 
   show(ctx) {
-    // ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
-    // this.person.show(ctx);
-    // if (this.hud) this.hud.show(ctx);
+    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
+    this.person.show(ctx);
+    if (this.hud) this.hud.show(ctx);
   }
 
   think(ctx, obstacles, yAxisMovement) {
