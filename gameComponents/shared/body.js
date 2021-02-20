@@ -5,7 +5,6 @@ class Body {
     this.width = width;
     this.height = height;
     this.clamp_to_screen = clamp_to_screen;
-    this.speed = 5;
     this.endPosition = new Position(position.x + width, position.y + height); 
   }
 
@@ -24,14 +23,6 @@ class Body {
       x: Math.min(Math.max(x, 0), ctx.canvas.width - this.width),
       y: Math.min(Math.max(y, 0), ctx.canvas.height - this.height)
     }
-  }
-
-  move(input, ctx) {
-    this.update_position(
-      (0 + input.isPressed("right") - input.isPressed("left")) * this.speed,
-      (0 + input.isPressed("down") - input.isPressed("up")) * this.speed,
-      ctx
-    );
   }
 
   top(){

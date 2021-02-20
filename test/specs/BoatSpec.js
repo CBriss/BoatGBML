@@ -8,6 +8,8 @@ describe("Boat", () => {
 		ctx.lineTo = () => 1;
 		ctx.stroke = () => 1;
 		boat = new Boat(ctx, true, true);
+		boat.body.position.x = 0;
+		boat.body.position.y = 0;
     });
 
 	describe("Static Methods", () => {
@@ -60,4 +62,27 @@ describe("Boat", () => {
 	it('Returns Keys When Thinking', () => {
 		expect(boat.think(ctx, [new Obstacle(0, 0, 50)], true).length).toBe(0);
 	});
+
+	describe("Movement", () => {
+        it("Sets Position in move function", () => {
+            input = new Input();
+            input.pressKey('right');
+            input.pressKey('down');
+            boat.move(input, ctx);
+            expectPositionCoords(boat.body.position, 5, 5)
+        });
+
+        it("Stops Position From Going Off Screen", () => {
+            input = new Input();
+            input.pressKey('left');
+            input.pressKey('up');
+			boat.move(input, ctx);
+            expectPositionCoords(boat.body.position, 0, 0)
+        });
+    });   
 });
+
+function expectPositionCoords(position, expected_x, expected_y){
+    expect(position.x).toBe(expected_x);
+    expect(position.y).toBe(expected_y);
+}

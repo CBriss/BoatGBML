@@ -6,6 +6,7 @@ class Boat extends GameComponent {
     this.person = new Person(ctx, this.body.position.x + this.body.width / 2, this.body.position.y);
     this.brain = Boat.newBrain(yAxisMovement, seed_weights);
     this.player = playerFlag;
+    this.speed = 5;
     this.show(ctx);
   }
 
@@ -85,10 +86,20 @@ class Boat extends GameComponent {
 
   update(ctx, input, obstacles, newDistanceTraveled, yAxisMovement) {
     if (!this.player) input.keys = this.think(ctx, obstacles, yAxisMovement);
-    this.body.move(input, ctx);
+    this.move(input, ctx);
     this.person.update(ctx, this.body.position.x + this.body.width / 2, this.body.position.y + this.height);
     this.updateScore(ctx.canvas.height, newDistanceTraveled);
     this.show(ctx);
+  }
+
+  move(input, ctx) {
+    var new_x = this.body.position.x + ((0 + input.isPressed("right") - input.isPressed("left")) * this.speed);
+    var new_y = this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed);
+    super.moveTo(
+      new_x,
+      new_y,
+      ctx
+    );
   }
 
   // This should probably be the game, not the boat

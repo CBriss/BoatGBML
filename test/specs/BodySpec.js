@@ -49,25 +49,7 @@ describe("Body", () => {
             body.update_position(50,100,ctx);
             expect(body.right()).toBe(50 + width);
         });
-    });
-
-    describe("Movement", () => {
-        it("Sets Position in move function", () => {
-            input = new Input();
-            input.pressKey('right');
-            input.pressKey('down');
-            body.move(input, ctx);
-            expectPositionCoords(body.position, 5, 5)
-        });
-
-        it("Stops Position From Going Off Screen", () => {
-            input = new Input();
-            input.pressKey('left');
-            input.pressKey('up');
-            body.move(input, ctx);
-            expectPositionCoords(body.position, 0, 0)
-        });
-    });    
+    }); 
 });
 
 
