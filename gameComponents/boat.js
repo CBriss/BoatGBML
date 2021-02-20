@@ -1,27 +1,27 @@
 class Boat extends GameComponent {
-  constructor(ctx, playerFlag, yAxisMovement, seed_weights=null) {
-    super(Boat.randomStartPosition(ctx), ...Boat.defaultBodyDimensions(), Boat.randomImage());
+  constructor(screenContext, playerFlag, yAxisMovement, seed_weights=null) {
+    super(Boat.randomStartPosition(screenContext), ...Boat.defaultBodyDimensions(), Boat.randomImage());
     this.score = 0;
     this.distanceTraveled = 0;
-    this.person = new Person(ctx, this.body.position.x + this.body.width / 2, this.body.position.y);
+    this.person = new Person(screenContext, this.body.position.x + this.body.width / 2, this.body.position.y);
     this.brain = Boat.newBrain(yAxisMovement, seed_weights);
     this.player = playerFlag;
     this.speed = 5;
-    this.show(ctx);
+    this.show(screenContext);
   }
 
   ////
   // Static Methods
 
-  static randomStartPosition(ctx){
+  static randomStartPosition(screenContext){
     return new Position(
-      Math.random() * (ctx.canvas.width - 25),
-      Math.random() * (ctx.canvas.height - 125)
+      Math.random() * (screenContext.canvas.width - 25),
+      Math.random() * (screenContext.canvas.height - 125)
     );
   }
 
   static defaultBodyDimensions(){
-    return [25, 100];
+    return [25, 75];
   }
 
   static randomImage() {
@@ -38,23 +38,23 @@ class Boat extends GameComponent {
   ////
   // Instance Methods
 
-  show(ctx) {
-    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.height);
-    this.person.show(ctx);
-    if (this.hud) this.hud.show(ctx);
+  show(screenContext) {
+    screenContext.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
+    this.person.show(screenContext);
+    if (this.hud) this.hud.show(screenContext);
   }
 
-  think(ctx, obstacles, yAxisMovement) {
+  think(screenContext, obstacles, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
     var input = [
-      this.body.position.x / ctx.canvas.width,
-      this.body.position.endX / ctx.canvas.width,
-      gapLeft / ctx.canvas.width,
-      gapRight / ctx.canvas.width
+      this.body.position.x / screenContext.canvas.width,
+      this.body.position.endX / screenContext.canvas.width,
+      gapLeft / screenContext.canvas.width,
+      gapRight / screenContext.canvas.width
     ];
     if(yAxisMovement) {
-      input.push((this.body.position.y - gapYPos)/ctx.canvas.height);
+      input.push((this.body.position.y - gapYPos)/screenContext.canvas.height);
     }
     let result = this.brain.predict(input);
     let left = result[0];
@@ -84,21 +84,21 @@ class Boat extends GameComponent {
     return keys;
   }
 
-  update(ctx, input, obstacles, newDistanceTraveled, yAxisMovement) {
-    if (!this.player) input.keys = this.think(ctx, obstacles, yAxisMovement);
-    this.move(input, ctx);
-    this.person.update(ctx, this.body.position.x + this.body.width / 2, this.body.position.y + this.height);
-    this.updateScore(ctx.canvas.height, newDistanceTraveled);
-    this.show(ctx);
+  update(screenContext, input, obstacles, newDistanceTraveled, yAxisMovement) {
+    if (!this.player) input.keys = this.think(screenContext, obstacles, yAxisMovement);
+    this.move(input, screenContext);
+    this.person.update(screenContext, this.body.position.x + this.body.width / 2, this.body.position.y + this.body.height);
+    this.updateScore(screenContext.canvas.height, newDistanceTraveled);
+    this.show(screenContext);
   }
 
-  move(input, ctx) {
+  move(input, screenContext) {
     var new_x = this.body.position.x + ((0 + input.isPressed("right") - input.isPressed("left")) * this.speed);
     var new_y = this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed);
     super.moveTo(
       new_x,
       new_y,
-      ctx
+      screenContext
     );
   }
 

@@ -40,7 +40,7 @@ class BoatGame {
   }
 
 
-   /* Frame Processing */
+  /* Frame Processing */
 
   processFrame() {
     this.insertObstacles();
@@ -50,7 +50,7 @@ class BoatGame {
   }
 
   insertObstacles() {
-    if (this.frameCount % 500 == 0) {
+    if (this.frameCount % 100 == 0) {
       let gap = Math.max(Math.random() * 250, 125);
       this.obstacles.push(...Obstacle.newPairOfObstacles(gap, -10, this.screen.canvas.width));
     }
@@ -92,6 +92,7 @@ class BoatGame {
       );
 
       if (boat.hasCollsionWith(this.obstacles, this.screen.canvasMidPoint)) {
+        console.log("collision!");
         let index = this.boats.indexOf(boat);
         this.boats.splice(index, 1)[0];
         this.geneticAlgorithm.currentGenerationDead.push(boat);

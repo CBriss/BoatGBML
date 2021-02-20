@@ -37,6 +37,10 @@ describe("Game Component", () => {
 			component1.moveTo(500 + component1.body.width - 1 , 500, ctx);
 			expect(component1.collidesWith(component2)).toBe(true);
 		});
+
+		it('Can detect collisions', () => {
+			expect(component1.hasCollsionWith([component2], ctx.canvas.height/ 2)).toEqual(component2);
+		});
 	});
 
 });

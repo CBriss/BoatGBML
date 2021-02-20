@@ -29,13 +29,13 @@ class GameComponent {
   // Slight Optimization on collision detection
   // Stops looking for collisions with objects far away on vertical plane
   hasCollsionWith(sortedArray, canvasMidPoint) {
-    let verticalState = this.y < canvasMidPoint ? "Top" : "Bottom";
+    let verticalState = this.body.position.y < canvasMidPoint ? "Top" : "Bottom";
     if (verticalState == "Top") {
       var i = 0;
       while (
         i < sortedArray.length &&
-        sortedArray[i].y <= canvasMidPoint &&
-        sortedArray[i].y <= this.endY
+        sortedArray[i].body.position.y <= canvasMidPoint &&
+        sortedArray[i].body.position.y <= this.body.endPosition.y
       ) {
         if (this.collidesWith(sortedArray[i])) return sortedArray[i];
         i++;
@@ -44,8 +44,8 @@ class GameComponent {
       var i = sortedArray.length - 1;
       while (
         i >= 0 &&
-        sortedArray[i].endY >= canvasMidPoint &&
-        sortedArray[i].y <= this.endY
+        sortedArray[i].body.endPosition.y >= canvasMidPoint &&
+        sortedArray[i].body.position.y <= this.body.endPosition.y
       ) {
         if (this.collidesWith(sortedArray[i])) return sortedArray[i];
         i--;
@@ -53,4 +53,25 @@ class GameComponent {
     }
     return false;
   }
+
+  hasCollsionWith(sortedArray, canvasMidPoint) {
+    let verticalState = this.body.position.y < canvasMidPoint ? "Top" : "Bottom";
+    if (verticalState == "Top"){
+      var i = 0;
+      var increment = 1;
+    }
+    else {
+      var i = sortedArray.length - 1;
+      var increment = -1;
+    }
+
+    while(i >= 0 && i < sortedArray.length){
+      if(sortedArray[i].body.position.y <= this.body.endPosition.y &&
+        this.collidesWith(sortedArray[i]))
+        return sortedArray[i];
+      i += increment;
+    }
+    return false;
+  }
+
 }

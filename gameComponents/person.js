@@ -1,5 +1,5 @@
 class Person extends GameComponent {
-  constructor(ctx, ropeStartX, ropeStartY) {
+  constructor(screenContext, ropeStartX, ropeStartY) {
     super(
       new Position(ropeStartX, ropeStartY + 150),
       20,
@@ -11,25 +11,25 @@ class Person extends GameComponent {
     this.speedX = 0;
     this.speedY = 0;
 
-    this.show(ctx);
+    this.show(screenContext);
   }
 
-  update(ctx, ropeStartX, ropeStartY) {
+  update(screenContext, ropeStartX, ropeStartY) {
     this.ropeStartX = ropeStartX;
     this.ropeStartY = ropeStartY;
 
     this.changePos(ropeStartX, ropeStartY);
-    this.show(ctx);
+    this.show(screenContext);
   }
 
-  show(ctx) {
-    ctx.fillStyle = "green";
-    ctx.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
+  show(screenContext) {
+    screenContext.fillStyle = "green";
+    screenContext.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
 
-    ctx.beginPath();
-    ctx.moveTo(this.ropeStartX, this.ropeStartY);
-    ctx.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
-    ctx.stroke();
+    screenContext.beginPath();
+    screenContext.moveTo(this.ropeStartX, this.ropeStartY);
+    screenContext.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
+    screenContext.stroke();
   }
 
   changePos(ropeStartX, ropeStartY) {
@@ -61,7 +61,7 @@ class Person extends GameComponent {
         this.speedX *= -1;
         this.body.position.x += 5;
       } else this.speedX += 2;
-    } else if (this.x > ropeStartX) {
+    } else if (this.body.position.x > ropeStartX) {
       if (this.speedX != 0) {
         this.speedX *= -1;
         this.body.position.x -= 5;
