@@ -48,9 +48,16 @@ describe("Boat", () => {
 			expect(nearestObstacles[0]).toBe(nearestObstacle);
 		});
 	
-		it("find_nearest_obstacles returns empty array if no obstacles", () => {
-			var nearestObstacles = boat.find_nearest_obstacles([])
-			expect(nearestObstacles.length).toBe(0);
+		it("Returns empty array if no obstacles", () => {
+			expect(boat.find_nearest_obstacles([]).length).toBe(0);
+		});
+
+		it('Can Find the Obstacle Gap', () => {
+			var obstacles = Obstacle.newPairOfObstacles(100, -10, ctx.canvas.width);
+			let {gapLeft, gapRight, gapYPos} = boat.findObstacleGap(obstacles);
+			expect(gapLeft).not.toBe(undefined);
+			expect(gapRight).not.toBe(undefined);
+			expect(gapYPos).not.toBe(undefined);
 		});
 	});
 
@@ -59,13 +66,13 @@ describe("Boat", () => {
 		expect(boat.score).toBeGreaterThan(0);
 	});
 
-	it('Returns Keys When Thinking', () => {
-		expect(boat.think(ctx, [new Obstacle(0, 0, 50)], true).length).toBe(0);
-	});
-
 	describe("Movement", () => {
+
+		beforeEach(() => {
+			input = new Input();
+		});
+
         it("Sets Position in move function", () => {
-            input = new Input();
             input.pressKey('right');
             input.pressKey('down');
             boat.move(input, ctx);
@@ -73,13 +80,19 @@ describe("Boat", () => {
         });
 
         it("Stops Position From Going Off Screen", () => {
-            input = new Input();
             input.pressKey('left');
             input.pressKey('up');
 			boat.move(input, ctx);
             expectPositionCoords(boat.body.position, 0, 0)
         });
-    });   
+
+		
+		it('Presses Keys When Thinking', () => {
+			var obstacles = Obstacle.newPairOfObstacles(300, 10, ctx.canvas.width);
+			console.log(boat.think(ctx, obstacles, input, true));
+			expect(boat.think(ctx, obstacles, input, true).length).toBeGreaterThan(0);
+		});
+    });
 });
 
 function expectPositionCoords(position, expected_x, expected_y){
