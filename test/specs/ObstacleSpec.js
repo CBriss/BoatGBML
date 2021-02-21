@@ -2,7 +2,7 @@ describe("Obstacle", () => {
 
 	beforeEach(() => {
 		ctx = {canvas: {width: 1000, height: 1000 }};
-		obstacle = new Obstacle(0, 0, 50, 50);
+		obstacle = new Obstacle(0, 0, 50);
 	});
 
 	it("Initializes Correctly", () => {
@@ -16,8 +16,13 @@ describe("Obstacle", () => {
 		expect(gapSize).toBe(100);
 	});
 
-	if("Is Not Clamped to Screen", () => {
+	it("Is Not Clamped to Screen", () => {
 		obstacle.update(ctx.canvas.height * 100, ctx);
 		expect(obstacle.body.position.y).toBeGreaterThan(ctx.canvas.height);
 	});
+
+	it("Destroys Itself When Off-Screen", () =>{
+    expect(obstacle.update(ctx.canvas.height * 1000, ctx)).toBe(true);
+	});
+
 });

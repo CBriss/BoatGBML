@@ -16,7 +16,7 @@ class Boat extends GameComponent {
   static randomStartPosition(screenContext){
     return new Position(
       Math.random() * (screenContext.canvas.width - 25),
-      Math.random() * (screenContext.canvas.height - 125)
+      Math.random() * (screenContext.canvas.height - 125) + screenContext.canvas.height/3
     );
   }
 
@@ -44,7 +44,7 @@ class Boat extends GameComponent {
     if (this.hud) this.hud.show(screenContext);
   }
 
-  think(screenContext, obstacles, input, yAxisMovement) {
+  think(screenContext, input, obstacles, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
     var brainInput = [
@@ -115,10 +115,11 @@ class Boat extends GameComponent {
     let nearestDistance = null;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      let distance = this.body.endPosition.y - obstacle.body.position.y;
+      let distance = this.body.position.y - obstacle.body.endPosition.y;
       if (distance >= 0 && distance < (nearestDistance || distance + 1)) {
         nearestObstacles[1] = nearestObstacles[0] || obstacles[i + 1];
         nearestObstacles[0] = obstacle;
+        nearestDistance = distance;
       }
     }
     if (nearestObstacles[1]) return [nearestObstacles[0], nearestObstacles[1]];

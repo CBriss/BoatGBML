@@ -21,7 +21,7 @@ class BoatGame {
     this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
-    this.boatCount = playerFlag ? 1 : 25;
+    this.boatCount = playerFlag ? 1 : 10;
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
     this.boats = this.geneticAlgorithm.newGeneration([], this.screen.context, seed_input_weights);
     this.obstacles = [];
@@ -43,6 +43,7 @@ class BoatGame {
   /* Frame Processing */
 
   processFrame() {
+    this.frameCount += 1;
     this.insertObstacles();
     this.updateObstacles();
     this.updateBoats();
@@ -56,9 +57,12 @@ class BoatGame {
     }
   }
 
+  removeObstacle(obstacle){
+    this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
+  }
+
   updateGameState() {
     if ((this.playerFlag && this.timeLeft <= 0) || this.input.isPressed("exit")) this.stop();
-    this.frameCount += 1;
     this.timeLeft = 1500 - this.frameCount;
     this.distanceTraveled += Math.ceil(this.gameSpeed / 10);
     if (this.playerFlag)
@@ -104,9 +108,8 @@ class BoatGame {
     // Since I am splicing the array in the loop
     for (var i = 0; i < this.obstacles.length; i++) {
       let obstacle = this.obstacles[i];
-      obstacle.update(this.gameSpeed, this.screen.context);
-      if (obstacle.y > this.screen.canvas.height) {
-        this.obstacles.splice(this.obstacles.indexOf(obstacle), 1)[0];
+      if(obstacle.update(this.gameSpeed, this.screen.context)){
+        this.removeObstacle(obstacle);
         i--;
       }
     }

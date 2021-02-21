@@ -10,6 +10,9 @@ class Obstacle extends GameComponent {
       this.body.position.y += gameSpeed * this.moveSpeed,
       ctx
     );
+    if(this.body.top() > ctx.canvas.height){
+      return true
+    }
   }
 
   show(ctx) {

@@ -22,7 +22,7 @@ class GeneticAlgorithm {
           parents[1],
           new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights)
         );
-        child.mutate(this.bestBoat.score * 0.0/this.goalScore);
+        child.brain.mutate(this.bestBoat.score * 0.0/this.goalScore);
         boats.push(child);
       }
     }

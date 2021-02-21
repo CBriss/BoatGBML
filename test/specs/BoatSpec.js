@@ -34,7 +34,7 @@ describe("Boat", () => {
 
 		it("Finds nearest obstacles", () => {
 			farObstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
-			closeObstacle = new Obstacle(boat.body.position.x, boat.body.position.y, 50);
+			closeObstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 100, 50);
 			var nearestObstacles = boat.find_nearest_obstacles([farObstacle, closeObstacle])
 			expect(nearestObstacles[0]).toBe(closeObstacle);
 			expect(nearestObstacles[1]).toBe(farObstacle);
@@ -55,9 +55,9 @@ describe("Boat", () => {
 		it('Can Find the Obstacle Gap', () => {
 			var obstacles = Obstacle.newPairOfObstacles(100, -10, ctx.canvas.width);
 			let {gapLeft, gapRight, gapYPos} = boat.findObstacleGap(obstacles);
-			expect(gapLeft).not.toBe(undefined);
-			expect(gapRight).not.toBe(undefined);
-			expect(gapYPos).not.toBe(undefined);
+			expect(gapLeft).toBeGreaterThan(0);
+			expect(gapRight).toBeGreaterThan(0);
+			expect(gapYPos).toBeGreaterThan(0);
 		});
 	});
 
