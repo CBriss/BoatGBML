@@ -2,14 +2,14 @@ class GeneticAlgorithm {
   constructor(populationSize, mode) {
     this.bestBoat;
     this.bestBoatAge = 0;
-    this.currentGenerationDead = [];
+    this.deadPopulation = [];
     this.populationSize = populationSize;
     this.mode = mode;
     this.goalScore = 5000;
   }
 
   newGeneration(boats, context, seed_weights=null) {
-    if (this.currentGenerationDead.length == 0) {
+    if (this.deadPopulation.length == 0) {
       for (var i = 0; i < this.populationSize; i++) {
         boats.push(new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights));
       }
@@ -26,10 +26,10 @@ class GeneticAlgorithm {
         boats.push(child);
       }
     }
-    _.forEach(this.currentGenerationDead, deadBoat => {
+    _.forEach(this.deadPopulation, deadBoat => {
       deadBoat.brain.dispose();
     });
-    this.currentGenerationDead = [];
+    this.deadPopulation = [];
     return boats;
   }
 
@@ -47,8 +47,8 @@ class GeneticAlgorithm {
         this.bestBoat.brain.dispose();
         this.bestBoat = currentGenBest;
         this.bestBoatAge = 0;
-        this.currentGenerationDead.splice(
-          this.currentGenerationDead.indexOf(this.bestBoat),
+        this.deadPopulation.splice(
+          this.deadPopulation.indexOf(this.bestBoat),
           1
         );
       } else {
@@ -57,17 +57,17 @@ class GeneticAlgorithm {
     } else {
       this.bestBoat = currentGenBest;
       this.bestBoatAge = 0;
-      this.currentGenerationDead.splice(
-        this.currentGenerationDead.indexOf(this.bestBoat),
+      this.deadPopulation.splice(
+        this.deadPopulation.indexOf(this.bestBoat),
         1
       );
     }
   }
 
   currentGenerationBestBoat() {
-    let winnerBoat = this.currentGenerationDead[0];
-    for (var i = 0, len = this.currentGenerationDead.length; i < len; i++) {
-      let boat = this.currentGenerationDead[i];
+    let winnerBoat = this.deadPopulation[0];
+    for (var i = 0, len = this.deadPopulation.length; i < len; i++) {
+      let boat = this.deadPopulation[i];
       if (boat.score >= winnerBoat.score) {
         winnerBoat = boat;
       }
@@ -76,14 +76,14 @@ class GeneticAlgorithm {
   }
 
   findSuitableParents() {
-    // let generationFitness = sumGenerationFitness(this.currentGenerationDead);
+    // let generationFitness = sumGenerationFitness(this.deadPopulation);
     let generationBest1 = this.findBestIndividual(
-      this.currentGenerationDead.slice(0, this.currentGenerationDead.length / 2)
+      this.deadPopulation.slice(0, this.deadPopulation.length / 2)
     );
     let generationBest2 = this.findBestIndividual(
-      this.currentGenerationDead.slice(
-        this.currentGenerationDead.length / 2,
-        this.currentGenerationDead.length
+      this.deadPopulation.slice(
+        this.deadPopulation.length / 2,
+        this.deadPopulation.length
       )
     );
     return [generationBest1, generationBest2];
@@ -104,8 +104,8 @@ class GeneticAlgorithm {
 
   sumGenerationFitness() {
     // let generationFitness = 0;
-    for (var i = 0, len = this.currentGenerationDead.length; i < len; i++) {
-      generationFitness += this.currentGenerationDead[i].score / 2;
+    for (var i = 0, len = this.deadPopulation.length; i < len; i++) {
+      generationFitness += this.deadPopulation[i].score / 2;
     }
   }
 

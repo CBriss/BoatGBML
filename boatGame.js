@@ -96,11 +96,15 @@ class BoatGame {
       );
 
       if (boat.hasCollsionWith(this.obstacles, this.screen.canvasMidPoint)) {
-        let index = this.boats.indexOf(boat);
-        this.boats.splice(index, 1)[0];
-        this.geneticAlgorithm.currentGenerationDead.push(boat);
+        this.removeBoat(boat);
       }
     }
+  }
+
+  removeBoat(boat){
+    let index = this.boats.indexOf(boat);
+    this.boats.splice(index, 1)[0];
+    this.geneticAlgorithm.currentGenerationDead.push(boat);
   }
 
   updateObstacles() {
