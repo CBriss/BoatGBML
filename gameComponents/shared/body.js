@@ -9,20 +9,18 @@ class Body {
   }
 
   update_position(new_x, new_y, ctx) {
-    if (this.clamp_to_screen){
-      let newPosition = this.clampPosition(new_x, new_y, ctx);
-      this.position.update(newPosition.x, newPosition.y);
-    }
+    if (this.clamp_to_screen)
+      this.position.update(...this.clampPosition(new_x, new_y, ctx));
     else
       this.position.update(new_x, new_y);
     this.endPosition.update(this.position.x + this.width, this.position.y + this.height);
   }
 
   clampPosition(x, y, ctx){
-    return {
-      x: Math.min(Math.max(x, 0), ctx.canvas.width - this.width),
-      y: Math.min(Math.max(y, 0), ctx.canvas.height - this.height)
-    }
+    return [
+      Math.min(Math.max(x, 0), ctx.canvas.width - this.width),
+      Math.min(Math.max(y, 0), ctx.canvas.height - this.height)
+    ]
   }
 
   top(){

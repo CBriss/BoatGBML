@@ -26,36 +26,8 @@ class GameComponent {
     return false;
   }
 
-  // Slight Optimization on collision detection
-  // Stops looking for collisions with objects far away on vertical plane
   hasCollsionWith(sortedArray, canvasMidPoint) {
-    let verticalState = this.body.position.y < canvasMidPoint ? "Top" : "Bottom";
-    if (verticalState == "Top") {
-      var i = 0;
-      while (
-        i < sortedArray.length &&
-        sortedArray[i].body.position.y <= canvasMidPoint &&
-        sortedArray[i].body.position.y <= this.body.endPosition.y
-      ) {
-        if (this.collidesWith(sortedArray[i])) return sortedArray[i];
-        i++;
-      }
-    } else if (verticalState == "Bottom") {
-      var i = sortedArray.length - 1;
-      while (
-        i >= 0 &&
-        sortedArray[i].body.endPosition.y >= canvasMidPoint &&
-        sortedArray[i].body.position.y <= this.body.endPosition.y
-      ) {
-        if (this.collidesWith(sortedArray[i])) return sortedArray[i];
-        i--;
-      }
-    }
-    return false;
-  }
-
-  hasCollsionWith(sortedArray, canvasMidPoint) {
-    let verticalState = this.body.position.y < canvasMidPoint ? "Top" : "Bottom";
+    let verticalState = (this.body.position.y < canvasMidPoint) ? "Top" : "Bottom";
     if (verticalState == "Top"){
       var i = 0;
       var increment = 1;

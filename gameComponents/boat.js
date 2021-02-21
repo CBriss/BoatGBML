@@ -44,7 +44,7 @@ class Boat extends GameComponent {
     if (this.hud) this.hud.show(screenContext);
   }
 
-  think(screenContext, input, obstacles, yAxisMovement) {
+  think(screenContext, obstacles, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
     var brainInput = [
@@ -57,35 +57,13 @@ class Boat extends GameComponent {
       brainInput.push((this.body.top() - gapYPos)/screenContext.canvas.height);
     }
     let result = this.brain.predict(brainInput);
-    let left = result[0];
-    let right = result[1];
-    if(yAxisMovement) {
-      var up = result[2];
-      var down = result[3];
-    }
-    var keys = [];
-    let highestResult = Math.max.apply(null, result);
-    switch (highestResult) {
-      case left:
-        keys[37] = true;
-        break;
-      case right:
-        keys[39] = true;
-        break;
-      case up:
-        keys[38] = true;
-        break;
-      case down:
-        keys[40] = true;
-        break;
-      default:
-        break;
-    }
-    return keys;
+    var input = new Input();
+    input.pressKey(outputMap[result.indexOf(Math.max.apply(null, result))]);
+    return input;
   }
 
   update(screenContext, input, obstacles, newDistanceTraveled, yAxisMovement) {
-    if (!this.player) input.keys = this.think(screenContext, input, obstacles, yAxisMovement);
+    if (!this.player) input = this.think(screenContext, obstacles, yAxisMovement);
     this.move(input, screenContext);
     this.person.update(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
     this.updateScore(screenContext.canvas.height, newDistanceTraveled);
@@ -156,21 +134,5 @@ class Boat extends GameComponent {
       gapYPos
     }
   }
-  
 
-  // This doesn't belong here?
-  // this.keys doesn't exist in the current scope.
-  // updateSpeed() {
-  //   if (this.keys && this.keys[38]) {
-  //     this.boatSpeed += 2;
-  //     if (this.boatSpeed > 200) {
-  //       this.boatSpeed = 200;
-  //     }
-  //   } else if (this.keys && this.keys[40]) {
-  //     this.boatSpeed -= 2;
-  //     if (this.boatSpeed < 0) {
-  //       this.boatSpeed = 0;
-  //     }
-  //   }
-  // }
 }

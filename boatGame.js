@@ -104,7 +104,7 @@ class BoatGame {
   removeBoat(boat){
     let index = this.boats.indexOf(boat);
     this.boats.splice(index, 1)[0];
-    this.geneticAlgorithm.currentGenerationDead.push(boat);
+    this.geneticAlgorithm.deadPopulation.push(boat);
   }
 
   updateObstacles() {

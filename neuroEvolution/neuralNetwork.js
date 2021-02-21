@@ -1,3 +1,10 @@
+const outputMap = {
+  0: 'left',
+  1: 'right',
+  2: 'up',
+  3: 'down' 
+};
+
 class NeuralNetwork {
   constructor(input_nodes, hidden_nodes, output_nodes, preset_weights) {
     this.input_nodes = input_nodes;

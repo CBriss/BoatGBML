@@ -87,10 +87,10 @@ describe("Boat", () => {
         });
 
 		
-		it('Presses Keys When Thinking', () => {
+		it('Thinking Returns Input Object', () => {
 			var obstacles = Obstacle.newPairOfObstacles(300, 10, ctx.canvas.width);
 			console.log(boat.think(ctx, obstacles, input, true));
-			expect(boat.think(ctx, obstacles, input, true).length).toBeGreaterThan(0);
+			expect(boat.think(ctx, obstacles, input, true).constructor.name).toBe("Input");
 		});
     });
 });
