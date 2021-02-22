@@ -5,7 +5,7 @@ class GeneticAlgorithm {
     this.deadPopulation = [];
     this.populationSize = populationSize;
     this.mode = mode;
-    this.goalScore = 5000;
+    this.goalScore = 10000;
   }
 
   newGeneration(boats, context, seed_weights=null) {
@@ -22,7 +22,7 @@ class GeneticAlgorithm {
           parents[1],
           new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights)
         );
-        child.brain.mutate(this.bestBoat.score * 0.0/this.goalScore);
+        child.brain.mutate();
         boats.push(child);
       }
     }
@@ -31,10 +31,6 @@ class GeneticAlgorithm {
     });
     this.deadPopulation = [];
     return boats;
-  }
-
-  update() {
-    this.find_high_score();
   }
 
   updateBestBoat() {
@@ -76,7 +72,6 @@ class GeneticAlgorithm {
   }
 
   findSuitableParents() {
-    // let generationFitness = sumGenerationFitness(this.deadPopulation);
     let generationBest1 = this.findBestIndividual(
       this.deadPopulation.slice(0, this.deadPopulation.length / 2)
     );
@@ -91,19 +86,18 @@ class GeneticAlgorithm {
 
   findBestIndividual(cluster) {
     var clusterBest = cluster[0];
-    let clusterHighScore = clusterBest.score;
+    let highScore = clusterBest.score;
     for (var i = 1, len = cluster.length; i < len; i++) {
       let boat = cluster[i];
-      if (boat.score >= clusterHighScore) {
+      if (boat.score >= highScore) {
         clusterBest = boat;
-        clusterHighScore = boat.score;
+        highScore = boat.score;
       }
     }
     return clusterBest;
   }
 
   sumGenerationFitness() {
-    // let generationFitness = 0;
     for (var i = 0, len = this.deadPopulation.length; i < len; i++) {
       generationFitness += this.deadPopulation[i].score / 2;
     }
@@ -111,10 +105,7 @@ class GeneticAlgorithm {
 
   combineParentGenes(parentA, parentB, child) {
     let parentA_input_layer = parentA.brain.input_weights.dataSync();
-    let parentA_output_layer = parentA.brain.output_weights.dataSync();
     let parentB_input_layer = parentB.brain.input_weights.dataSync();
-    let parentB_output_layer = parentB.brain.output_weights.dataSync();
-
     let crossoverPoint = Math.floor(
       Math.random() * parentA_input_layer.length -
         parentA_input_layer.length / 2
@@ -123,13 +114,20 @@ class GeneticAlgorithm {
       ...parentA_input_layer.slice(0, crossoverPoint),
       ...parentB_input_layer.slice(crossoverPoint, parentB_input_layer.length)
     ];
+    let input_shape = child.brain.input_weights.shape;
+
+    let parentA_output_layer = parentA.brain.output_weights.dataSync();
+    let parentB_output_layer = parentB.brain.output_weights.dataSync();
+    crossoverPoint = Math.floor(
+      Math.random() * parentA_output_layer.length -
+        parentA_output_layer.length / 2
+    );
     let child_out_dna = [
       ...parentA_output_layer.slice(0, crossoverPoint),
       ...parentB_output_layer.slice(crossoverPoint, parentB_output_layer.length)
     ];
-
-    let input_shape = child.brain.input_weights.shape;
     let output_shape = child.brain.output_weights.shape;
+
     child.brain.dispose();
     child.brain.input_weights = tf.tensor(child_in_dna, input_shape);
     child.brain.output_weights = tf.tensor(child_out_dna, output_shape);

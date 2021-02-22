@@ -21,7 +21,7 @@ class BoatGame {
     this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
-    this.boatCount = playerFlag ? 1 : 10;
+    this.boatCount = playerFlag ? 1 : 25;
     this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
     this.boats = this.geneticAlgorithm.newGeneration([], this.screen.context, seed_input_weights);
     this.obstacles = [];

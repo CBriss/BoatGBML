@@ -1,17 +1,27 @@
 class Boat extends GameComponent {
   constructor(screenContext, playerFlag, yAxisMovement, seed_weights=null) {
-    super(Boat.randomStartPosition(screenContext), ...Boat.defaultBodyDimensions(), Boat.randomImage());
+    super(...Boat.defaultValues(screenContext));
     this.score = 0;
     this.distanceTraveled = 0;
-    this.person = new Person(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
-    this.brain = Boat.newBrain(yAxisMovement, seed_weights);
     this.player = playerFlag;
     this.speed = 5;
+
+    this.person = new Person(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
+    this.brain = playerFlag ? null : Boat.newBrain(yAxisMovement, seed_weights);
+    
     this.show(screenContext);
   }
 
   ////
   // Static Methods
+
+  static defaultValues(screenContext){
+    return [
+      Boat.randomStartPosition(screenContext),
+      ...Boat.defaultBodyDimensions(),
+      Boat.randomImage()
+    ]
+  }
 
   static randomStartPosition(screenContext){
     return new Position(
@@ -44,7 +54,7 @@ class Boat extends GameComponent {
     if (this.hud) this.hud.show(screenContext);
   }
 
-  think(screenContext, obstacles, yAxisMovement) {
+  think(screenContext, obstacles, input, yAxisMovement) {
     let nearestObstacles = this.find_nearest_obstacles(obstacles);
     let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
     var brainInput = [
@@ -57,14 +67,16 @@ class Boat extends GameComponent {
       brainInput.push((this.body.top() - gapYPos)/screenContext.canvas.height);
     }
     let result = this.brain.predict(brainInput);
-    var input = new Input();
+    input.clearKeys();
     input.pressKey(outputMap[result.indexOf(Math.max.apply(null, result))]);
     return input;
   }
 
   update(screenContext, input, obstacles, newDistanceTraveled, yAxisMovement) {
-    if (!this.player) input = this.think(screenContext, obstacles, yAxisMovement);
-    this.move(input, screenContext);
+    this.move(
+      this.player ? input : this.think(screenContext, obstacles, input, yAxisMovement),
+      screenContext
+    );
     this.person.update(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
     this.updateScore(screenContext.canvas.height, newDistanceTraveled);
     this.show(screenContext);
@@ -106,33 +118,21 @@ class Boat extends GameComponent {
   }
 
   findObstacleGap(nearestObstacles) {
-    if (nearestObstacles.length > 1) {
-      if (nearestObstacles[0].body.left() < nearestObstacles[1].body.left()) {
-        var nearestObstacle1 = nearestObstacles[0];
-        var nearestObstacle2 = nearestObstacles[1];
-      } else {
-        var nearestObstacle2 = nearestObstacles[0];
-        var nearestObstacle1 = nearestObstacles[1];
-      }
-      var gapLeft = nearestObstacle1.body.right();
-      var gapRight = nearestObstacle2.body.left();
-      var gapYPos = nearestObstacle1.body.bottom();
-    } else if (nearestObstacles.length > 0) {
-      let nearestObstacle1 = nearestObstacles[0];
-      var gapLeft = nearestObstacle1.body.right();
-      var gapRight = 0;
-      var gapYPos = nearestObstacle1.body.bottom();
-    } else {
-      var gapLeft = 0;
-      var gapRight = 0;
-      var gapYPos = 0;
+    if (nearestObstacles <= 1){
+      return { gapLeft: 0, gapRight:  0, gapYPos: 0 };
     }
-  
+
+    if (nearestObstacles[0].body.left() < nearestObstacles[1].body.left()) {
+      var leftObstacle = nearestObstacles[0];
+      var rightObstacle = nearestObstacles[1];
+    } else {
+      var rightObstacle = nearestObstacles[0];
+      var leftObstacle = nearestObstacles[1];
+    }
     return {
-      gapLeft,
-      gapRight,
-      gapYPos
+      gapLeft: leftObstacle.body.right(),
+      gapRight: rightObstacle.body.left(),
+      gapYPos: leftObstacle.body.bottom()
     }
   }
-
 }

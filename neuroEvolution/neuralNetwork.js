@@ -2,7 +2,7 @@ const outputMap = {
   0: 'left',
   1: 'right',
   2: 'up',
-  3: 'down' 
+  3: 'down'
 };
 
 class NeuralNetwork {
@@ -31,7 +31,6 @@ class NeuralNetwork {
       let input_layer = tf.tensor(user_input, [1, this.input_nodes]);
       let hidden_layer = input_layer.matMul(this.input_weights).logSigmoid();
       let output_layer = hidden_layer.matMul(this.output_weights).logSigmoid();
-      // output = output_layer.softmax().dataSync();
       output = output_layer.softmax().dataSync();
     });
     return output;
@@ -54,14 +53,9 @@ class NeuralNetwork {
     this.output_weights.dispose();
   }
 
-  mutate(goalPercentage) {
+  mutate() {
     function mutateWeight(weight) {
-      // if (Math.random(1) < 0.05) {
-      //   console.log("mutate");
-      //   return weight + randn_bm() * 0.5;
-      // }
-      // return weight;
-      if (Math.random(1) < (0.10 * (1-goalPercentage))) {
+      if (Math.random(1) < (0.05)) {
         return weight + randn_bm() * 0.5;
       }
       return weight;

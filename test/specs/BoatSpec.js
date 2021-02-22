@@ -88,6 +88,8 @@ describe("Boat", () => {
 
 		
 		it('Thinking Returns Input Object', () => {
+			boat = new Boat(ctx, false, true);
+			
 			var obstacles = Obstacle.newPairOfObstacles(300, 10, ctx.canvas.width);
 			console.log(boat.think(ctx, obstacles, input, true));
 			expect(boat.think(ctx, obstacles, input, true).constructor.name).toBe("Input");
