@@ -31,19 +31,19 @@ class Person extends GameComponent {
   changePos(rope_start_x, rope_start_y) {
     if (this.ropeLength(rope_start_x, rope_start_y) > 70)
       this.adjustVertical(rope_start_x);
-    this.body.position.x += this.speed_x;
-    if (this.ropeLength(rope_start_x, rope_start_y) > 70)
       this.adjustHorizontal(rope_start_y);
+    
+    this.body.position.x += this.speed_x;
     this.body.position.y += this.speed_y;
   }
 
   adjustHorizontal(rope_start_y) {
-    if (this.body.position.y < rope_start_y) {
+    if (this.body.left() < rope_start_y) {
       if (this.speed_y != 0) {
         this.speed_y *= -1;
         this.body.position.y += 5;
       } else this.speed_y += 2;
-    } else if (this.body.position.y > rope_start_y) {
+    } else if (this.body.left() > rope_start_y) {
       if (this.speed_y != 0) {
         this.speed_y *= -1;
         this.body.position.y -= 5;
@@ -52,12 +52,12 @@ class Person extends GameComponent {
   }
 
   adjustVertical(rope_start_x) {
-    if (this.body.position.x < rope_start_x) {
+    if (this.body.top() < rope_start_x) {
       if (this.speed_x != 0) {
         this.speed_x *= -1;
         this.body.position.x += 5;
       } else this.speed_x += 2;
-    } else if (this.body.position.x > rope_start_x) {
+    } else if (this.body.top() > rope_start_x) {
       if (this.speed_x != 0) {
         this.speed_x *= -1;
         this.body.position.x -= 5;

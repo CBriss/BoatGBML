@@ -11,9 +11,9 @@ class GameComponent {
 
   collidesWith(other_object) {
     let other_body = other_object.body;
-    if (this.isOverlappingVertical(other_body) && this.isOverlappingHorizontal(other_body)) {
+    if (this.body.isOverlappingVertical(other_body) && this.body.isOverlappingHorizontal(other_body))
       return true;
-    }
+
     return false;
   }
 
@@ -25,21 +25,6 @@ class GameComponent {
       i += increment;
     }
     return false;
-  }
-
-  isOverlappingVertical(other_body) {
-    return (
-      (this.body.top() >= other_body.top() && this.body.top() <= other_body.bottom()) ||
-      (this.body.bottom() >= other_body.top() && this.body.bottom() <= other_body.bottom()) ||
-      (this.body.top() <= other_body.top() && this.body.bottom() >= other_body.bottom())
-    )
-  }
-
-  isOverlappingHorizontal(other_body){
-    return (
-      (this.body.left() >= other_body.left() && this.body.left() <= other_body.right()) ||
-      (this.body.right() >= other_body.left() && this.body.right() <= other_body.right())
-    )
   }
 
   static setLoopVariables(is_top_of_screen, last_index){

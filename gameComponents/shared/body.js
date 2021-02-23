@@ -47,4 +47,19 @@ class Body {
     return [this.width, this.height];
   }
 
+  isOverlappingVertical(other_body) {
+    return (
+      (this.top() >= other_body.top() && this.top() <= other_body.bottom()) ||
+      (this.bottom() >= other_body.top() && this.bottom() <= other_body.bottom()) ||
+      (this.top() <= other_body.top() && this.bottom() >= other_body.bottom())
+    )
+  }
+
+  isOverlappingHorizontal(other_body){
+    return (
+      (this.left() >= other_body.left() && this.left() <= other_body.right()) ||
+      (this.right() >= other_body.left() && this.right() <= other_body.right())
+    )
+  }
+
 }

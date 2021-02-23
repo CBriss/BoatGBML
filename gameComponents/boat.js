@@ -2,7 +2,7 @@ const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
   constructor(screen, player_flag, y_axis_movement, seed_weights=null) {
-    super(...Boat.defaultValues(screen));
+    super(...Boat.defaultValues(screen, y_axis_movement));
     this.score = 0;
     this.distance_traveled = 0;
     this.player_controlled = player_flag;
@@ -18,18 +18,18 @@ class Boat extends GameComponent {
   ////
   // Static Methods
 
-  static defaultValues(screen){
+  static defaultValues(screen, y_axis_movement){
     return [
-      Boat.randomStartPosition(screen),
+      Boat.randomStartPosition(screen, y_axis_movement),
       ...Boat.defaultBodyDimensions(),
       Boat.randomImage()
     ]
   }
 
-  static randomStartPosition(screen){
+  static randomStartPosition(screen, y_axis_movement){
     return new Position(
       Math.random() * (screen.width() - 25),
-      Math.random() * (screen.height() - 125) + screen.height()/3
+      (y_axis_movement ? Math.random() * (screen.height() - 125) + screen.height()/3 : screen.height() * 0.6)
     );
   }
 
@@ -124,9 +124,8 @@ class Boat extends GameComponent {
   }
 
   findObstacleGap(nearest_obstacles) {
-    if (nearest_obstacles <= 1){
+    if (nearest_obstacles <= 1)
       return { gap_left: 0, gap_right:  0, gap_y_pos: 0 };
-    }
 
     if (nearest_obstacles[0].body.left() < nearest_obstacles[1].body.left()) {
       var left_obstacle = nearest_obstacles[0];
