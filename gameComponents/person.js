@@ -1,77 +1,73 @@
 class Person extends GameComponent {
-  constructor(screenContext, ropeStartX, ropeStartY) {
+  constructor(rope_start_x, rope_start_y) {
     super(
-      new Position(ropeStartX, ropeStartY + 150),
+      new Position(rope_start_x, rope_start_y + 150),
       20,
       20,
       "images/person.png"
     );
-    this.ropeStartX = ropeStartX;
-    this.ropeStartY = ropeStartY;
-    this.speedX = 0;
-    this.speedY = 0;
-
-    this.show(screenContext);
+    this.rope_start_x = rope_start_x;
+    this.rope_start_y = rope_start_y;
+    this.speed_x = 0;
+    this.speed_y = 0;
   }
 
-  update(screenContext, ropeStartX, ropeStartY) {
-    this.ropeStartX = ropeStartX;
-    this.ropeStartY = ropeStartY;
+  update(rope_start_x, rope_start_y) {
+    this.rope_start_x = rope_start_x;
+    this.rope_start_y = rope_start_y;
 
-    this.changePos(ropeStartX, ropeStartY);
-    this.show(screenContext);
+    this.changePos(rope_start_x, rope_start_y);
   }
 
-  show(screenContext) {
-    screenContext.fillStyle = "green";
-    screenContext.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
+  show(screen_context) {
+    screen_context.drawImage(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
 
-    screenContext.beginPath();
-    screenContext.moveTo(this.ropeStartX, this.ropeStartY);
-    screenContext.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
-    screenContext.stroke();
+    screen_context.beginPath();
+    screen_context.moveTo(this.rope_start_x, this.rope_start_y);
+    screen_context.lineTo(this.body.position.x + this.body.width / 2, this.body.position.y);
+    screen_context.stroke();
   }
 
-  changePos(ropeStartX, ropeStartY) {
-    if (this.ropeLength(ropeStartX, ropeStartY) > 70)
-      this.adjustVertical(ropeStartX);
-    this.body.position.x += this.speedX;
-    if (this.ropeLength(ropeStartX, ropeStartY) > 70)
-      this.adjustHorizontal(ropeStartY);
-    this.body.position.y += this.speedY;
+  changePos(rope_start_x, rope_start_y) {
+    if (this.ropeLength(rope_start_x, rope_start_y) > 70)
+      this.adjustVertical(rope_start_x);
+    this.body.position.x += this.speed_x;
+    if (this.ropeLength(rope_start_x, rope_start_y) > 70)
+      this.adjustHorizontal(rope_start_y);
+    this.body.position.y += this.speed_y;
   }
 
-  adjustHorizontal(ropeStartY) {
-    if (this.body.position.y < ropeStartY) {
-      if (this.speedY != 0) {
-        this.speedY *= -1;
+  adjustHorizontal(rope_start_y) {
+    if (this.body.position.y < rope_start_y) {
+      if (this.speed_y != 0) {
+        this.speed_y *= -1;
         this.body.position.y += 5;
-      } else this.speedY += 2;
-    } else if (this.body.position.y > ropeStartY) {
-      if (this.speedY != 0) {
-        this.speedY *= -1;
+      } else this.speed_y += 2;
+    } else if (this.body.position.y > rope_start_y) {
+      if (this.speed_y != 0) {
+        this.speed_y *= -1;
         this.body.position.y -= 5;
-      } else this.speedY -= 2;
+      } else this.speed_y -= 2;
     }
   }
 
-  adjustVertical(ropeStartX) {
-    if (this.body.position.x < ropeStartX) {
-      if (this.speedX != 0) {
-        this.speedX *= -1;
+  adjustVertical(rope_start_x) {
+    if (this.body.position.x < rope_start_x) {
+      if (this.speed_x != 0) {
+        this.speed_x *= -1;
         this.body.position.x += 5;
-      } else this.speedX += 2;
-    } else if (this.body.position.x > ropeStartX) {
-      if (this.speedX != 0) {
-        this.speedX *= -1;
+      } else this.speed_x += 2;
+    } else if (this.body.position.x > rope_start_x) {
+      if (this.speed_x != 0) {
+        this.speed_x *= -1;
         this.body.position.x -= 5;
-      } else this.speedX -= 2;
+      } else this.speed_x -= 2;
     }
   }
 
-  ropeLength(ropeStartX, ropeStartY) {
-    var a = Math.abs(ropeStartX - this.body.position.x);
-    var b = Math.abs(ropeStartY - this.body.position.y);
+  ropeLength(rope_start_x, rope_start_y) {
+    var a = Math.abs(rope_start_x - this.body.position.x);
+    var b = Math.abs(rope_start_y - this.body.position.y);
     return Math.sqrt(a * a + b * b);
   }
 }

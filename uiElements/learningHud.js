@@ -1,57 +1,57 @@
 class LearningHud {
   constructor() {
-    this.generationCountX = 50;
-    this.generationCountY = 25;
-    this.generationCount = 1;
+    this.generation_count_x = 50;
+    this.generation_count_y = 25;
+    this.generation_count = 1;
 
-    this.highestScoreX = 50;
-    this.highestScoreY = 50;
-    this.bestBoat;
+    this.highest_score_x = 50;
+    this.highest_score_y = 50;
+    this.best_boat;
 
-    this.bestScoreGenerationX = 50;
-    this.bestScoreGenerationY = 75;
-    this.bestScoreGeneration = 0;
+    this.best_score_generation_x = 50;
+    this.best_score_generation_y = 75;
+    this.best_score_generation = 0;
 
-    this.boatAgeX = 300;
-    this.boatAgeY = 75;
-    this.bestScoreGeneration = 1;
+    this.boat_age_x = 300;
+    this.boat_age_y = 75;
+    this.best_score_generation = 1;
   }
 
   show(ctx) {
-    let bestBoatScore = this.bestBoat ? this.bestBoat.score : 0;
+    let best_boat_score = this.best_boat ? this.best_boat.score : 0;
     ctx.font = "20px Arial";
     
     ctx.fillText(
-      "Generation " + this.generationCount,
-      this.generationCountX,
-      this.generationCountY
+      "Generation " + this.generation_count,
+      this.generation_count_x,
+      this.generation_count_y
     );
 
     ctx.fillText(
-      "Current Best Boat: " + bestBoatScore,
-      this.highestScoreX,
-      this.highestScoreY
+      "Current Best Boat: " + best_boat_score,
+      this.highest_score_x,
+      this.highest_score_y
     );
 
     ctx.fillText(
-      "From Generation " + this.bestScoreGeneration,
-      this.bestScoreGenerationX,
-      this.bestScoreGenerationY
+      "From Generation " + this.best_score_generation,
+      this.best_score_generation_x,
+      this.best_score_generation_y
     );
 
     ctx.fillText(
       "Best Boat Age " +
-        (this.generationCount - this.bestScoreGeneration),
-      this.boatAgeX,
-      this.boatAgeY
+        (this.generation_count - this.best_score_generation),
+      this.boat_age_x,
+      this.boat_age_y
     );
   }
 
-  update(bestBoat) {
-    this.generationCount += 1;
-    if (this.bestBoat != bestBoat) {
-      this.bestScoreGeneration = this.generationCount -1;
-      this.bestBoat = bestBoat;
+  update(best_boat) {
+    this.generation_count += 1;
+    if (this.best_boat != best_boat) {
+      this.best_score_generation = this.generation_count -1;
+      this.best_boat = best_boat;
     }
   }
 }

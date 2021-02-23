@@ -1,105 +1,104 @@
 class GeneticAlgorithm {
-  constructor(populationSize, mode) {
-    this.bestBoat;
-    this.bestBoatAge = 0;
-    this.deadPopulation = [];
-    this.populationSize = populationSize;
+  constructor(population_size, mode) {
+    this.best_boat;
+    this.best_boat_age = 0;
+    this.dead_population = [];
+    this.population_size = population_size;
     this.mode = mode;
-    this.goalScore = 10000;
   }
 
-  newGeneration(boats, context, seed_weights=null) {
-    if (this.deadPopulation.length == 0) {
-      for (var i = 0; i < this.populationSize; i++) {
-        boats.push(new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights));
+  newGeneration(boats, screen, seed_weights=null) {
+    if (this.dead_population.length == 0) {
+      for (var i = 0; i < this.population_size; i++) {
+        boats.push(new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights));
       }
     } else {
       this.updateBestBoat();
       let parents = this.findSuitableParents();
-      for (var i = 0; i < this.populationSize; i++) {
+      for (var i = 0; i < this.population_size; i++) {
         let child = this.combineParentGenes(
-          this.bestBoat || parents[0],
+          this.best_boat || parents[0],
           parents[1],
-          new Boat(context, this.populationSize == 1, this.mode == 'hard', seed_weights)
+          new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
         );
         child.brain.mutate();
         boats.push(child);
       }
     }
-    _.forEach(this.deadPopulation, deadBoat => {
+    _.forEach(this.dead_population, deadBoat => {
       deadBoat.brain.dispose();
     });
-    this.deadPopulation = [];
+    this.dead_population = [];
     return boats;
   }
 
   updateBestBoat() {
-    let currentGenBest = this.currentGenerationBestBoat();
-    if (this.bestBoat) {
+    let current_gen_best = this.currentGenerationBest();
+    if (this.best_boat) {
       if (
-        currentGenBest.score > this.bestBoat.highScore ||
-        this.bestBoatAge >= 3
+        current_gen_best.score > this.best_boat.high_score ||
+        this.best_boat_age >= 3
       ) {
-        this.bestBoat.brain.dispose();
-        this.bestBoat = currentGenBest;
-        this.bestBoatAge = 0;
-        this.deadPopulation.splice(
-          this.deadPopulation.indexOf(this.bestBoat),
+        this.best_boat.brain.dispose();
+        this.best_boat = current_gen_best;
+        this.best_boat_age = 0;
+        this.dead_population.splice(
+          this.dead_population.indexOf(this.best_boat),
           1
         );
       } else {
-        this.bestBoatAge += 1;
+        this.best_boat_age += 1;
       }
     } else {
-      this.bestBoat = currentGenBest;
-      this.bestBoatAge = 0;
-      this.deadPopulation.splice(
-        this.deadPopulation.indexOf(this.bestBoat),
+      this.best_boat = current_gen_best;
+      this.best_boat_age = 0;
+      this.dead_population.splice(
+        this.dead_population.indexOf(this.best_boat),
         1
       );
     }
   }
 
-  currentGenerationBestBoat() {
-    let winnerBoat = this.deadPopulation[0];
-    for (var i = 0, len = this.deadPopulation.length; i < len; i++) {
-      let boat = this.deadPopulation[i];
-      if (boat.score >= winnerBoat.score) {
-        winnerBoat = boat;
+  currentGenerationBest() {
+    let winner = this.dead_population[0];
+    for (var i = 0, len = this.dead_population.length; i < len; i++) {
+      let individual = this.dead_population[i];
+      if (individual.score >= winner.score) {
+        winner = individual;
       }
     }
-    return winnerBoat;
+    return winner;
   }
 
   findSuitableParents() {
-    let generationBest1 = this.findBestIndividual(
-      this.deadPopulation.slice(0, this.deadPopulation.length / 2)
+    let generation_best_1 = this.findBestIndividual(
+      this.dead_population.slice(0, this.dead_population.length / 2)
     );
-    let generationBest2 = this.findBestIndividual(
-      this.deadPopulation.slice(
-        this.deadPopulation.length / 2,
-        this.deadPopulation.length
+    let generation_best_2 = this.findBestIndividual(
+      this.dead_population.slice(
+        this.dead_population.length / 2,
+        this.dead_population.length
       )
     );
-    return [generationBest1, generationBest2];
+    return [generation_best_1, generation_best_2];
   }
 
   findBestIndividual(cluster) {
-    var clusterBest = cluster[0];
-    let highScore = clusterBest.score;
+    var cluster_best = cluster[0];
+    let high_score = cluster_best.score;
     for (var i = 1, len = cluster.length; i < len; i++) {
-      let boat = cluster[i];
-      if (boat.score >= highScore) {
-        clusterBest = boat;
-        highScore = boat.score;
+      let individual = cluster[i];
+      if (individual.score >= high_score) {
+        cluster_best = individual;
+        high_score = individual.score;
       }
     }
-    return clusterBest;
+    return cluster_best;
   }
 
   sumGenerationFitness() {
-    for (var i = 0, len = this.deadPopulation.length; i < len; i++) {
-      generationFitness += this.deadPopulation[i].score / 2;
+    for (var i = 0, len = this.dead_population.length; i < len; i++) {
+      generation_fitness += this.dead_population[i].score / 2;
     }
   }
 

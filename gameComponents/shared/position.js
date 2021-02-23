@@ -5,7 +5,11 @@ class Position {
   }
 
   update(new_x, new_y) {
-  	this.x = new_x;
-    this.y = new_y;
+  	this.x = Math.floor(new_x);
+    this.y = Math.floor(new_y);
+  }
+
+  coordinates() {
+    return [this.x, this.y];
   }
 }

@@ -1,32 +1,35 @@
+const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
+
 class Boat extends GameComponent {
-  constructor(screenContext, playerFlag, yAxisMovement, seed_weights=null) {
-    super(...Boat.defaultValues(screenContext));
+  constructor(screen, player_flag, y_axis_movement, seed_weights=null) {
+    super(...Boat.defaultValues(screen));
     this.score = 0;
-    this.distanceTraveled = 0;
-    this.player = playerFlag;
+    this.distance_traveled = 0;
+    this.player_controlled = player_flag;
     this.speed = 5;
 
-    this.person = new Person(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
-    this.brain = playerFlag ? null : Boat.newBrain(yAxisMovement, seed_weights);
-    
-    this.show(screenContext);
+    this.person = new Person(
+      this.body.left() + this.body.width / 2,
+      this.body.bottom()
+    );
+    this.brain = player_flag ? null : Boat.newBrain(y_axis_movement, seed_weights);
   }
 
   ////
   // Static Methods
 
-  static defaultValues(screenContext){
+  static defaultValues(screen){
     return [
-      Boat.randomStartPosition(screenContext),
+      Boat.randomStartPosition(screen),
       ...Boat.defaultBodyDimensions(),
       Boat.randomImage()
     ]
   }
 
-  static randomStartPosition(screenContext){
+  static randomStartPosition(screen){
     return new Position(
-      Math.random() * (screenContext.canvas.width - 25),
-      Math.random() * (screenContext.canvas.height - 125) + screenContext.canvas.height/3
+      Math.random() * (screen.width() - 25),
+      Math.random() * (screen.height() - 125) + screen.height()/3
     );
   }
 
@@ -35,12 +38,11 @@ class Boat extends GameComponent {
   }
 
   static randomImage() {
-    let possibleColors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
-    return "images/boats/boat" + possibleColors[Math.floor(Math.random() * possibleColors.length)] + ".png"
+    return "images/boats/boat" + boat_colors[Math.floor(Math.random() * boat_colors.length)] + ".png"
   }
   
-  static newBrain(yAxisMovement, seed_weights = null) {
-    let brain_dimensions = yAxisMovement ? [5, 50, 4] : [4, 5, 2];
+  static newBrain(y_axis_movement, seed_weights = null) {
+    let brain_dimensions = y_axis_movement ? [5, 50, 4] : [4, 5, 2];
     return new NeuralNetwork(...brain_dimensions, seed_weights);
   }
 
@@ -48,91 +50,95 @@ class Boat extends GameComponent {
   ////
   // Instance Methods
 
-  show(screenContext) {
-    screenContext.drawImage(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
-    this.person.show(screenContext);
-    if (this.hud) this.hud.show(screenContext);
+  show(screen) {
+    screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
+    this.person.show(screen.context);
   }
 
-  think(screenContext, obstacles, input, yAxisMovement) {
-    let nearestObstacles = this.find_nearest_obstacles(obstacles);
-    let {gapLeft, gapRight, gapYPos} = this.findObstacleGap(nearestObstacles)
-    var brainInput = [
-      this.body.left() / screenContext.canvas.width,
-      this.body.right() / screenContext.canvas.width,
-      gapLeft / screenContext.canvas.width,
-      gapRight / screenContext.canvas.width
-    ];
-    if(yAxisMovement) {
-      brainInput.push((this.body.top() - gapYPos)/screenContext.canvas.height);
-    }
-    let result = this.brain.predict(brainInput);
+  update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {
+    this.move(
+      this.player_controlled ? input : this.think(screen, obstacles, input, y_axis_movement),
+      screen
+    );
+    this.person.update(this.body.left() + this.body.width / 2, this.body.bottom());
+    this.updateScore(screen.height(), new_distance_traveled);
+  }
+
+  move(input, screen) {
+    super.moveTo(
+      this.body.position.x + ((0 + input.isPressed("right") - input.isPressed("left")) * this.speed),
+      this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed),
+      screen
+    );
+  }
+
+  think(screen, obstacles, input, y_axis_movement) {
+    let result = this.brain.predict(this.generateBrainInput(obstacles, screen, y_axis_movement));
     input.clearKeys();
     input.pressKey(outputMap[result.indexOf(Math.max.apply(null, result))]);
     return input;
   }
 
-  update(screenContext, input, obstacles, newDistanceTraveled, yAxisMovement) {
-    this.move(
-      this.player ? input : this.think(screenContext, obstacles, input, yAxisMovement),
-      screenContext
-    );
-    this.person.update(screenContext, this.body.left() + this.body.width / 2, this.body.bottom());
-    this.updateScore(screenContext.canvas.height, newDistanceTraveled);
-    this.show(screenContext);
-  }
+  ////
+  // Helper Functions
 
-  move(input, screenContext) {
-    super.moveTo(
-      this.body.position.x + ((0 + input.isPressed("right") - input.isPressed("left")) * this.speed),
-      this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed),
-      screenContext
-    );
+  generateBrainInput(obstacles, screen, y_axis_movement){
+    let {gap_left, gap_right, gap_y_pos} = this.findObstacleGap(this.find_nearest_obstacles(obstacles));
+    var brain_input = [
+      this.body.left() / screen.width(),
+      this.body.right() / screen.width(),
+      gap_left / screen.width(),
+      gap_right / screen.width()
+    ];
+    if(y_axis_movement) {
+      brain_input.push((this.body.top() - gap_y_pos)/screen.height());
+    }
+    return brain_input;
   }
 
   // This should probably be the game, not the boat
-  updateScore(canvas_height, newDistanceTraveled) {
-    let heightOnScreen = 1 - this.body.position.y / canvas_height;
+  updateScore(canvas_height, new_distance_traveled) {
+    let height_on_screen = 1 - this.body.position.y / canvas_height;
     this.score += Math.ceil(
-      (newDistanceTraveled - this.distanceTraveled) * (heightOnScreen * 1.5)
+      (new_distance_traveled - this.distance_traveled) * (height_on_screen * 1.5)
     );
-    this.distanceTraveled = newDistanceTraveled;
+    this.distance_traveled = new_distance_traveled;
   }
 
   find_nearest_obstacles(obstacles) {
     if (obstacles.length <= 0) return [];
-    let nearestObstacles = new Array(2);
-    let nearestDistance = null;
+    let nearest_obstacles = new Array(2);
+    let nearest_distance = null;
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
-      let distance = this.body.position.y - obstacle.body.endPosition.y;
-      if (distance >= 0 && distance < (nearestDistance || distance + 1)) {
-        nearestObstacles[1] = nearestObstacles[0] || obstacles[i + 1];
-        nearestObstacles[0] = obstacle;
-        nearestDistance = distance;
+      let distance = this.body.top() - obstacle.body.bottom();
+      if (distance >= 0 && distance < (nearest_distance || distance + 1)) {
+        nearest_obstacles[1] = nearest_obstacles[0] || obstacles[i + 1];
+        nearest_obstacles[0] = obstacle;
+        nearest_distance = distance;
       }
     }
-    if (nearestObstacles[1]) return [nearestObstacles[0], nearestObstacles[1]];
-    else if (nearestObstacles[0]) return [nearestObstacles[0]];
+    if (nearest_obstacles[1]) return [nearest_obstacles[0], nearest_obstacles[1]];
+    else if (nearest_obstacles[0]) return [nearest_obstacles[0]];
     else return [];
   }
 
-  findObstacleGap(nearestObstacles) {
-    if (nearestObstacles <= 1){
-      return { gapLeft: 0, gapRight:  0, gapYPos: 0 };
+  findObstacleGap(nearest_obstacles) {
+    if (nearest_obstacles <= 1){
+      return { gap_left: 0, gap_right:  0, gap_y_pos: 0 };
     }
 
-    if (nearestObstacles[0].body.left() < nearestObstacles[1].body.left()) {
-      var leftObstacle = nearestObstacles[0];
-      var rightObstacle = nearestObstacles[1];
+    if (nearest_obstacles[0].body.left() < nearest_obstacles[1].body.left()) {
+      var left_obstacle = nearest_obstacles[0];
+      var right_obstacle = nearest_obstacles[1];
     } else {
-      var rightObstacle = nearestObstacles[0];
-      var leftObstacle = nearestObstacles[1];
+      var right_obstacle = nearest_obstacles[0];
+      var left_obstacle = nearest_obstacles[1];
     }
     return {
-      gapLeft: leftObstacle.body.right(),
-      gapRight: rightObstacle.body.left(),
-      gapYPos: leftObstacle.body.bottom()
+      gap_left: left_obstacle.body.right(),
+      gap_right: right_obstacle.body.left(),
+      gap_y_pos: left_obstacle.body.bottom()
     }
   }
 }

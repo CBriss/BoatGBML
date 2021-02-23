@@ -1,7 +1,10 @@
 describe("Obstacle", () => {
 
 	beforeEach(() => {
-		ctx = {canvas: {width: 1000, height: 1000 }};
+		screen = {};
+    screen.width = () => 1000;
+    screen.height = () => 1000;
+
 		obstacle = new Obstacle(0, 0, 50);
 	});
 
@@ -12,17 +15,17 @@ describe("Obstacle", () => {
 
 	it("Generates Two Obstacles", () => {
 		var obstacles = Obstacle.newPairOfObstacles(100, -10, 1000);
-		var gapSize = obstacles[1].body.position.x - obstacles[0].body.endPosition.x;
-		expect(gapSize).toBe(100);
+		var gap_size = obstacles[1].body.position.x - obstacles[0].body.end_position.x;
+		expect(gap_size).toBe(100);
 	});
 
 	it("Is Not Clamped to Screen", () => {
-		obstacle.update(ctx.canvas.height * 100, ctx);
-		expect(obstacle.body.position.y).toBeGreaterThan(ctx.canvas.height);
+		obstacle.update(screen.height() * 100, screen);
+		expect(obstacle.body.position.y).toBeGreaterThan(screen.height());
 	});
 
 	it("Destroys Itself When Off-Screen", () =>{
-    expect(obstacle.update(ctx.canvas.height * 1000, ctx)).toBe(true);
+    expect(obstacle.update(screen.height() * 1000, screen)).toBe(true);
 	});
 
 });

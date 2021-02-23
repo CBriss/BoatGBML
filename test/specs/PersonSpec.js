@@ -8,7 +8,7 @@ describe('Person', () => {
 		ctx.lineTo = () => 1;
 		ctx.stroke = () => 1;
 
-        person = new Person(ctx, 0, 0);
+        person = new Person(0, 0);
     });
 
     it('Initializes Correctly', () => {
@@ -23,8 +23,8 @@ describe('Person', () => {
 
     it('Updates Position Correctly', () => {
         person.changePos(10000, 1000);
-        expect(person.speedY).toBeGreaterThan(0);
-        expect(person.speedX).toBeGreaterThan(0);
+        expect(person.speed_y).toBeGreaterThan(0);
+        expect(person.speed_x).toBeGreaterThan(0);
     });
     
 });

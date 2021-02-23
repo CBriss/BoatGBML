@@ -1,29 +1,29 @@
 class BoatGame {
-  constructor(playerFlag, mode, seed_input_weights=null, seed_output_weights=null) {
+  constructor(player_flag, mode, seed_input_weights=null, seed_output_weights=null) {
     
     /* Setup Variables */
     
     // Gameplay
-    this.timeLeft = 1500;
-    this.speedMode = 1;
-    this.frameCount = 0;
-    this.distanceTraveled = 0;
-    this.gameSpeed = 50;
-    this.playerFlag = playerFlag;
+    this.time_left = 1500;
+    this.speed_mode = 1;
+    this.frame_count = 0;
+    this.distance_traveled = 0;
+    this.game_speed = 50;
+    this.player_flag = player_flag;
     this.mode = mode
-    this.hud = this.playerFlag ? new PlayerHud() : new LearningHud();
+    this.hud = this.player_flag ? new PlayerHud() : new LearningHud();
     this.input = new Input();
 
     // Rendering
-    this.screen = new GameScreen();
+    this.screen = new GameScreen('game-canvas', 500, 600);
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
     this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
-    this.boatCount = playerFlag ? 1 : 25;
-    this.geneticAlgorithm = new GeneticAlgorithm(this.boatCount, this.mode);
-    this.boats = this.geneticAlgorithm.newGeneration([], this.screen.context, seed_input_weights);
+    this.boat_count = player_flag ? 1 : 25;
+    this.genetic_algorithm = new GeneticAlgorithm(this.boat_count, this.mode);
+    this.boats = this.genetic_algorithm.newGeneration([], this.screen, seed_input_weights);
     this.obstacles = [];
   }
 
@@ -35,7 +35,7 @@ class BoatGame {
   }
 
   update() {
-    for (let i = 0; i < this.speedMode; i++) { this.processFrame(); }
+    for (let i = 0; i < this.speed_mode; i++) { this.processFrame(); }
     this.drawGameState();
   }
 
@@ -43,7 +43,7 @@ class BoatGame {
   /* Frame Processing */
 
   processFrame() {
-    this.frameCount += 1;
+    this.frame_count += 1;
     this.insertObstacles();
     this.updateObstacles();
     this.updateBoats();
@@ -51,9 +51,9 @@ class BoatGame {
   }
 
   insertObstacles() {
-    if (this.frameCount % 100 == 0) {
+    if (this.frame_count % 100 == 0) {
       let gap = Math.max(Math.random() * 250, 125);
-      this.obstacles.push(...Obstacle.newPairOfObstacles(gap, -10, this.screen.canvas.width));
+      this.obstacles.push(...Obstacle.newPairOfObstacles(gap, -10, this.screen.width()));
     }
   }
 
@@ -62,23 +62,23 @@ class BoatGame {
   }
 
   updateGameState() {
-    if ((this.playerFlag && this.timeLeft <= 0) || this.input.isPressed("exit")) this.stop();
-    this.timeLeft = 1500 - this.frameCount;
-    this.distanceTraveled += Math.ceil(this.gameSpeed / 10);
-    if (this.playerFlag)
+    if ((this.player_flag && this.time_left <= 0) || this.input.isPressed("exit")) this.stop();
+    this.time_left = 1500 - this.frame_count;
+    this.distance_traveled += Math.ceil(this.game_speed / 10);
+    if (this.player_flag)
       this.hud.update(
-        this.timeLeft,
-        this.distanceTraveled,
+        this.time_left,
+        this.distance_traveled,
         this.boats[0] ? this.boats[0].score : 0,
-        this.gameSpeed
+        this.game_speed
       );
     if (this.boats.length <= 0) {
-      if (this.playerFlag) this.stop();
+      if (this.player_flag) this.stop();
       else {
         this.obstacles = [];
-        this.geneticAlgorithm.newGeneration(this.boats, this.screen.context);
-        this.distanceTraveled = 0;
-        this.hud.update(this.geneticAlgorithm.bestBoat);
+        this.genetic_algorithm.newGeneration(this.boats, this.screen);
+        this.distance_traveled = 0;
+        this.hud.update(this.genetic_algorithm.bestBoat);
       }
     }
   }
@@ -88,10 +88,10 @@ class BoatGame {
       let boat = this.boats[i];
       let yAxisMovement = (this.mode == 'hard')
       boat.update(
-        this.screen.context,
+        this.screen,
         this.input,
         this.obstacles,
-        this.distanceTraveled,
+        this.distance_traveled,
         yAxisMovement
       );
 
@@ -104,7 +104,7 @@ class BoatGame {
   removeBoat(boat){
     let index = this.boats.indexOf(boat);
     this.boats.splice(index, 1)[0];
-    this.geneticAlgorithm.deadPopulation.push(boat);
+    this.genetic_algorithm.dead_population.push(boat);
   }
 
   updateObstacles() {
@@ -112,7 +112,7 @@ class BoatGame {
     // Since I am splicing the array in the loop
     for (var i = 0; i < this.obstacles.length; i++) {
       let obstacle = this.obstacles[i];
-      if(obstacle.update(this.gameSpeed, this.screen.context)){
+      if(obstacle.update(this.game_speed, this.screen)){
         this.removeObstacle(obstacle);
         i--;
       }
@@ -125,18 +125,18 @@ class BoatGame {
 
   drawGameState() {
     this.screen.clear();
-    this.screen.context.drawImage(this.backgroundSprite, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
-    this.hud.show(this.screen.context)
+    this.screen.context.drawImage(this.backgroundSprite, 0, 0, this.screen.width(), this.screen.height());
+    this.hud.show(this.screen.context);
     this.drawBoats();
     this.drawObstacles();
   }
 
   drawBoats() {
-    _.forEach(this.boats, boat => { boat.show(this.screen.context); });
+    _.forEach(this.boats, boat => { boat.show(this.screen); });
   }
 
   drawObstacles() {
-    _.forEach(this.obstacles, obstacle => { obstacle.show(this.screen.context); });
+    _.forEach(this.obstacles, obstacle => { obstacle.show(this.screen); });
   }
 
 

@@ -16,8 +16,8 @@ describe('Neural Network', () => {
     });
 
     it('Clones Correctly', () => {
-        var clonedNetwork = brain.clone();
-        expect(clonedNetwork.constructor.name).toBe("NeuralNetwork");
-        expect(clonedNetwork.predict([10,10])).toEqual(brain.predict([10,10]));
+        var cloned_network = brain.clone();
+        expect(cloned_network.constructor.name).toBe("NeuralNetwork");
+        expect(cloned_network.predict([10,10])).toEqual(brain.predict([10,10]));
     });
 });

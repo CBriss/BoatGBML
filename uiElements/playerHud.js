@@ -1,51 +1,51 @@
 class PlayerHud {
   constructor() {
-    this.scoreX = 50;
-    this.scoreY = 25;
-    this.scoreValue = 0;
+    this.score_x = 50;
+    this.score_y = 25;
+    this.score_value = 0;
 
-    this.distanceX = 50;
-    this.distanceY = 50;
-    this.distanceValue = 0;
-    this.lastDistanceValue = 0;
+    this.distance_x = 50;
+    this.distance_y = 50;
+    this.distance_value = 0;
+    this.last_distance_value = 0;
 
-    this.boatSpeedX = 50;
-    this.boatSpeedY = 75;
-    this.boatSpeedValue = 0;
+    this.boat_speed_x = 50;
+    this.boat_speed_y = 75;
+    this.boat_speed_value = 0;
 
-    this.timeLeftX = 50;
-    this.timeLeftY = 100;
-    this.timeLeft = 1500;
+    this.time_left_x = 50;
+    this.time_left_y = 100;
+    this.time_left = 1500;
   }
 
   show(ctx) {
     ctx.font = "20px Arial";
-    ctx.fillText("Score: " + this.scoreValue, this.scoreX, this.scoreY);
+    ctx.fillText("Score: " + this.score_value, this.score_x, this.score_y);
 
     ctx.fillText(
-      "Distance Traveled: " + this.distanceValue,
-      this.distanceX,
-      this.distanceY
+      "Distance Traveled: " + this.distance_value,
+      this.distance_x,
+      this.distance_y
     );
 
     ctx.fillText(
-      "Boat Speed: " + this.boatSpeedValue,
-      this.boatSpeedX,
-      this.boatSpeedY
+      "Boat Speed: " + this.boat_speed_value,
+      this.boat_speed_x,
+      this.boat_speed_y
     );
 
     ctx.fillText(
-      "Time Left: " + Math.ceil(this.timeLeft / 60),
-      this.timeLeftX,
-      this.timeLeftY
+      "Time Left: " + Math.ceil(this.time_left / 60),
+      this.time_left_x,
+      this.time_left_y
     );
   }
 
-  update(timeLeft, distanceTraveled, score, boatSpeed) {
-    this.lastDistanceValue = this.distanceValue;
-    this.distanceValue = distanceTraveled;
-    this.boatSpeedValue = boatSpeed;
-    this.timeLeft = timeLeft;
-    this.scoreValue = score;
+  update(time_left, distance_traveled, score, boat_speed) {
+    this.last_distance_value = this.distance_value;
+    this.distance_value = distance_traveled;
+    this.boat_speed_value = boat_speed;
+    this.time_left = time_left;
+    this.score_value = score;
   }
 }

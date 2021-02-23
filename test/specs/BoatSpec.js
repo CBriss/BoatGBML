@@ -1,29 +1,27 @@
-describe("Boat", () => {
+describe("Boat Class", () => {
 
 	beforeEach(function() {
-        ctx = {canvas: {width: 1000, height: 1000 }};
-		ctx.drawImage = () => 1;
-		ctx.beginPath = () => 1;
-		ctx.moveTo = () => 1;
-		ctx.lineTo = () => 1;
-		ctx.stroke = () => 1;
-		boat = new Boat(ctx, true, true);
+    screen = {};
+    screen.width = () => 1000;
+    screen.height = () => 1000;
+
+		boat = new Boat(screen, true, true);
 		boat.body.position.x = 0;
 		boat.body.position.y = 0;
-    });
+  });
 
 	describe("Static Methods", () => {
-		it("randomStartPosition() Generates a Position Object", () => {
-			expect(Boat.randomStartPosition({canvas: {width: 1000, height: 1000 }}).constructor.name).toBe('Position');
+		it("Generates a Position Object", () => {
+			expect(Boat.randomStartPosition(screen).constructor.name).toBe('Position');
 		});
 
-		it("defaultBodyDimensions() Generates an array with two numbers", () => {
-			var returnedValue = Boat.defaultBodyDimensions();
-			expect(returnedValue.constructor.name).toBe("Array");
-			expect(returnedValue.length).toBe(2);
+		it("Generates an Array of 2 Numbers", () => {
+			var returned_value = Boat.defaultBodyDimensions();
+			expect(returned_value.constructor.name).toBe("Array");
+			expect(returned_value.length).toBe(2);
 		});
 
-		it("newBrain() Generates Bigger Brain if yAxisMovement is true", () => {
+		it("Generates Bigger Brain if Moves on y Axis", () => {
 			var brain1 = Boat.newBrain(false);
 			var brain2 = Boat.newBrain(true);
 			expect(brain1.hidden_nodes).toBeLessThan(brain2.hidden_nodes);
@@ -32,20 +30,20 @@ describe("Boat", () => {
 
 	describe("Obstacle Finding", () => {
 
-		it("Finds nearest obstacles", () => {
-			farObstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
-			closeObstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 100, 50);
-			var nearestObstacles = boat.find_nearest_obstacles([farObstacle, closeObstacle])
-			expect(nearestObstacles[0]).toBe(closeObstacle);
-			expect(nearestObstacles[1]).toBe(farObstacle);
+		it("Finds Nearest Obstacles", () => {
+			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
+			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 100, 50);
+			var nearest_obstacles = boat.find_nearest_obstacles([far_obstacle, close_obstacle])
+			expect(nearest_obstacles[0]).toBe(close_obstacle);
+			expect(nearest_obstacles[1]).toBe(far_obstacle);
 		});
 	
 		it("Ignores passed obstacles finding nearest obstacles", () => {
-			passedObstacle = new Obstacle(boat.body.position.x, boat.body.endPosition.y + boat.body.height, 50);
-			nearestObstacle = new Obstacle(boat.body.position.x, boat.body.position.y - boat.body.height * 2, 50);
-			var nearestObstacles = boat.find_nearest_obstacles([passedObstacle, nearestObstacle])
-			expect(nearestObstacles.length).toBe(1);
-			expect(nearestObstacles[0]).toBe(nearestObstacle);
+			passed_obstacle = new Obstacle(boat.body.position.x, boat.body.end_position.y + boat.body.height, 50);
+			nearest_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - boat.body.height * 2, 50);
+			var nearest_obstacles = boat.find_nearest_obstacles([passed_obstacle, nearest_obstacle])
+			expect(nearest_obstacles.length).toBe(1);
+			expect(nearest_obstacles[0]).toBe(nearest_obstacle);
 		});
 	
 		it("Returns empty array if no obstacles", () => {
@@ -53,16 +51,16 @@ describe("Boat", () => {
 		});
 
 		it('Can Find the Obstacle Gap', () => {
-			var obstacles = Obstacle.newPairOfObstacles(100, -10, ctx.canvas.width);
-			let {gapLeft, gapRight, gapYPos} = boat.findObstacleGap(obstacles);
-			expect(gapLeft).toBeGreaterThan(0);
-			expect(gapRight).toBeGreaterThan(0);
-			expect(gapYPos).toBeGreaterThan(0);
+			var obstacles = Obstacle.newPairOfObstacles(100, -10, screen.width());
+			let {gap_left, gap_right, gap_y_pos} = boat.findObstacleGap(obstacles);
+			expect(gap_left).toBeGreaterThan(0);
+			expect(gap_right).toBeGreaterThan(0);
+			expect(gap_y_pos).toBeGreaterThan(0);
 		});
 	});
 
 	it('Updates Its Score', () => {
-		boat.updateScore(ctx.canvas.height, ctx.canvas.height * 3);
+		boat.updateScore(screen.height(), screen.height() * 3);
 		expect(boat.score).toBeGreaterThan(0);
 	});
 
@@ -75,24 +73,22 @@ describe("Boat", () => {
         it("Sets Position in move function", () => {
             input.pressKey('right');
             input.pressKey('down');
-            boat.move(input, ctx);
+            boat.move(input, screen);
             expectPositionCoords(boat.body.position, 5, 5)
         });
 
         it("Stops Position From Going Off Screen", () => {
             input.pressKey('left');
             input.pressKey('up');
-			boat.move(input, ctx);
+			      boat.move(input, screen);
             expectPositionCoords(boat.body.position, 0, 0)
         });
 
 		
 		it('Thinking Returns Input Object', () => {
-			boat = new Boat(ctx, false, true);
-			
-			var obstacles = Obstacle.newPairOfObstacles(300, 10, ctx.canvas.width);
-			console.log(boat.think(ctx, obstacles, input, true));
-			expect(boat.think(ctx, obstacles, input, true).constructor.name).toBe("Input");
+			boat = new Boat(screen, false, true);
+			var obstacles = Obstacle.newPairOfObstacles(300, 10, screen.width());
+			expect(boat.think(screen, obstacles, input, true).constructor.name).toBe("Input");
 		});
     });
 });
