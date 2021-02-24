@@ -7,11 +7,6 @@ class Boat extends GameComponent {
     this.distance_traveled = 0;
     this.player_controlled = player_flag;
     this.speed = 5;
-
-    this.person = new Person(
-      this.body.left() + this.body.width / 2,
-      this.body.bottom()
-    );
     this.brain = player_flag ? null : Boat.newBrain(y_axis_movement, seed_weights);
   }
 
@@ -52,7 +47,6 @@ class Boat extends GameComponent {
 
   show(screen) {
     screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
-    this.person.show(screen.context);
   }
 
   update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {
@@ -60,7 +54,6 @@ class Boat extends GameComponent {
       this.player_controlled ? input : this.think(screen, obstacles, input, y_axis_movement),
       screen
     );
-    this.person.update(this.body.left() + this.body.width / 2, this.body.bottom());
     this.updateScore(screen.height(), new_distance_traveled);
   }
 
@@ -112,7 +105,7 @@ class Boat extends GameComponent {
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
       let distance = this.body.top() - obstacle.body.bottom();
-      if (distance >= 0 && distance < (nearest_distance || distance + 1)) {
+      if (distance >= this.body.height && distance < (nearest_distance || distance + 1)) {
         nearest_obstacles[1] = nearest_obstacles[0] || obstacles[i + 1];
         nearest_obstacles[0] = obstacle;
         nearest_distance = distance;
