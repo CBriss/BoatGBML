@@ -102,34 +102,22 @@ class GeneticAlgorithm {
     }
   }
 
-  combineParentGenes(parentA, parentB, child) {
-    let parentA_input_layer = parentA.brain.input_weights.dataSync();
-    let parentB_input_layer = parentB.brain.input_weights.dataSync();
-    let crossoverPoint = Math.floor(
-      Math.random() * parentA_input_layer.length -
-        parentA_input_layer.length / 2
-    );
-    let child_in_dna = [
-      ...parentA_input_layer.slice(0, crossoverPoint),
-      ...parentB_input_layer.slice(crossoverPoint, parentB_input_layer.length)
-    ];
-    let input_shape = child.brain.input_weights.shape;
-
-    let parentA_output_layer = parentA.brain.output_weights.dataSync();
-    let parentB_output_layer = parentB.brain.output_weights.dataSync();
-    crossoverPoint = Math.floor(
-      Math.random() * parentA_output_layer.length -
-        parentA_output_layer.length / 2
-    );
-    let child_out_dna = [
-      ...parentA_output_layer.slice(0, crossoverPoint),
-      ...parentB_output_layer.slice(crossoverPoint, parentB_output_layer.length)
-    ];
-    let output_shape = child.brain.output_weights.shape;
-
+  combineParentGenes(parent_a, parent_b, child) {
     child.brain.dispose();
-    child.brain.input_weights = tf.tensor(child_in_dna, input_shape);
-    child.brain.output_weights = tf.tensor(child_out_dna, output_shape);
+    child.brain.input_weights = tf.tensor(...this.combineLayerGenes(parent_a, parent_b, child, 'input'));
+    child.brain.output_weights = tf.tensor(...this.combineLayerGenes(parent_a, parent_b, child, 'output'));
     return child;
   }
+
+  combineLayerGenes(parent_a, parent_b, child, layer){
+    let parent_a_weights = parent_a.brain[layer+"_weights"].dataSync();
+    let parent_b_weights = parent_b.brain[layer+"_weights"].dataSync();
+    let crossover_point = Math.floor(Math.random() * parent_a_weights.length);
+    let child_dna = [
+      ...parent_a_weights.slice(0, crossover_point),
+      ...parent_b_weights.slice(crossover_point, parent_b_weights.length)
+    ];
+    return [child_dna, child.brain[layer+"_weights"].shape]
+  }
+
 }

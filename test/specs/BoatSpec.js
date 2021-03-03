@@ -32,7 +32,7 @@ describe("Boat Class", () => {
 
 		it("Finds Nearest Obstacles", () => {
 			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
-			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 100, 50);
+			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 500, 50);
 			var nearest_obstacles = boat.find_nearest_obstacles([far_obstacle, close_obstacle])
 			expect(nearest_obstacles[0]).toBe(close_obstacle);
 			expect(nearest_obstacles[1]).toBe(far_obstacle);
@@ -51,10 +51,9 @@ describe("Boat Class", () => {
 		});
 
 		it('Can Find the Obstacle Gap', () => {
-			var obstacles = Obstacle.newPairOfObstacles(100, -10, screen.width());
-			let {gap_left, gap_right, gap_y_pos} = boat.findObstacleGap(obstacles);
-			expect(gap_left).toBeGreaterThan(0);
-			expect(gap_right).toBeGreaterThan(0);
+			let {gap_left, gap_right, gap_y_pos} = boat.findObstacleGap(generateObstacleGap(100));
+			expect(gap_left).toBe(100);
+			expect(gap_right).toBe(200);
 			expect(gap_y_pos).toBeGreaterThan(0);
 		});
 	});
@@ -91,9 +90,29 @@ describe("Boat Class", () => {
 			expect(boat.think(screen, obstacles, input, true).constructor.name).toBe("Input");
 		});
     });
+
+	it('Generates the Correct Brain Input', () => {
+		boat.body.position.y = screen.height() - 200;
+
+		let brain_input = boat.generateBrainInput(generateObstacleGap(100), screen, false);
+		
+		expect(brain_input.length).toBe(4);
+		expect(brain_input[0]).toBe(0);
+		expect(brain_input[1]).toBe(boat.body.right() / screen.width());
+		expect(brain_input[2]).toBe(0.1);
+		expect(brain_input[3]).toBe(0.2);
+	});
+
 });
 
-function expectPositionCoords(position, expected_x, expected_y){
+function expectPositionCoords(position, expected_x, expected_y) {
     expect(position.x).toBe(expected_x);
     expect(position.y).toBe(expected_y);
+}
+
+function generateObstacleGap(gap_size) {
+	let obstacle1 = new Obstacle(0, -10, 100);
+	let obstacle2_pos = obstacle1.body.end_position.x + gap_size;
+	let obstacle2 = new Obstacle(obstacle2_pos, 10, screen.width() - obstacle2_pos);
+	return [obstacle1, obstacle2];
 }
