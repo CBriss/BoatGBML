@@ -1,50 +1,28 @@
 class LearningHud {
-  constructor() {
-    this.generation_count_x = 50;
-    this.generation_count_y = 25;
+  constructor(element) {
     this.generation_count = 1;
-
-    this.highest_score_x = 50;
-    this.highest_score_y = 50;
     this.best_boat;
-
-    this.best_score_generation_x = 50;
-    this.best_score_generation_y = 75;
+    this.best_boat_score = 0;
     this.best_score_generation = 0;
 
-    this.boat_age_x = 300;
-    this.boat_age_y = 75;
-    this.best_score_generation = 1;
+    this.element = element;
+
+    this.generation_element = document.createElement("p");
+    this.element.appendChild(this.generation_element);
+    this.best_boat_element = document.createElement("p");
+    this.element.appendChild(this.best_boat_element);
+    this.best_generation_element = document.createElement("p");
+    this.element.appendChild(this.best_generation_element);
+    this.boat_age_element = document.createElement("p");
+    this.element.appendChild(this.boat_age_element);
   }
 
-  show(ctx) {
-    let best_boat_score = this.best_boat ? this.best_boat.score : 0;
-    ctx.font = "20px Arial";
-    
-    ctx.fillText(
-      "Generation " + this.generation_count,
-      this.generation_count_x,
-      this.generation_count_y
-    );
-
-    ctx.fillText(
-      "Current Best Boat: " + best_boat_score,
-      this.highest_score_x,
-      this.highest_score_y
-    );
-
-    ctx.fillText(
-      "From Generation " + this.best_score_generation,
-      this.best_score_generation_x,
-      this.best_score_generation_y
-    );
-
-    ctx.fillText(
-      "Best Boat Age " +
-        (this.generation_count - this.best_score_generation),
-      this.boat_age_x,
-      this.boat_age_y
-    );
+  show() {
+    this.generation_element.innerHTML = "Generation " + this.generation_count;
+    this.best_boat_element.innerHTML = "Current Best Boat: " + this.best_boat_score;
+    this.best_generation_element.innerHTML = "From Generation " + this.best_score_generation;
+    this.boat_age_element.innerHTML = "Best Boat Age " +
+    (this.generation_count - this.best_score_generation);
   }
 
   update(best_boat) {
@@ -52,6 +30,8 @@ class LearningHud {
     if (this.best_boat != best_boat) {
       this.best_score_generation = this.generation_count -1;
       this.best_boat = best_boat;
+      this.best_boat_score = best_boat.score;
     }
+    this.show();
   }
 }

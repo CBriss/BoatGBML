@@ -5,34 +5,40 @@
     <title>AI Boats</title>
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body style="text-align: center;">
-    <h1>Welcome to my Boat Game</h1>
-    <div id="menu-container" class="wrapper center">
-      <ul class="menu-list" style="padding: 0px 125px;">
-        <li>
-          <a onClick="startGame(true, 'hard')" class="button play">Player Mode</a>
-        </li>
-        <li>
-          <a onClick="startGame(false, 'easy')" class="button credits">AI Mode (Easy)</a>
-        </li>
-        <li>
-          <a onClick="startGame(false, 'hard')" class="button credits">AI Mode (Hard)</a>
-        </li>
-      </ul>
+  <body style="text-align: center; display: flex;">
+    <div id="left-container">
+      <h1>Welcome to my Boat Game</h1>
+      <div id="game-ui"></div>
+      <div id="options" style="padding-top: 25px;">
+        <h4 id="speedup-value">0</h4>
+        <input
+          type="range"
+          min="1"
+          max="100"
+          value="0"
+          class="slider"
+          id="speedup-slider"
+        />
+        <a onClick="outputBestBoat()" class="button play">Download Best Boat</a>
+        <input type="file" id="boatInput" name="boatInput" accept="text/plain" onchange="uploadBoat(this.files)">
+      </div>
     </div>
-    <div id="game-container" class="main center"></div>
-    <div id="options" style="padding-top: 25px;">
-      <h4 id="speedup-value">0</h4>
-      <input
-        type="range"
-        min="1"
-        max="100"
-        value="0"
-        class="slider"
-        id="speedup-slider"
-      />
-      <a onClick="outputBestBoat()" class="button play">Download Best Boat</a>
-      <input type="file" id="boatInput" name="boatInput" accept="text/plain" onchange="uploadBoat(this.files)">
+
+    <div id="right-container">
+      <div id="menu-container" class="wrapper center">
+        <ul class="menu-list" style="padding: 0px 125px;">
+          <li>
+            <a onClick="startGame(true, 'hard')" class="button play">Player Mode</a>
+          </li>
+          <li>
+            <a onClick="startGame(false, 'easy')" class="button credits">AI Mode (Easy)</a>
+          </li>
+          <li>
+            <a onClick="startGame(false, 'hard')" class="button credits">AI Mode (Hard)</a>
+          </li>
+        </ul>
+      </div>
+      <div id="game-container" class="main center"></div>
     </div>
   </body>
 </html>

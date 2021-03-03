@@ -11,11 +11,11 @@ class BoatGame {
     this.game_speed = 50;
     this.player_flag = player_flag;
     this.mode = mode
-    this.hud = this.player_flag ? new PlayerHud() : new LearningHud();
+    this.hud = this.initializeHud();
     this.input = new Input();
 
     // Rendering
-    this.screen = new GameScreen('game-canvas', 500, 600);
+    this.screen = new GameScreen('game-canvas', 500, 550);
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
     this.backgroundSprite.src = "images/background.png";   
@@ -31,6 +31,7 @@ class BoatGame {
 
   stop() {
     clearInterval(this.interval);
+    this.hud.clear();
     showMenu();
   }
 
@@ -126,7 +127,7 @@ class BoatGame {
   drawGameState() {
     this.screen.clear();
     this.screen.context.drawImage(this.backgroundSprite, 0, 0, this.screen.width(), this.screen.height());
-    this.hud.show(this.screen.context);
+    //this.hud.show(this.screen.context);
     this.drawBoats();
     this.drawObstacles();
   }
@@ -150,5 +151,10 @@ class BoatGame {
     else {
       this.interval = setInterval(this.update.bind(this), 16);
     }
+  }
+
+  initializeHud(){
+    let hud_element = document.getElementById('game-ui');
+    return (this.player_flag ? new PlayerHud(hud_element) : new LearningHud(hud_element));
   }
 }
