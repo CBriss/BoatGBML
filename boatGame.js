@@ -21,9 +21,9 @@ class BoatGame {
     this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
-    this.boat_count = player_flag ? 1 : 25;
+    this.boat_count = player_flag ? 1 : 50;
     this.genetic_algorithm = new GeneticAlgorithm(this.boat_count, this.mode);
-    this.boats = this.genetic_algorithm.newGeneration([], this.screen, seed_input_weights);
+    this.boats = this.genetic_algorithm.firstGeneration(this.screen, seed_input_weights);
     this.obstacles = [];
   }
 
@@ -70,16 +70,17 @@ class BoatGame {
       this.hud.update(
         this.time_left,
         this.distance_traveled,
-        this.boats[0] ? this.boats[0].score : 0,
-        this.game_speed
+        this.boats[0] ? this.boats[0].score : 0
       );
     if (this.boats.length <= 0) {
       if (this.player_flag) this.stop();
       else {
         this.obstacles = [];
-        this.genetic_algorithm.newGeneration(this.boats, this.screen);
+        this.boats = this.genetic_algorithm.newGeneration(this.screen);
         this.distance_traveled = 0;
-        this.hud.update(this.genetic_algorithm.bestBoat);
+        this.hud.show(
+          this.genetic_algorithm.best_boat_score,
+          this.genetic_algorithm.best_boat_age);
       }
     }
   }
@@ -96,7 +97,7 @@ class BoatGame {
         yAxisMovement
       );
 
-      if (boat.hasCollsionWith(this.obstacles, this.screen.canvasMidPoint)) {
+      if (boat.hasCollsionWith(this.obstacles, this.screen.canvas_mid_point)) {
         this.removeBoat(boat);
       }
     }

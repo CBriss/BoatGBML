@@ -58,8 +58,8 @@ class NeuralNetwork {
 
   mutate() {
     function mutateWeight(weight) {
-      if (Math.random(1) < (0.05)) {
-        return weight + randn_bm() * 0.5;
+      if (Math.random(1) < (0.03)) {
+        return weight + randn_bm() * 0.2;
       }
       return weight;
     }
@@ -73,5 +73,23 @@ class NeuralNetwork {
     let output_shape = this.output_weights.shape;
     this.output_weights.dispose();
     this.output_weights = tf.tensor(output_weights, output_shape);
+  }
+
+  static combineParentGenes(parent_a, parent_b, child) {
+    child.brain.dispose();
+    child.brain.input_weights = tf.tensor(...NeuralNetwork.combineLayerGenes(parent_a, parent_b, child, 'input'));
+    child.brain.output_weights = tf.tensor(...NeuralNetwork.combineLayerGenes(parent_a, parent_b, child, 'output'));
+    return child;
+  }
+
+  static combineLayerGenes(parent_a, parent_b, child, layer){
+    let parent_a_weights = parent_a.brain[layer+"_weights"].dataSync();
+    let parent_b_weights = parent_b.brain[layer+"_weights"].dataSync();
+    let crossover_point = Math.floor(Math.random() * parent_a_weights.length);
+    let child_dna = [
+      ...parent_a_weights.slice(0, crossover_point),
+      ...parent_b_weights.slice(crossover_point, parent_b_weights.length)
+    ];
+    return [child_dna, child.brain[layer+"_weights"].shape]
   }
 }

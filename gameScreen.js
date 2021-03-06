@@ -6,7 +6,6 @@ class GameScreen{
     this.canvas = this.context.canvas;
     this.canvas_height = this.canvas.height;
     this.canvas_mid_point = this.canvas_height / 2;
-    this.componentCanvases = {};
 }
 
   static newCanvas(canvas_id, width, height) {
@@ -25,6 +24,11 @@ class GameScreen{
 
   drawComponent(sprite, x, y, width, height){
     this.context.drawImage(sprite, x, y, width, height);
+  }
+  
+  drawRectangle(x, y, width, height, color){
+    this.context.fillStyle = color;
+    this.context.fillRect(x, y, width, height);
   }
 
   width() {

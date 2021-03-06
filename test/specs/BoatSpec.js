@@ -31,8 +31,8 @@ describe("Boat Class", () => {
 	describe("Obstacle Finding", () => {
 
 		it("Finds Nearest Obstacles", () => {
-			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
 			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 500, 50);
+			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
 			var nearest_obstacles = boat.find_nearest_obstacles([far_obstacle, close_obstacle])
 			expect(nearest_obstacles[0]).toBe(close_obstacle);
 			expect(nearest_obstacles[1]).toBe(far_obstacle);

@@ -45,8 +45,11 @@ class Boat extends GameComponent {
   ////
   // Instance Methods
 
-  show(screen) {
-    screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
+  show(screen, performance_mode=false) {
+    if(performance_mode)
+      screen.drawRectangle(...this.body.coordinates(), ...this.body.dimensions(), 'blue');
+    else
+      screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
   }
 
   update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {
@@ -105,12 +108,13 @@ class Boat extends GameComponent {
     for (let i = 0; i < obstacles.length; i++) {
       let obstacle = obstacles[i];
       let distance = this.body.top() - obstacle.body.bottom();
-      if (distance >= this.body.height && distance < (nearest_distance || distance + 1)) {
+      if (obstacle.body.top() <= this.body.bottom() && distance < (nearest_distance || distance + 1)) {
         nearest_obstacles[1] = nearest_obstacles[0] || obstacles[i + 1];
         nearest_obstacles[0] = obstacle;
         nearest_distance = distance;
       }
     }
+
     if (nearest_obstacles[1]) return [nearest_obstacles[0], nearest_obstacles[1]];
     else if (nearest_obstacles[0]) return [nearest_obstacles[0]];
     else return [];

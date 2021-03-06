@@ -6,8 +6,8 @@ describe('GeneticAlgorithm', () => {
     screen.height = () => 1000;
     population_size = 10;
     genetic_algorithm = new GeneticAlgorithm(population_size, 'hard');
-    new_generation = genetic_algorithm.newGeneration([], screen);
-    bestBoat = generateBoat(100);
+    new_generation = genetic_algorithm.firstGeneration(screen);
+    best_boat = newBoatWithScore(100);
   });
 
   it('Can Start a New Generation', () => {
@@ -16,30 +16,39 @@ describe('GeneticAlgorithm', () => {
   });
 
   it('Finds Best Individual in Cluster', () => {
-    let best_individual = genetic_algorithm.findBestIndividual(
-        [generateBoat(5), bestBoat]
+    let best_individual = genetic_algorithm.bestIndividual(
+        [
+          newBoatWithScore(5),
+          newBoatWithScore(10),
+          newBoatWithScore(50),
+          newBoatWithScore(90),
+          newBoatWithScore(99),
+          best_boat
+        ]
     );
-    expect(best_individual).toEqual(bestBoat);
+    expect(best_individual).toEqual(best_boat);
   });
 
   it('Finds Best Parents in Each Half Of Population', () => {
-    let second_best_boat = generateBoat(50);
+    let second_best_boat = newBoatWithScore(50);
     genetic_algorithm.dead_population = [
-      bestBoat,
-      generateBoat(10),
-      generateBoat(20),
-      generateBoat(30),
-      generateBoat(40),
+      best_boat,
+      newBoatWithScore(10),
+      newBoatWithScore(20),
+      newBoatWithScore(30),
+      newBoatWithScore(40),
       second_best_boat
     ];
-    expect(genetic_algorithm.findSuitableParents()).toEqual(
-      [bestBoat, second_best_boat]
+    expect(genetic_algorithm.suitableParents()).toEqual(
+      [best_boat, second_best_boat]
     );
   });
+
+
 });
 
 
-function generateBoat(score){
+function newBoatWithScore(score){
   let boat = new Boat(screen, false, true);
   boat.score = score;
   return boat;
