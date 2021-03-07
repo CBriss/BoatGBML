@@ -15,10 +15,7 @@ class Obstacle extends GameComponent {
   }
 
   show(screen, performance_mode=false) {
-    if(performance_mode)
-      screen.drawRectangle(...this.body.coordinates(), ...this.body.dimensions(), 'black');
-    else
-      screen.drawComponent(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
+    screen.drawComponent(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
   }
 
   static newPairOfObstacles(gap_size, y, canvas_width) {

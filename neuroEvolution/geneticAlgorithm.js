@@ -28,8 +28,8 @@ class GeneticAlgorithm {
     for (let i=1; i<this.population_size; i++) {
       let parent_2 = Math.random() < 0.9 ? parents[0] : parents[1];
       let child = NeuralNetwork.combineParentGenes(
-        this.best_boat,
-        parent_2,
+        this.best_boat.brain,
+        parent_2.brain,
         new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
       );
       child.brain.mutate();
@@ -40,9 +40,6 @@ class GeneticAlgorithm {
   }
 
   clearDeadPopulation() {
-    _.forEach(this.dead_population, deadBoat => {
-      deadBoat.brain.dispose();
-    });
     this.dead_population = [];
   }
 
@@ -57,9 +54,6 @@ class GeneticAlgorithm {
   setBestBoat(boat) {
     if(this.best_boat == boat)
       return;
-
-    if(this.best_boat)
-      this.best_boat.brain.dispose();
 
     this.best_boat = boat;
     this.best_boat_score = boat.score;

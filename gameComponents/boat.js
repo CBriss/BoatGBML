@@ -38,7 +38,7 @@ class Boat extends GameComponent {
   
   static newBrain(y_axis_movement, seed_weights = null) {
     let brain_dimensions = y_axis_movement ? [5, 50, 4] : [4, 5, 2];
-    return new NeuralNetwork(...brain_dimensions, seed_weights);
+    return new NeuralNetwork(brain_dimensions, 'sigmoid');
   }
 
 
@@ -46,10 +46,7 @@ class Boat extends GameComponent {
   // Instance Methods
 
   show(screen, performance_mode=false) {
-    if(performance_mode)
-      screen.drawRectangle(...this.body.coordinates(), ...this.body.dimensions(), 'blue');
-    else
-      screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
+    screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
   }
 
   update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {

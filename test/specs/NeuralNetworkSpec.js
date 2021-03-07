@@ -1,18 +1,37 @@
 describe('Neural Network', () => {
 
     beforeEach(() => {
-        input_nodes = 2;
-        output_nodes = 2;
-        brain = new NeuralNetwork(input_nodes, 3, output_nodes);
+        shape = [4,3,2]
+        brain = new NeuralNetwork(shape, 'sigmoid');
     });
-    
-    it('Initializes Correctly', () => {    
-        expect(brain.input_nodes.constructor.name).toBe("Number");
-        expect(brain.input_weights.shape[0]).toBe(input_nodes);
+
+    describe('Initialization', () => {
+        it('Initializes Correct Shape', () => {    
+            expect(brain.network_shape).toBe(shape);  
+        });
+
+        it('Inits Correct Neurons', () => {
+            expect(brain.neurons.length).toBe(3);
+            expect(brain.neurons[0].length).toBe(4);
+        });
+
+        it('Inits Correct Biases', () => {
+            expect(brain.biases.length).toBe(3);
+            expect(brain.biases[0].length).toBe(4);
+        });
+
+        it('Inits Correct Weights', () => {
+            expect(brain.weights[0][0].length).toBe(3);
+            expect(brain.weights[0][0][0].constructor.name).toBe("Number");
+        });
     });
 
     it('Predicts', () => {
-        expect(brain.predict([10,10]).length).toBe(output_nodes);
+        let output = brain.predict([10,10,10,10]);
+        expect(output.length).toBe(2);
+        expect(output.constructor.name).toBe("Array");
+        expect(isNaN(output[0])).toBe(false);
+        expect(isNaN(output[1])).toBe(false);
     });
 
     it('Clones Correctly', () => {
@@ -20,4 +39,28 @@ describe('Neural Network', () => {
         expect(cloned_network.constructor.name).toBe("NeuralNetwork");
         expect(cloned_network.predict([10,10])).toEqual(brain.predict([10,10]));
     });
+
+    it('Child with same boat as both parents the same without mutation', () => {
+        let screen = {};
+        screen.width = () => 1000;
+        screen.height = () => 1000;
+        let boat = new Boat(screen, false, true);
+        boat.brain = new NeuralNetwork(shape, 'sigmoid');
+        let child = NeuralNetwork.combineParentGenes(brain, brain, boat);
+        expect(child.brain.predict([10,10,10,10])).toEqual(brain.predict([10,10,10,10]));
+    });
+
+
+    it('Child with 2 different boats as parents different without mutation', () => {
+        let screen = {};
+        screen.width = () => 1000;
+        screen.height = () => 1000;
+        let boat = new Boat(screen, false, true);
+        boat.brain = new NeuralNetwork(shape, 'sigmoid');
+        let child = NeuralNetwork.combineParentGenes(brain, new NeuralNetwork(shape, 'sigmoid'), boat);
+        expect(child.brain.predict([10,10,10,10])).not.toEqual(brain.predict([10,10,10,10]));
+    });
+
+
+    
 });

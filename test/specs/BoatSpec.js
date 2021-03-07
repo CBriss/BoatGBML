@@ -5,9 +5,9 @@ describe("Boat Class", () => {
     screen.width = () => 1000;
     screen.height = () => 1000;
 
-		boat = new Boat(screen, true, true);
-		boat.body.position.x = 0;
-		boat.body.position.y = 0;
+	boat = new Boat(screen, true, true);
+	boat.body.position.x = 0;
+	boat.body.position.y = 0;
   });
 
 	describe("Static Methods", () => {
@@ -24,7 +24,7 @@ describe("Boat Class", () => {
 		it("Generates Bigger Brain if Moves on y Axis", () => {
 			var brain1 = Boat.newBrain(false);
 			var brain2 = Boat.newBrain(true);
-			expect(brain1.hidden_nodes).toBeLessThan(brain2.hidden_nodes);
+			expect(brain1.neurons[1].length).toBeLessThan(brain2.neurons[1].length);
 		});
 	});
 
