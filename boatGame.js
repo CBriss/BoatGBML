@@ -79,8 +79,8 @@ class BoatGame {
         this.boats = this.genetic_algorithm.newGeneration(this.screen);
         this.distance_traveled = 0;
         this.hud.show(
-          this.genetic_algorithm.best_boat_score,
-          this.genetic_algorithm.best_boat_age);
+          this.genetic_algorithm.best_individual_score,
+          this.genetic_algorithm.best_individual_age);
       }
     }
   }

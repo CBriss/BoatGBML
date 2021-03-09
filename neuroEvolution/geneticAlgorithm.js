@@ -1,63 +1,63 @@
 class GeneticAlgorithm {
   constructor(population_size, mode) {
-    this.best_boat = null;
-    this.best_boat_age = 0;
-    this.best_boat_score = 0;
+    this.best_individual = null;
+    this.best_individual_age = 0;
+    this.best_individual_score = 0;
     this.dead_population = [];
     this.population_size = population_size;
     this.mode = mode;
   }
 
   firstGeneration(screen, seed_weights=null) {
-    let boats = [];
+    let individuals = [];
     for (let i=0; i<this.population_size; i++) {
-      boats.push(
+      individuals.push(
         new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
       );
     }
-    return boats
+    return individuals
   }
 
   newGeneration(screen, seed_weights=null) {
-    let boats = [];
-    this.updateBestBoat();
-    this.dead_population.splice(this.dead_population.indexOf(this.best_boat), 1);
+    let individuals = [];
+    this.updateBestindividual();
+    this.dead_population.splice(this.dead_population.indexOf(this.best_individual), 1);
     let parents = this.suitableParents();
-    boats.push(this.best_boat); // Always include the current best boat (for 3 gens)
-    this.best_boat.score = 0;
+    individuals.push(this.best_individual);
+    this.best_individual.score = 0;
     for (let i=1; i<this.population_size; i++) {
       let parent_2 = Math.random() < 0.9 ? parents[0] : parents[1];
       let child = NeuralNetwork.combineParentGenes(
-        this.best_boat.brain,
+        this.best_individual.brain,
         parent_2.brain,
         new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
       );
       child.brain.mutate();
-      boats.push(child);
+      individuals.push(child);
     }
     this.clearDeadPopulation();
-    return boats;
+    return individuals;
   }
 
   clearDeadPopulation() {
     this.dead_population = [];
   }
 
-  updateBestBoat() {
+  updateBestindividual() {
     let current_gen_best = this.bestIndividual(this.dead_population);
-    if (!this.best_boat || current_gen_best.score >= this.best_boat.score || this.best_boat_age >= 3)
-      this.setBestBoat(current_gen_best);
+    if (!this.best_individual || current_gen_best.score >= this.best_individual.score || this.best_individual_age >= 3)
+      this.setBestindividual(current_gen_best);
     else
-      this.best_boat_age += 1;
+      this.best_individual_age += 1;
   }
 
-  setBestBoat(boat) {
-    if(this.best_boat == boat)
+  setBestindividual(individual) {
+    if(this.best_individual == individual)
       return;
 
-    this.best_boat = boat;
-    this.best_boat_score = boat.score;
-    this.best_boat_age = 0;
+    this.best_individual = individual;
+    this.best_individual_score = individual.score;
+    this.best_individual_age = 0;
   }
 
   suitableParents() {

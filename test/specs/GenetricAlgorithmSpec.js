@@ -43,8 +43,6 @@ describe('GeneticAlgorithm', () => {
       [best_boat, second_best_boat]
     );
   });
-
-
 });
 
 
