@@ -57,6 +57,17 @@ class NeuralNetwork {
     }
   }
 
+  static newBrainFromJson(json_input) {
+    let network_shape = json_input['shape'];
+    let weights = json_input['weights'];
+    let biases = json_input['biases'];
+    let activation_function = json_input['activation'];
+    let new_brain = new NeuralNetwork(network_shape, activation_function);
+    new_brain.biases = [...biases];
+    new_brain.weights = [...weights];
+    return new_brain;
+  }
+
   predict(user_input) {
     let output;
     this.setInputNeurons(user_input);
@@ -122,7 +133,8 @@ class NeuralNetwork {
 
   mutateValue(weight) {
     if (Math.random(1) < (0.05)) {
-      return weight + randn_bm() * 0.5;
+      let value = (gaussianRandom() - 0.5) * 2;
+      return weight + value;
     }
     return weight;
   }

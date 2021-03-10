@@ -1,13 +1,13 @@
 const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
-  constructor(screen, player_flag, y_axis_movement, seed_weights=null) {
+  constructor(screen, player_flag, y_axis_movement) {
     super(...Boat.defaultValues(screen, y_axis_movement));
     this.score = 0;
     this.distance_traveled = 0;
     this.player_controlled = player_flag;
     this.speed = 5;
-    this.brain = player_flag ? null : Boat.newBrain(y_axis_movement, seed_weights);
+    this.brain = player_flag ? null : Boat.newBrain(y_axis_movement);
   }
 
   ////
@@ -36,11 +36,10 @@ class Boat extends GameComponent {
     return "images/boats/boat" + boat_colors[Math.floor(Math.random() * boat_colors.length)] + ".png"
   }
   
-  static newBrain(y_axis_movement, seed_weights = null) {
+  static newBrain(y_axis_movement) {
     let brain_dimensions = y_axis_movement ? [5, 50, 4] : [4, 5, 2];
     return new NeuralNetwork(brain_dimensions, 'sigmoid');
   }
-
 
   ////
   // Instance Methods

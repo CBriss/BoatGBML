@@ -1,5 +1,5 @@
 class BoatGame {
-  constructor(player_flag, mode, seed_input_weights=null, seed_output_weights=null) {
+  constructor(player_flag, mode, seed_brain=null) {
     
     /* Setup Variables */
     
@@ -23,7 +23,7 @@ class BoatGame {
     // Game Pieces
     this.boat_count = player_flag ? 1 : 50;
     this.genetic_algorithm = new GeneticAlgorithm(this.boat_count, this.mode);
-    this.boats = this.genetic_algorithm.firstGeneration(this.screen, seed_input_weights);
+    this.boats = this.genetic_algorithm.firstGeneration(this.screen, seed_brain);
     this.obstacles = [];
   }
 
@@ -32,7 +32,7 @@ class BoatGame {
   stop() {
     clearInterval(this.interval);
     this.hud.clear();
-    showMenu();
+    exitGame();
   }
 
   update() {
@@ -79,6 +79,7 @@ class BoatGame {
         this.boats = this.genetic_algorithm.newGeneration(this.screen);
         this.distance_traveled = 0;
         this.hud.show(
+          this.genetic_algorithm.generation_count,
           this.genetic_algorithm.best_individual_score,
           this.genetic_algorithm.best_individual_age);
       }
@@ -97,7 +98,12 @@ class BoatGame {
         yAxisMovement
       );
 
-      if (boat.hasCollsionWith(this.obstacles, this.screen.canvas_mid_point)) {
+
+      if (boat.hasCollsionWith(this.obstacles, this.screen.canvas_mid_point) ||
+          boat.body.left() == 0 || 
+          boat.body.right() == this.screen.width() ||
+          boat.body.top() == 0 ||
+          boat.body.bottom() == this.screen.height()) {
         this.removeBoat(boat);
       }
     }

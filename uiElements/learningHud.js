@@ -2,18 +2,22 @@ class LearningHud {
   constructor(element) {
     this.element = element;
 
-    this.generation_element = document.createElement("p");
-    this.element.appendChild(this.generation_element);
-    this.best_boat_element = document.createElement("p");
-    this.element.appendChild(this.best_boat_element);
-    this.best_generation_element = document.createElement("p");
-    this.element.appendChild(this.best_generation_element);
-    this.boat_age_element = document.createElement("p");
-    this.element.appendChild(this.boat_age_element);
+    this.generation_element = this.generateTextBlock();
+    this.best_boat_element = this.generateTextBlock();
+    this.best_generation_element = this.generateTextBlock();
   }
 
-  show(best_boat_score, best_boat_age) {
+  show(generation_count, best_boat_score, best_boat_age) {
+    this.generation_element.innerHTML = `Current Generation: ${generation_count}`;
     this.best_boat_element.innerHTML = `Current Best Boat Score: ${best_boat_score}`;
     this.best_generation_element.innerHTML = `Best Boat Age: ${best_boat_age}`;
+  }
+
+
+  generateTextBlock() {
+    let newElement = document.createElement("p");
+    newElement.classList.add('ui-text');
+    this.element.appendChild(newElement);
+    return newElement;
   }
 }

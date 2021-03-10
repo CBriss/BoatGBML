@@ -6,19 +6,25 @@ class GeneticAlgorithm {
     this.dead_population = [];
     this.population_size = population_size;
     this.mode = mode;
+    this.generation_count = 0;
   }
 
-  firstGeneration(screen, seed_weights=null) {
+  firstGeneration(screen, seed_brain) {
     let individuals = [];
     for (let i=0; i<this.population_size; i++) {
       individuals.push(
-        new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
+        new Boat(screen, this.population_size == 1, this.mode == 'hard')
       );
     }
+
+    if(seed_brain)
+      individuals[0].brain = seed_brain;
+
+    this.generation_count++;
     return individuals
   }
 
-  newGeneration(screen, seed_weights=null) {
+  newGeneration(screen) {
     let individuals = [];
     this.updateBestindividual();
     this.dead_population.splice(this.dead_population.indexOf(this.best_individual), 1);
@@ -26,16 +32,17 @@ class GeneticAlgorithm {
     individuals.push(this.best_individual);
     this.best_individual.score = 0;
     for (let i=1; i<this.population_size; i++) {
-      let parent_2 = Math.random() < 0.9 ? parents[0] : parents[1];
+      let second_parent = Math.random() < 0.8 ? parents[0] : parents[1];
       let child = NeuralNetwork.combineParentGenes(
         this.best_individual.brain,
-        parent_2.brain,
-        new Boat(screen, this.population_size == 1, this.mode == 'hard', seed_weights)
+        second_parent.brain,
+        new Boat(screen, this.population_size == 1, this.mode == 'hard')
       );
       child.brain.mutate();
       individuals.push(child);
     }
     this.clearDeadPopulation();
+    this.generation_count++;
     return individuals;
   }
 

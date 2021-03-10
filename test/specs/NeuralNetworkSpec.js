@@ -40,25 +40,32 @@ describe('Neural Network', () => {
         expect(cloned_network.predict([10,10])).toEqual(brain.predict([10,10]));
     });
 
-    it('Child with same boat as both parents the same without mutation', () => {
-        let screen = {};
-        screen.width = () => 1000;
-        screen.height = () => 1000;
-        let boat = new Boat(screen, false, true);
-        boat.brain = new NeuralNetwork(shape, 'sigmoid');
-        let child = NeuralNetwork.combineParentGenes(brain, brain, boat);
-        expect(child.brain.predict([10,10,10,10])).toEqual(brain.predict([10,10,10,10]));
+    describe('Gene Combination', () => {
+        beforeEach(() => {
+            screen = {};
+            screen.width = () => 1000;
+            screen.height = () => 1000;
+            boat = new Boat(screen, false, true);
+            boat.brain = new NeuralNetwork(shape, 'sigmoid');
+        });
+
+        it('Child with same boat as both parents the same without mutation', () => {
+            let child = NeuralNetwork.combineParentGenes(brain, brain, boat);
+            expect(child.brain.predict([10,10,10,10])).toEqual(brain.predict([10,10,10,10]));
+        });
+    
+    
+        it('Child with 2 different boats as parents different without mutation', () => {
+            let child = NeuralNetwork.combineParentGenes(brain, new NeuralNetwork(shape, 'sigmoid'), boat);
+            expect(child.brain.predict([10,10,10,10])).not.toEqual(brain.predict([10,10,10,10]));
+        });
     });
 
-
-    it('Child with 2 different boats as parents different without mutation', () => {
-        let screen = {};
-        screen.width = () => 1000;
-        screen.height = () => 1000;
-        let boat = new Boat(screen, false, true);
-        boat.brain = new NeuralNetwork(shape, 'sigmoid');
-        let child = NeuralNetwork.combineParentGenes(brain, new NeuralNetwork(shape, 'sigmoid'), boat);
-        expect(child.brain.predict([10,10,10,10])).not.toEqual(brain.predict([10,10,10,10]));
+    it('Has a chance to mutate genes', () => {
+        let old_weights = [...brain.weights[0][0]];
+        for(let i=0;i<20;i++)
+            brain.mutate();
+        expect(old_weights).not.toEqual(brain.weights[0][0]);
     });
 
 
