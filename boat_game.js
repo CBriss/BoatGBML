@@ -1,5 +1,5 @@
 class BoatGame {
-  constructor(player_flag, mode, seed_brain=null) {
+  constructor(screen_width, screen_height, player_flag, mode, seed_brain=null) {
     
     /* Setup Variables */
     
@@ -15,7 +15,7 @@ class BoatGame {
     this.input = new Input();
 
     // Rendering
-    this.screen = new GameScreen('game-canvas', 500, 550);
+    this.screen = new GameScreen('game-canvas', screen_width, screen_height);
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
     this.backgroundSprite.src = "images/background.png";   
@@ -53,7 +53,7 @@ class BoatGame {
 
   insertObstacles() {
     if (this.frame_count % 100 == 0) {
-      let gap = Math.max(Math.random() * 250, 125);
+      let gap = Math.random() * this.screen.width() / 3 + this.screen.width()/7;
       this.obstacles.push(...Obstacle.newPairOfObstacles(gap, -10, this.screen.width()));
     }
   }
@@ -67,7 +67,7 @@ class BoatGame {
     this.time_left = 1500 - this.frame_count;
     this.distance_traveled += Math.ceil(this.game_speed / 10);
     if (this.player_flag)
-      this.hud.update(
+      this.hud.show(
         this.time_left,
         this.distance_traveled,
         this.boats[0] ? this.boats[0].score : 0

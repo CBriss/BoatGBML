@@ -2,6 +2,7 @@ const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
   constructor(screen, player_flag, y_axis_movement) {
+    console.log(...Boat.defaultValues(screen, y_axis_movement));
     super(...Boat.defaultValues(screen, y_axis_movement));
     this.score = 0;
     this.distance_traveled = 0;
@@ -16,20 +17,20 @@ class Boat extends GameComponent {
   static defaultValues(screen, y_axis_movement){
     return [
       Boat.randomStartPosition(screen, y_axis_movement),
-      ...Boat.defaultBodyDimensions(),
+      ...Boat.defaultBodyDimensions(screen),
       Boat.randomImage()
     ]
   }
 
   static randomStartPosition(screen, y_axis_movement){
     return new Position(
-      Math.random() * (screen.width() - 25),
-      (y_axis_movement ? Math.random() * (screen.height() - 125) + screen.height()/3 : screen.height() * 0.6)
+      Math.random() * (screen.width() / 2) + screen.width() / 5,
+      (y_axis_movement ? Math.random() * (screen.height() / 2) + screen.height() / 5 : screen.height() * 0.6)
     );
   }
 
-  static defaultBodyDimensions(){
-    return [25, 75];
+  static defaultBodyDimensions(screen){
+    return [screen.width()/9*0.45, screen.width()/9];
   }
 
   static randomImage() {
@@ -37,14 +38,14 @@ class Boat extends GameComponent {
   }
   
   static newBrain(y_axis_movement) {
-    let brain_dimensions = y_axis_movement ? [5, 50, 4] : [4, 5, 2];
+    let brain_dimensions = y_axis_movement ? [5, 10, 4] : [4, 5, 2];
     return new NeuralNetwork(brain_dimensions, 'sigmoid');
   }
 
   ////
   // Instance Methods
 
-  show(screen, performance_mode=false) {
+  show(screen) {
     screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
   }
 
