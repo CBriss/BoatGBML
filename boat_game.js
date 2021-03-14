@@ -98,15 +98,19 @@ class BoatGame {
         yAxisMovement
       );
 
-
       if (boat.hasCollsionWith(this.obstacles, this.screen.canvas_mid_point) ||
-          boat.body.left() == 0 || 
-          boat.body.right() == this.screen.width() ||
-          boat.body.top() == 0 ||
-          boat.body.bottom() == this.screen.height()) {
+          this.offScreen(boat))
         this.removeBoat(boat);
-      }
     }
+  }
+
+  offScreen(component) {
+    return (
+      component.body.left() <= 0 || 
+      component.body.right() >= this.screen.width() ||
+      component.body.top() <= 0 ||
+      component.body.bottom() >= this.screen.height()
+    );
   }
 
   removeBoat(boat){
