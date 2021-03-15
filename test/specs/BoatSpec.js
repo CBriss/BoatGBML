@@ -16,7 +16,7 @@ describe("Boat Class", () => {
 		});
 
 		it("Generates an Array of 2 Numbers", () => {
-			var returned_value = Boat.defaultBodyDimensions();
+			var returned_value = Boat.defaultBodyDimensions(screen);
 			expect(returned_value.constructor.name).toBe("Array");
 			expect(returned_value.length).toBe(2);
 		});
@@ -31,16 +31,16 @@ describe("Boat Class", () => {
 	describe("Obstacle Finding", () => {
 
 		it("Finds Nearest Obstacles", () => {
-			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 500, 50);
-			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50);
+			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 500, 50, 50);
+			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50, 50);
 			var nearest_obstacles = boat.find_nearest_obstacles([far_obstacle, close_obstacle])
 			expect(nearest_obstacles[0]).toBe(close_obstacle);
 			expect(nearest_obstacles[1]).toBe(far_obstacle);
 		});
 	
 		it("Ignores passed obstacles finding nearest obstacles", () => {
-			passed_obstacle = new Obstacle(boat.body.position.x, boat.body.end_position.y + boat.body.height, 50);
-			nearest_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - boat.body.height * 2, 50);
+			passed_obstacle = new Obstacle(boat.body.position.x, boat.body.end_position.y + boat.body.height, 50, 50);
+			nearest_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - boat.body.height * 2, 50, 50);
 			var nearest_obstacles = boat.find_nearest_obstacles([passed_obstacle, nearest_obstacle])
 			expect(nearest_obstacles.length).toBe(1);
 			expect(nearest_obstacles[0]).toBe(nearest_obstacle);
@@ -75,14 +75,6 @@ describe("Boat Class", () => {
             boat.move(input, screen);
             expectPositionCoords(boat.body.position, 5, 5)
         });
-
-        it("Stops Position From Going Off Screen", () => {
-            input.pressKey('left');
-            input.pressKey('up');
-			      boat.move(input, screen);
-            expectPositionCoords(boat.body.position, 0, 0)
-        });
-
 		
 		it('Thinking Returns Input Object', () => {
 			boat = new Boat(screen, false, true);
@@ -111,8 +103,8 @@ function expectPositionCoords(position, expected_x, expected_y) {
 }
 
 function generateObstacleGap(gap_size) {
-	let obstacle1 = new Obstacle(0, -10, 100);
+	let obstacle1 = new Obstacle(0, -10, 100, 50);
 	let obstacle2_pos = obstacle1.body.end_position.x + gap_size;
-	let obstacle2 = new Obstacle(obstacle2_pos, 10, screen.width() - obstacle2_pos);
+	let obstacle2 = new Obstacle(obstacle2_pos, 10, screen.width() - obstacle2_pos, 50);
 	return [obstacle1, obstacle2];
 }

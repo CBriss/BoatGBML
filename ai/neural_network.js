@@ -9,7 +9,7 @@ class NeuralNetwork {
   constructor(network_shape, activation_function) {
     this.network_shape = network_shape;
     this.layerCount = network_shape.length;
-    this.activation_function = activation_function;
+    this.activation_function = ActivationFunctions.get_function(activation_function);
 
     this.neurons = new Array(this.layerCount);
     this.initNeurons();
@@ -82,38 +82,10 @@ class NeuralNetwork {
           neuron_input += this.weights[layer - 1][prev_neuron][neuron] * this.neurons[layer - 1][prev_neuron];
         }
         neuron_input += this.biases[layer][neuron];
-        this.neurons[layer][neuron] = this.activate(this.activation_function, neuron_input);
+        this.neurons[layer][neuron] = this.activation_function(neuron_input);
       } 
     }
     return this.neurons[this.network_shape.length -1];
-  }
-
-  activate(function_name, input){
-    switch(function_name) {
-      case "relu":
-        return this.reLu(input);
-      case "leakyrelu":
-        return this.leakyReLu(input);
-      case "sigmoid":
-        return this.sigmoid(input);
-      default:
-        return this.sigmoid(input);
-    }
-  }
-
-  relu(input) {
-    Math.max(input, 0);
-  }
-
-  leakyRelu(input) {
-    if(input <= 0)
-      return 0.01 * input;
-    else 
-      return input;
-  }
-
-  sigmoid(input){
-    return (1.0 / (1.0 + Math.exp(-input)));
   }
 
   setInputNeurons(user_input){

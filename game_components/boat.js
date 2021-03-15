@@ -50,17 +50,15 @@ class Boat extends GameComponent {
 
   update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {
     this.move(
-      this.player_controlled ? input : this.think(screen, obstacles, input, y_axis_movement),
-      screen
+      this.player_controlled ? input : this.think(screen, obstacles, input, y_axis_movement)
     );
     this.updateScore(screen.height(), new_distance_traveled);
   }
 
-  move(input, screen) {
+  move(input) {
     super.moveTo(
       this.body.position.x + ((0 + input.isPressed("right") - input.isPressed("left")) * this.speed),
-      this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed),
-      screen
+      this.body.position.y + ((0 + input.isPressed("down") - input.isPressed("up")) * this.speed)
     );
   }
 
