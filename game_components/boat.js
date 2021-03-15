@@ -2,7 +2,6 @@ const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
   constructor(screen, player_flag, y_axis_movement) {
-    console.log(...Boat.defaultValues(screen, y_axis_movement));
     super(...Boat.defaultValues(screen, y_axis_movement));
     this.score = 0;
     this.distance_traveled = 0;

@@ -98,7 +98,6 @@ class BoatGame {
         yAxisMovement
       );
 
-
       if (boat.hasCollsionWith(this.obstacles, this.screen.canvas_mid_point) ||
           boat.body.left() == 0 || 
           boat.body.right() == this.screen.width() ||
