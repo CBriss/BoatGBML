@@ -11,8 +11,8 @@ describe("Boat Class", () => {
   });
 
 	describe("Static Methods", () => {
-		it("Generates a Position Object", () => {
-			expect(Boat.randomStartPosition(screen).constructor.name).toBe('Position');
+		it("Generates a Position2D Object", () => {
+			expect(Boat.randomStartPosition(screen).constructor.name).toBe('Position2D');
 		});
 
 		it("Generates an Array of 2 Numbers", () => {

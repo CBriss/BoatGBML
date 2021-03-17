@@ -2,7 +2,7 @@ const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
   constructor(screen, player_flag, y_axis_movement) {
-    super(...Boat.defaultValues(screen, y_axis_movement), BodyRect);
+    super(...Boat.defaultValues(screen, y_axis_movement), BodyRect2D);
     this.score = 0;
     this.distance_traveled = 0;
     this.player_controlled = player_flag;
@@ -22,7 +22,7 @@ class Boat extends GameComponent {
   }
 
   static randomStartPosition(screen, y_axis_movement){
-    return new Position(
+    return new Position2D(
       Math.random() * (screen.width() / 2) + screen.width() / 5,
       (y_axis_movement ? Math.random() * (screen.height() / 2) + screen.height() / 5 : screen.height() * 0.6)
     );

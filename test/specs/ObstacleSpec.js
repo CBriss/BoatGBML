@@ -10,7 +10,7 @@ describe("Obstacle", () => {
 
 	it("Initializes Correctly", () => {
 		expect(obstacle.constructor.name).toBe("Obstacle");
-		expect(obstacle.body.constructor.name).toBe("BodyRect");
+		expect(obstacle.body.constructor.name).toBe("BodyRect2D");
 	});
 
 	it("Generates Two Obstacles", () => {

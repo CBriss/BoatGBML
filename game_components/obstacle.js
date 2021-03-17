@@ -1,6 +1,6 @@
 class Obstacle extends GameComponent {
   constructor(x, y, width, height) {
-    super(new Position(x, y), width, height, "images/log.png", BodyRect);
+    super(new Position2D(x, y), width, height, "images/log.png", BodyRect2D);
     this.move_speed = 0.1;
   }
 
@@ -14,7 +14,7 @@ class Obstacle extends GameComponent {
   }
 
   show(screen) {
-    screen.drawComponent(this.sprite, this.body.position.x, this.body.position.y, this.body.dimensions.width, this.body.dimensions.height);
+    screen.drawComponent(this.sprite, this.body.position.x, this.body.position.y, this.body.width, this.body.height);
   }
 
   static newPairOfObstacles(gap_size, y, canvas_width) {
