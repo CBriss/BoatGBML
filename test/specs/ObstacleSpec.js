@@ -2,15 +2,15 @@ describe("Obstacle", () => {
 
 	beforeEach(() => {
 		screen = {};
-    screen.width = () => 1000;
-    screen.height = () => 1000;
+		screen.width = () => 1000;
+		screen.height = () => 1000;
 
-		obstacle = new Obstacle(0, 0, 50);
+		obstacle = new Obstacle(0, 0, 50, 50);
 	});
 
 	it("Initializes Correctly", () => {
 		expect(obstacle.constructor.name).toBe("Obstacle");
-		expect(obstacle.body.constructor.name).toBe("Body");
+		expect(obstacle.body.constructor.name).toBe("BodyRect");
 	});
 
 	it("Generates Two Obstacles", () => {

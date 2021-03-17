@@ -2,7 +2,7 @@ const boat_colors = ["Blue", "Green", "Pink", "Purple", "Red", "Yellow"];
 
 class Boat extends GameComponent {
   constructor(screen, player_flag, y_axis_movement) {
-    super(...Boat.defaultValues(screen, y_axis_movement));
+    super(...Boat.defaultValues(screen, y_axis_movement), BodyRect);
     this.score = 0;
     this.distance_traveled = 0;
     this.player_controlled = player_flag;
@@ -45,7 +45,7 @@ class Boat extends GameComponent {
   // Instance Methods
 
   show(screen) {
-    screen.drawComponent(this.sprite, ...this.body.coordinates(), ...this.body.dimensions());
+    screen.drawComponent(this.sprite, ...this.body.position.coordinates(), ...this.body.dimensions());
   }
 
   update(screen, input, obstacles, new_distance_traveled, y_axis_movement) {

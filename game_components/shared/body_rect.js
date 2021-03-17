@@ -1,16 +1,15 @@
-import { BodyDimension2D } from "body_dimension_2d.js";
+class BodyRect {
 
-class Body {
-
-  constructor(position, dimensions) {
+  constructor(position, width, height) {
+    this.width = width;
+    this.height = height;
     this.position = new Position(...position.coordinates());
-    this.dimensions = new BodyDimension2D(dimensions);
-    this.end_position = new Position(position.x + this.dimensions.width, position.y + height); 
+    this.end_position = new Position(position.x + this.width, position.y + this.height); 
   }
 
   update_position(new_x, new_y) {
     this.position.update(new_x, new_y);
-    this.end_position.update(this.position.x + this.dimensions.width, this.position.y + this.dimensions.height);
+    this.end_position.update(this.position.x + this.width, this.position.y + this.height);
   }
 
   top(){
@@ -29,8 +28,8 @@ class Body {
     return this.end_position.x;
   }
 
-  coordinates(){
-    return this.position.coordinates();
+  dimensions(){
+    return [this.width, this.height];
   }
 
   isOverlappingVertical(other_body) {

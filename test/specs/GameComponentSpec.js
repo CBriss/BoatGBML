@@ -7,13 +7,13 @@ describe("Game Component", () => {
 		var component1;
 		var component2;
 		screen = {};
-    screen.width = () => 1000;
-    screen.height = () => 1000;
+		screen.width = () => 1000;
+		screen.height = () => 1000;
 		var starting_position = new Position(500, 500);
 
 		beforeEach(function() {
-			component1 = new GameComponent(starting_position, default_width, default_height, default_image);
-			component2 = new GameComponent(starting_position, default_width, default_height, default_image);
+			component1 = new GameComponent(starting_position, default_width, default_height, default_image, BodyRect);
+			component2 = new GameComponent(starting_position, default_width, default_height, default_image, BodyRect);
 		});
 
 		it("Collides When fully overlapped", () => {

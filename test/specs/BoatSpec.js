@@ -5,9 +5,9 @@ describe("Boat Class", () => {
     screen.width = () => 1000;
     screen.height = () => 1000;
 
-	boat = new Boat(screen, true, true);
-	boat.body.position.x = 0;
-	boat.body.position.y = 0;
+    boat = new Boat(screen, true, true);
+    boat.body.position.x = 0;
+    boat.body.position.y = 0;
   });
 
 	describe("Static Methods", () => {
@@ -69,38 +69,33 @@ describe("Boat Class", () => {
 			input = new Input();
 		});
 
-        it("Sets Position in move function", () => {
-            input.pressKey('right');
-            input.pressKey('down');
-            boat.move(input, screen);
-            expectPositionCoords(boat.body.position, 5, 5)
-        });
+    it("Sets Position in move function", () => {
+        input.pressKey('right');
+        input.pressKey('down');
+        boat.move(input, screen);
+        expectPositionCoords(boat.body.position, 5, 5)
+    });
 		
 		it('Thinking Returns Input Object', () => {
 			boat = new Boat(screen, false, true);
 			var obstacles = Obstacle.newPairOfObstacles(300, 10, screen.width());
 			expect(boat.think(screen, obstacles, input, true).constructor.name).toBe("Input");
 		});
-    });
+  });
 
 	it('Generates the Correct Brain Input', () => {
-		boat.body.position.y = screen.height() - 200;
+    boat.body.position.y = screen.height() - 200;
 
-		let brain_input = boat.generateBrainInput(generateObstacleGap(100), screen, false);
+    let brain_input = boat.generateBrainInput(generateObstacleGap(100), screen, false);
 		
-		expect(brain_input.length).toBe(4);
-		expect(brain_input[0]).toBe(0);
-		expect(brain_input[1]).toBe(boat.body.right() / screen.width());
-		expect(brain_input[2]).toBe(0.1);
-		expect(brain_input[3]).toBe(0.2);
+    expect(brain_input.length).toBe(4);
+    expect(brain_input[0]).toBe(0);
+    expect(brain_input[1]).toBe(boat.body.right() / screen.width());
+    expect(brain_input[2]).toBe(0.1);
+    expect(brain_input[3]).toBe(0.2);
 	});
 
 });
-
-function expectPositionCoords(position, expected_x, expected_y) {
-    expect(position.x).toBe(expected_x);
-    expect(position.y).toBe(expected_y);
-}
 
 function generateObstacleGap(gap_size) {
 	let obstacle1 = new Obstacle(0, -10, 100, 50);
