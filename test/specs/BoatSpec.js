@@ -28,36 +28,6 @@ describe("Boat Class", () => {
 		});
 	});
 
-	describe("Obstacle Finding", () => {
-
-		it("Finds Nearest Obstacles", () => {
-			close_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 500, 50, 50);
-			far_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - 1000, 50, 50);
-			var nearest_obstacles = boat.find_nearest_obstacles([far_obstacle, close_obstacle])
-			expect(nearest_obstacles[0]).toBe(close_obstacle);
-			expect(nearest_obstacles[1]).toBe(far_obstacle);
-		});
-	
-		it("Ignores passed obstacles finding nearest obstacles", () => {
-			passed_obstacle = new Obstacle(boat.body.position.x, boat.body.end_position.y + boat.body.height, 50, 50);
-			nearest_obstacle = new Obstacle(boat.body.position.x, boat.body.position.y - boat.body.height * 2, 50, 50);
-			var nearest_obstacles = boat.find_nearest_obstacles([passed_obstacle, nearest_obstacle])
-			expect(nearest_obstacles.length).toBe(1);
-			expect(nearest_obstacles[0]).toBe(nearest_obstacle);
-		});
-	
-		it("Returns empty array if no obstacles", () => {
-			expect(boat.find_nearest_obstacles([]).length).toBe(0);
-		});
-
-		it('Can Find the Obstacle Gap', () => {
-			let {gap_left, gap_right, gap_y_pos} = boat.findObstacleGap(generateObstacleGap(100));
-			expect(gap_left).toBe(100);
-			expect(gap_right).toBe(200);
-			expect(gap_y_pos).toBeGreaterThan(0);
-		});
-	});
-
 	it('Updates Its Score', () => {
 		boat.updateScore(screen.height(), screen.height() * 3);
 		expect(boat.score).toBeGreaterThan(0);
