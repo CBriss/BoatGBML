@@ -1,8 +1,8 @@
 class Position2D extends Position {    
   constructor(init_x = 0, init_y = 0) {
     super();
-    this.x = init_x;
-    this.y = init_y;
+    this.x = Math.floor(init_x);
+    this.y = Math.floor(init_y);
   }
 
   update(new_x, new_y) {

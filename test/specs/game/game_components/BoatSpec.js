@@ -1,32 +1,16 @@
 describe("Boat Class", () => {
 
 	beforeEach(function() {
-    screen = {};
-    screen.width = () => 1000;
-    screen.height = () => 1000;
-
-    boat = new Boat(screen, true, true);
-    boat.body.position.x = 0;
-    boat.body.position.y = 0;
+    boat = new Boat(
+			new Position2D(0,0),
+			50,
+			100,
+			'test.png',
+			BodyRect2D,
+			false,
+			false
+		);
   });
-
-	describe("Static Methods", () => {
-		it("Generates a Position2D Object", () => {
-			expect(Boat.randomStartPosition(screen).constructor.name).toBe('Position2D');
-		});
-
-		it("Generates an Array of 2 Numbers", () => {
-			var returned_value = Boat.defaultBodyDimensions(screen);
-			expect(returned_value.constructor.name).toBe("Array");
-			expect(returned_value.length).toBe(2);
-		});
-
-		it("Generates Bigger Brain if Moves on y Axis", () => {
-			var brain1 = Boat.newBrain(false);
-			var brain2 = Boat.newBrain(true);
-			expect(brain1.neurons[1].length).toBeLessThan(brain2.neurons[1].length);
-		});
-	});
 
 	it('Updates Its Score', () => {
 		boat.updateScore(screen.height(), screen.height() * 3);
@@ -47,7 +31,6 @@ describe("Boat Class", () => {
     });
 		
 		it('Thinking Returns Input Object', () => {
-			boat = new Boat(screen, false, true);
 			var obstacles = Obstacle.newPairOfObstacles(300, 10, screen.width());
 			expect(boat.think(screen, obstacles, input, true).constructor.name).toBe("Input");
 		});

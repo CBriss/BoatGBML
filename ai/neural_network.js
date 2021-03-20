@@ -69,7 +69,6 @@ class NeuralNetwork {
   }
 
   predict(user_input) {
-    let output;
     this.setInputNeurons(user_input);
     // For each layer
     for (let layer = 1; layer < this.network_shape.length; layer++) {

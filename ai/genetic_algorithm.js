@@ -1,20 +1,18 @@
 class GeneticAlgorithm {
-  constructor(population_size, mode) {
+  constructor(population_size, spawner) {
     this.best_individual = null;
     this.best_individual_age = 0;
     this.best_individual_score = 0;
     this.dead_population = [];
     this.population_size = population_size;
-    this.mode = mode;
+    this.spawner = spawner;
     this.generation_count = 0;
   }
 
-  firstGeneration(screen, seed_brain) {
+  firstGeneration(seed_brain) {
     let individuals = [];
     for (let i=0; i<this.population_size; i++) {
-      individuals.push(
-        new Boat(screen, this.population_size == 1, this.mode == 'hard')
-      );
+      individuals.push(this.spawner.spawnBoat(false));
     }
 
     if(seed_brain)
@@ -24,7 +22,7 @@ class GeneticAlgorithm {
     return individuals
   }
 
-  newGeneration(screen) {
+  newGeneration() {
     let individuals = [];
     this.updateBestindividual();
     this.dead_population.splice(this.dead_population.indexOf(this.best_individual), 1);
@@ -36,7 +34,7 @@ class GeneticAlgorithm {
       let child = NeuralNetwork.combineParentGenes(
         this.best_individual.brain,
         second_parent.brain,
-        new Boat(screen, this.population_size == 1, this.mode == 'hard')
+        this.spawner.spawnBoat(false)
       );
       child.brain.mutate();
       individuals.push(child);

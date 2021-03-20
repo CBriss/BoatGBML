@@ -18,17 +18,17 @@ class GameComponent {
   }
 
   hasCollsionWith(sorted_array, canvas_mid_point) {
-    let {i, increment} = GameComponent.setLoopVariables((this.body.top() < canvas_mid_point), sorted_array.length - 1)
+    let {i, direction} = GameComponent.setLoopVariables((this.body.top() < canvas_mid_point), sorted_array.length - 1)
     while(i >= 0 && i < sorted_array.length){
       if(sorted_array[i].body.top() <= this.body.bottom() && this.collidesWith(sorted_array[i]))
         return sorted_array[i];
-      i += increment;
+      i += direction;
     }
     return false;
   }
 
   static setLoopVariables(is_top_of_screen, last_index){
-    return is_top_of_screen ? { i: 0, increment: 1 } : { i: last_index, increment: -1 };
+    return is_top_of_screen ? { i: 0, direction: 1 } : { i: last_index, direction: -1 };
   }
 
 }

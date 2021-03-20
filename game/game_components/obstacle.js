@@ -4,13 +4,11 @@ class Obstacle extends GameComponent {
     this.move_speed = 0.1;
   }
 
-  update(game_speed, screen) {
+  update(game_speed) {
     super.moveTo(
       this.body.position.x,
       this.body.position.y += game_speed * this.move_speed
     );
-    if(this.body.top() > screen.height())
-      return true
   }
 
   show(screen) {

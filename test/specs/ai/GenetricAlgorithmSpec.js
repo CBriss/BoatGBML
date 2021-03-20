@@ -5,8 +5,8 @@ describe('GeneticAlgorithm', () => {
     screen.width = () => 1000;
     screen.height = () => 1000;
     population_size = 10;
-    genetic_algorithm = new GeneticAlgorithm(population_size, 'hard');
-    new_generation = genetic_algorithm.firstGeneration(screen);
+    genetic_algorithm = new GeneticAlgorithm(population_size, new BoatSpawner(screen, false));
+    new_generation = genetic_algorithm.firstGeneration();
     best_boat = newBoatWithScore(100);
   });
 
@@ -47,7 +47,15 @@ describe('GeneticAlgorithm', () => {
 
 
 function newBoatWithScore(score){
-  let boat = new Boat(screen, false, true);
+  let boat = new Boat(
+    new Position2D(0,0),
+    50,
+    100,
+    'test.png',
+    BodyRect2D,
+    false,
+    false
+  );
   boat.score = score;
   return boat;
 }

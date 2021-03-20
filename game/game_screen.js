@@ -38,4 +38,13 @@ class GameScreen{
   height() {
     return this.canvas.height;
   }
+
+  offScreen(component) {
+    return (
+      component.body.left() <= 0 || 
+      component.body.right() >= this.canvas.width ||
+      component.body.top() <= 0 ||
+      component.body.bottom() >= this.canvas.height
+    );
+  }
 }

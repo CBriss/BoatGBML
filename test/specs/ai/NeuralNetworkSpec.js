@@ -45,7 +45,15 @@ describe('Neural Network', () => {
             screen = {};
             screen.width = () => 1000;
             screen.height = () => 1000;
-            boat = new Boat(screen, false, true);
+            boat = new Boat(
+                new Position2D(0,0),
+                50,
+                100,
+                'test.png',
+                BodyRect2D,
+                false,
+                true
+            );
             boat.brain = new NeuralNetwork(shape, 'sigmoid');
         });
 
