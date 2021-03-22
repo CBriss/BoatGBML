@@ -1,5 +1,5 @@
 class BoatGame {
-  constructor(screen_width, screen_height, player_flag, mode, seed_brain=null, callOnGameOver) {
+  constructor(mode, controller, hud_class, screen, boats, seed_brain=null, ) {
     
     /* Setup Variables */
     
@@ -10,25 +10,25 @@ class BoatGame {
     this.distance_traveled = 0;
     this.game_speed = 50;
     this.obstacle_frequency = 100;
-    this.player_flag = player_flag;
     this.mode = mode
     this.input = new Input();
+    this.hud = this.initializeHud(hud_class);
+    this.screen = screen;
 
-    this.callOnGameOver = callOnGameOver;
+    this.controller = controller;
 
     // Rendering
-    this.screen = new GameScreen('game-canvas', screen_width, screen_height);
     this.interval = setInterval(this.update.bind(this), 16);
     this.backgroundSprite = new Image();
     this.backgroundSprite.src = "images/background.png";   
 
     // Game Pieces
     this.obstacles = [];
-    this.boat_spawner = new BoatSpawner(this.screen, (this.mode == 'hard'));
-    
+    this.boats = boats;
+    this.dead_boats = [];
+
     //this.genetic_algorithm = new GeneticAlgorithm(player_flag ? 1 : 50, this.boat_spawner);
     //this.boats = (this.genetic_algorithm.firstGeneration(this.screen, seed_brain));
-    this.boats = [this.boat_spawner.spawnBoat(true)];
   }
 
   /* Base Functions */
@@ -39,8 +39,9 @@ class BoatGame {
   }
   
   stop() {
+    this.hud.clear();
     clearInterval(this.interval);
-    this.callOnGameOver();
+    this.controller.end();
   }
 
   /* Frame Processing */
@@ -84,7 +85,7 @@ class BoatGame {
   }
 
   updateGameState() {
-    if ((this.player_flag && this.time_left <= 0) || this.input.isPressed("exit")) this.stop();
+    if (this.time_left <= 0 || this.input.isPressed("exit")) this.stop();
     this.time_left = 1500 - this.frame_count;
     this.distance_traveled += Math.ceil(this.game_speed / 10);
     if (this.boats.length <= 0) {
@@ -97,6 +98,7 @@ class BoatGame {
     //     this.genetic_algorithm.best_individual_score,
     //     this.genetic_algorithm.best_individual_age);
     }
+    this.hud.show(this);
   }
 
   removeObstacle(obstacle) {
@@ -104,6 +106,7 @@ class BoatGame {
   }
 
   removeBoat(boat){
+    this.dead_boats.push(boat);
     this.boats.splice(this.boats.indexOf(boat), 1)[0];
     //this.genetic_algorithm.dead_population.push(boat);
   }
@@ -135,5 +138,12 @@ class BoatGame {
     else {
       this.interval = setInterval(this.update.bind(this), 16);
     }
+  }
+
+  /* UI */
+
+  initializeHud(hud_class) {
+    let hud_element = document.getElementById('game-ui');
+    return new hud_class(hud_element);
   }
 }

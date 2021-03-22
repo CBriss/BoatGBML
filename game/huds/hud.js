@@ -11,7 +11,6 @@ class Hud {
     }
   
     clear(){
-      console.log("clearing children");
       while (this.element.firstChild) {
         this.element.removeChild(this.element.lastChild);
       }

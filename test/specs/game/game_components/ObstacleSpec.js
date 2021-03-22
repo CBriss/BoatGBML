@@ -24,8 +24,4 @@ describe("Obstacle", () => {
 		expect(obstacle.body.position.y).toBeGreaterThan(screen.height());
 	});
 
-	it("Destroys Itself When Off-Screen", () =>{
-    expect(obstacle.update(screen.height() * 1000, screen)).toBe(true);
-	});
-
 });
