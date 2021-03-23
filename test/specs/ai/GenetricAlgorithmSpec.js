@@ -5,8 +5,9 @@ describe('GeneticAlgorithm', () => {
     screen.width = () => 1000;
     screen.height = () => 1000;
     population_size = 10;
-    genetic_algorithm = new GeneticAlgorithm(population_size, new BoatSpawner(screen, false));
-    new_generation = genetic_algorithm.firstGeneration();
+    spawner = new BoatSpawner(screen, false);
+    genetic_algorithm = new GeneticAlgorithm(population_size);
+    new_generation = genetic_algorithm.firstGeneration(spawner);
     best_boat = newBoatWithScore(100);
   });
 
@@ -31,7 +32,7 @@ describe('GeneticAlgorithm', () => {
 
   it('Finds Best Parents in Each Half Of Population', () => {
     let second_best_boat = newBoatWithScore(50);
-    genetic_algorithm.dead_population = [
+    genetic_algorithm.last_generation = [
       best_boat,
       newBoatWithScore(10),
       newBoatWithScore(20),

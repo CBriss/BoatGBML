@@ -1,5 +1,5 @@
 class GeneticAlgorithm {
-  constructor(population_size, spawner) {
+  constructor(population_size) {
     this.best_individual = null;
     this.best_individual_age = 0;
     this.best_individual_score = 0;
