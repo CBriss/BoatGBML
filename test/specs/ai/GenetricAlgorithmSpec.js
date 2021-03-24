@@ -1,9 +1,7 @@
 describe('GeneticAlgorithm', () => {
 
   beforeEach(function() {
-    screen = {};
-    screen.width = () => 1000;
-    screen.height = () => 1000;
+    screen = {width: () => 1000, height: () => 1000};
     population_size = 10;
     spawner = new BoatSpawner(screen, false);
     genetic_algorithm = new GeneticAlgorithm(population_size);
@@ -16,23 +14,14 @@ describe('GeneticAlgorithm', () => {
     expect(new_generation[0].constructor.name).toEqual("Boat");
   });
 
-  it('Finds Best Individual in Cluster', () => {
-    let best_individual = genetic_algorithm.bestIndividual(
-        [
-          newBoatWithScore(5),
-          newBoatWithScore(10),
-          newBoatWithScore(50),
-          newBoatWithScore(90),
-          newBoatWithScore(99),
-          best_boat
-        ]
-    );
-    expect(best_individual).toEqual(best_boat);
+  it('Sets the best individual', () => {
+    genetic_algorithm.setBestIndividual(best_boat);
+    expect(genetic_algorithm.best_individual).toEqual(best_boat);
   });
 
-  it('Finds Best Parents in Each Half Of Population', () => {
+  it('Finds the best parents in each half of the generation', () => {
     let second_best_boat = newBoatWithScore(50);
-    genetic_algorithm.last_generation = [
+    let last_generation = [
       best_boat,
       newBoatWithScore(10),
       newBoatWithScore(20),
@@ -40,9 +29,23 @@ describe('GeneticAlgorithm', () => {
       newBoatWithScore(40),
       second_best_boat
     ];
-    expect(genetic_algorithm.suitableParents()).toEqual(
+    expect(GeneticAlgorithm.suitableParents(last_generation)).toEqual(
       [best_boat, second_best_boat]
     );
+  });
+
+  it('Finds best individual in a generation', () => {
+    let best_individual = GeneticAlgorithm.generationBestIndividual(
+      [
+        newBoatWithScore(5),
+        newBoatWithScore(10),
+        newBoatWithScore(50),
+        newBoatWithScore(90),
+        newBoatWithScore(99),
+        best_boat
+      ]
+    );
+    expect(best_individual).toEqual(best_boat);
   });
 });
 

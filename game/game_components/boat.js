@@ -19,7 +19,7 @@ class Boat extends GameComponent {
     if(this.player_controlled)
       return null;
 
-    return new NeuralNetwork(this.y_axis_movement ? big_brain : small_brain,'sigmoid');
+    return new NeuralNetwork(this.y_axis_movement ? big_brain : small_brain, 'sigmoid');
   }
 
   ////

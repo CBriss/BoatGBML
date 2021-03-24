@@ -32,6 +32,7 @@ class BoatGame {
   /* Base Functions */
 
   update() {
+    console.log("gogogo");
     for (let i = 0; i < this.controller.speedup_value; i++) { this.processFrame(); }
     this.drawFrame();
   }

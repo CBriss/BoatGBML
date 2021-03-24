@@ -2,35 +2,18 @@ class LearningHud extends Hud {
   constructor(element) {
     super(element);
 
-    this.best_boat_score = 0;
-    this.best_boat_age = 0;
-    this.generation_count = 1;
-
     this.generation_element = this.generateTextBlock();
-    this.best_boat_element = this.generateTextBlock();
-    this.best_generation_element = this.generateTextBlock();
+    this.best_individual_score_element = this.generateTextBlock();
+    this.best_individual_age_element = this.generateTextBlock();
 
-    this.display();
+    this.update(0,0,1);
   }
 
   show() {}
 
-  updateValues(boats) {
-    let boatsLength = boats.length;
-    this.best_boat_age++;
-    for(let i = 0;i<boatsLength;i++){
-      if(boats[i].score > this.best_boat_score){
-        this.best_boat_score = boats[i].score;
-        this.best_boat_age = 1;
-      }
-    }
-    this.display();
-  }
-
-
-  display() {
-    this.generation_element.innerHTML = `Current Generation: ${this.generation_count}`;
-    this.best_boat_element.innerHTML = `Current Best Boat Score: ${this.best_boat_score}`;
-    this.best_generation_element.innerHTML = `Best Boat Age: ${this.best_boat_age}`;
+  update(best_individual_score, best_individual_age, generation_count) {
+    this.generation_element.innerHTML = `Current Generation: ${generation_count}`;
+    this.best_individual_score_element.innerHTML = `Current Best Boat Score: ${best_individual_score}`;
+    this.best_individual_age_element.innerHTML = `Current Best Boat Age: ${best_individual_age}`;
   }
 }

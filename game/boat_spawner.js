@@ -5,7 +5,7 @@ class BoatSpawner {
     this.y_axis_movement = y_axis_movement;
   }
 
-  spawnBoat(player_flag, position=null) {
+  spawnBoat(player_flag=false, position=null) {
     return new Boat(
       position || this.randomStartPosition(),
       ...this.defaultBodyDimensions(),

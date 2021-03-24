@@ -6,4 +6,9 @@ class GameController {
     this.boat_spawner = new BoatSpawner(this.screen, (this.mode == 'hard'));
     this.speedup_value = 1;
   }
+
+  quit() {
+    this.game.stop();
+    delete this.game;
+  }
 }

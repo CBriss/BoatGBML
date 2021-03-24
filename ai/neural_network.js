@@ -11,78 +11,86 @@ class NeuralNetwork {
     this.layerCount = network_shape.length;
     this.activation_function = ActivationFunctions.get_function(activation_function);
 
-    this.neurons = new Array(this.layerCount);
-    this.initNeurons();
-    this.biases = new Array(this.layerCount);
-    this.initBiases();
-    this.weights = [[[]]];
-    this.initWeights();
+    this.neurons = this.initNeurons(new Array(this.layerCount));
+    this.biases = this.initBiases(new Array(this.layerCount));
+    this.weights = this.initWeights([[[]]]);
   }
 
 
-  initNeurons() {
+  initNeurons(neurons) {
     for(let layer = 0; layer < this.layerCount; layer++){
       let layer_size = this.network_shape[layer];
-      this.neurons[layer] = new Array(layer_size);
+      neurons[layer] = new Array(layer_size);
     }
+    return neurons;
   }
 
-  initBiases() {
+  initBiases(biases) {
     for(let layer = 0; layer < this.layerCount; layer++){
       let layer_size = this.network_shape[layer];
-      this.biases[layer] = new Array(layer_size);
+      biases[layer] = new Array(layer_size);
       for (let neuron = 0; neuron < layer_size; neuron++) {
-        this.biases[layer][neuron] = Math.random() - 0.5;
+        biases[layer][neuron] = Math.random() - 0.5;
       }
     }
+    return biases;
   }
 
   // Weights will be [layer][fromNeuron][to next layer Neuron]
-  initWeights() {
+  initWeights(weights) {
     // For each non-input layer
     for(let layer = 0; layer < this.layerCount - 1; layer++){
       let layer_size = this.network_shape[layer];
-      this.weights[layer] = new Array(layer_size);
+      weights[layer] = new Array(layer_size);
       
       // For each neuron in layer
       for (let neuron = 0; neuron < layer_size; neuron++) {
         let next_layer_size = this.network_shape[layer+1];
-        this.weights[layer][neuron] = new Array(next_layer_size);
+        weights[layer][neuron] = new Array(next_layer_size);
         
         // For each neuron in next layer
         for (let next_neuron = 0; next_neuron < next_layer_size; next_neuron++) {
-          this.weights[layer][neuron][next_neuron] = Math.random() - 0.5;
+          weights[layer][neuron][next_neuron] = Math.random() - 0.5;
         }
       }
     }
+    return weights;
   }
 
   static newBrainFromJson(json_input) {
-    let network_shape = json_input['shape'];
-    let weights = json_input['weights'];
-    let biases = json_input['biases'];
-    let activation_function = json_input['activation'];
-    let new_brain = new NeuralNetwork(network_shape, activation_function);
-    new_brain.biases = [...biases];
-    new_brain.weights = [...weights];
+    let new_brain = new NeuralNetwork(json_input['shape'], json_input['activation']);
+    new_brain.biases = [...json_input['biases']];
+    new_brain.weights = [...json_input['weights']];
     return new_brain;
+  }
+
+  outputAsJson() {
+    return {
+      shape: JSON.parse(JSON.stringify(this.network_shape)),
+      weights: JSON.parse(JSON.stringify(this.weights)),
+      biases: JSON.parse(JSON.stringify(this.biases)),
+      activation: this.activation_function
+    }
   }
 
   predict(user_input) {
     this.setInputNeurons(user_input);
-    // For each layer
+    // For each non-input layer
     for (let layer = 1; layer < this.network_shape.length; layer++) {
+      
       // for each neuron in layer
       for (let neuron = 0; neuron < this.neurons[layer].length; neuron++) {
         let neuron_input = 0.0;
+        
         // For each neurin in previous layer
-        for (let prev_neuron = 0; prev_neuron < this.neurons[layer - 1].length; prev_neuron++)
-        {
+        for (let prev_neuron = 0; prev_neuron < this.neurons[layer - 1].length; prev_neuron++) {
           neuron_input += this.weights[layer - 1][prev_neuron][neuron] * this.neurons[layer - 1][prev_neuron];
         }
         neuron_input += this.biases[layer][neuron];
         this.neurons[layer][neuron] = this.activation_function(neuron_input);
-      } 
+      
+      }
+    
     }
     return this.neurons[this.network_shape.length -1];
   }
