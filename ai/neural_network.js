@@ -111,7 +111,7 @@ class NeuralNetwork {
   }
 
   mutateValue(weight) {
-    if (Math.random(1) < (0.05)) {
+    if (Math.random(1) < (0.01)) {
       let value = (gaussianRandom() - 0.5) * 2;
       return weight + value;
     }

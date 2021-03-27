@@ -8,8 +8,7 @@ class PlayerGame extends GameController {
   }
   
   end() {
-    if(this.game?.active)
-      exitGame();
+    exitGame();
   }
 
 }

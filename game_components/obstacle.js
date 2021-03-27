@@ -17,9 +17,9 @@ class Obstacle extends GameComponent {
 
   static newPairOfObstacles(gap_size, y, canvas_width) {
     let height = canvas_width / 10;
-    var obstacle1 = new Obstacle(-10, y, parseInt(Math.random() * canvas_width/2), height);
+    var obstacle1 = new Obstacle(-10, -height, parseInt(Math.random() * canvas_width/2), height);
     var obstacle2_pos = obstacle1.body.end_position.x + gap_size;
-    var obstacle2 = new Obstacle(obstacle2_pos, y, canvas_width - obstacle2_pos, height);
+    var obstacle2 = new Obstacle(obstacle2_pos, -height, canvas_width - obstacle2_pos, height);
     return [obstacle1, obstacle2];
   }
 }

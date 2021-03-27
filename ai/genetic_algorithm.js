@@ -34,7 +34,7 @@ class GeneticAlgorithm {
   updateBestindividual(last_generation) {
     let last_gen_best = GeneticAlgorithm.generationBestIndividual(last_generation);
     this.best_individual_age += 1;
-    if (!this.best_individual || last_gen_best.score >= this.best_individual.score || this.best_individual_age >= 3){
+    if (!this.best_individual || last_gen_best.score >= this.best_individual.score || this.best_individual_age > 3){
       this.setBestIndividual(last_gen_best);
       last_generation.splice(last_generation.indexOf(last_gen_best), 1);
     }
