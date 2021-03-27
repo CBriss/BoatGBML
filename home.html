@@ -33,7 +33,7 @@
     </div>
     <div id="game" class="content-container">
       <div id="left-container" style="flex-grow: 1;">
-        <a onClick="exitGame()" class="button" style="margin: 5px auto;">Back</a>
+        <a onClick="game_controller.quit()" class="button" style="margin: 5px auto;">Back</a>
         <div id="game-ui"></div>
         <div id="options" style="padding-top: 25px;">
           <div id="speedup-container" style="display: none;">
@@ -90,6 +90,7 @@
 <script src="huds/learning_hud.js" type="text/javascript"></script>
 
 <!-- Libraries -->
-<script src="lib/helpers.js" type="text/javascript"></script>
+<script src="lib/boat_io_helpers.js" type="text/javascript"></script>
 <script src="lib/input.js" type="text/javascript"></script>
+<script src="lib/game_helpers.js" type="text/javascript"></script>
 <script src="lib/random_functions.js" type="text/javascript"></script>

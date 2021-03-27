@@ -7,8 +7,8 @@ class PlayerGame extends GameController {
     this.game = new BoatGame(this.mode, this, PlayerHud, this.screen, [this.boat_spawner.spawnBoat(true)]);
   }
   
-  end() {
-    exitGame();
+  onGameEnd() {
+    super.quit();
   }
 
 }

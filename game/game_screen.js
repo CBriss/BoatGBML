@@ -1,20 +1,20 @@
 class GameScreen{
 
-  constructor(canvas_id, width, height) {
+  constructor(canvas_id, container_id, width, height) {
     // Canvas Rendering
-    this.context = GameScreen.newCanvas(canvas_id, width, height);
+    this.context = GameScreen.newCanvas(canvas_id, container_id, width, height);
     this.canvas = this.context.canvas;
     this.canvas_height = this.canvas.height;
     this.canvas_mid_point = this.canvas_height / 2;
 }
 
-  static newCanvas(canvas_id, width, height) {
+  static newCanvas(canvas_id, parent_id, width, height) {
     let canvas = document.createElement("canvas");
     canvas.id = canvas_id;
     canvas.width = width;
     canvas.height = height;
     let context = canvas.getContext("2d");
-    document.getElementById("game-container").appendChild(canvas);
+    document.getElementById(parent_id).appendChild(canvas);
     return context;
     }
 

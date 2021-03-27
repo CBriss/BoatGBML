@@ -32,16 +32,17 @@ class BoatGame {
   /* Base Functions */
 
   update() {
-    console.log('gogoo');
     for (let i = 0; i < this.controller.speedup_value; i++) { this.processFrame(); }
     this.drawFrame();
   }
   
-  stop() {
+  stop(call_controller = false) {
+    this.active = false;
     this.hud.clear();
     clearInterval(this.interval);
-    this.controller.end();
-    this.active = false;
+    
+    if(call_controller)
+      this.controller.onGameEnd();
   }
 
   /* Frame Processing */
@@ -88,13 +89,12 @@ class BoatGame {
   }
 
   updateGameState() {
-    if (this.time_left <= 0 || this.input.isPressed("exit")) this.stop();
     this.time_left = 1500 - this.frame_count;
     this.distance_traveled += Math.ceil(this.game_speed / 10);
-    if (this.boats.length <= 0) {
+    if (this.boats.length <= 0 || this.time_left <= 0 || this.input.isPressed("exit")) {
       this.obstacles = [];
       this.distance_traveled = 0;
-      this.stop();
+      this.stop(true);
     }
     this.hud.show(this);
   }

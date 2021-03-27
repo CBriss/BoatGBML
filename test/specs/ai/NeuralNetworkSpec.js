@@ -94,7 +94,7 @@ describe('Neural Network', () => {
 
     it('Has a chance to mutate genes', () => {
         let old_weights = [...brain.weights[0][0]];
-        for(let i=0;i<50;i++)
+        for(let i=0;i<200;i++)
             brain.mutate();
         expect(old_weights).not.toEqual(brain.weights[0][0]);
     });
