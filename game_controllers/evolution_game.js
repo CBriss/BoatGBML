@@ -3,10 +3,11 @@ class EvolutionGame extends GameController {
     super(screen_width, screen_height, mode);
     this.genetic_algorithm = new GeneticAlgorithm(50, this.boat_spawner);
     this.generation_count = 1;
+    this.seed_brain = seed_brain;
   }
 
   start() {
-    this.game = new BoatGame(this.mode, this, LearningHud, this.screen, this.genetic_algorithm.firstGeneration(this.boat_spawner));
+    this.game = new BoatGame(this.mode, this, LearningHud, this.screen, this.genetic_algorithm.firstGeneration(this.boat_spawner, this.seed_brain));
     initializeSpeedupListener();
   }
   

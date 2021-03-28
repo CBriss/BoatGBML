@@ -69,7 +69,7 @@ class NeuralNetwork {
       shape: JSON.parse(JSON.stringify(this.network_shape)),
       weights: JSON.parse(JSON.stringify(this.weights)),
       biases: JSON.parse(JSON.stringify(this.biases)),
-      activation: this.activation_function
+      activation: this.activation_function.name
     }
   }
 
