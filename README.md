@@ -1,5 +1,5 @@
 # smart-boats
-Smart Boats is a pure Javascript (aside from Lodash and Jasmine) canvas game built by Chris Brisson in an attemp to explore the world of Javascript, HTML Canvas, and Genetic Algorithms. Some of the coding methodologies explored are:
+Smart Boats is a pure Javascript (Jasmine is the only dependancy) canvas game built by Chris Brisson in an attemp to explore the world of Javascript, HTML Canvas, and Genetic Algorithms. Some of the coding methodologies explored are:
 
 Demo: http://smart-boats.herokuapp.com/
 
